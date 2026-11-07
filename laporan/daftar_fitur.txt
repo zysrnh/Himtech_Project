@@ -45,7 +45,7 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Role: is_super_admin = true
 
 ================================================================================
-4. PANEL PUSAT SUPER ADMIN: PEMISAHAN OVERVIEW & MANAJEMEN ORGANISASI
+4. PANEL PUSAT SUPER ADMIN: MODULARISASI & KONTROL STATUS ORGANISASI
 ================================================================================
 - Sidebar Web 240px: Desain flat white dengan border ice-200, penanda menu aktif berlatar ice-100 (tanpa label kategori dekoratif sesuai aturan v2).
   * Menu Navigasi: "Overview" (/admin/dashboard), "Organisasi" (/admin/organizations), dan "Lihat Beranda Web" (/).
@@ -54,8 +54,15 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Widget 5 Organisasi Terbaru dengan tautan cepat menuju halaman organisasi lengkap.
   * Widget Status Sistem & Audit Trail (pemantauan status isolasi multi-tenant dan log aktivitas real-time).
 - Halaman 2 - Manajemen Organisasi (/admin/organizations):
-  * Tabel Data Lengkap Organisasi: Menampilkan seluruh ormawa terdaftar, kode unik, nama, status badge aktif/nonaktif, dan tanggal pembuatan (dengan paginasi).
-  * Form Onboarding Organisasi Baru: Formulir atomik pendaftaran nama ormawa, kode unik kapital, deskripsi, serta akun Staff 1 (nama, email, nomor WhatsApp, password awal).
+  * Fokus menampilkan ringkasan statistik (Total Organisasi, Organisasi Aktif, Organisasi Nonaktif).
+  * Tabel Data Lengkap Organisasi: Menampilkan seluruh ormawa terdaftar, kode unik, nama, deskripsi, status badge aktif/nonaktif, tanggal pembuatan (dengan paginasi), dan kolom Aksi.
+  * Fitur Kontrol Status Organisasi (Toggle Aktif / Nonaktif): Super Admin dapat menonaktifkan atau mengaktifkan kembali organisasi dengan konfirmasi aman dan rekam jejak audit trail (ActivityLog).
+  * Proteksi Login Ketat: Pengurus atau anggota dari organisasi yang berstatus nonaktif akan otomatis diblokir saat login dengan pesan informatif.
+  * Tombol navigasi "+ Tambah Organisasi Baru" yang mengarahkan ke halaman formulir terpisah.
+- Halaman 3 - Form Pendaftaran Organisasi Baru (/admin/organizations/create):
+  * Halaman terpisah khusus untuk proses pendaftaran entitas ormawa baru dan akun Staff awal.
+  * Dilengkapi tombol navigasi "Kembali ke Daftar Organisasi".
+  * Formulir atomik pendaftaran nama ormawa, kode unik kapital, deskripsi, serta akun Staff 1 (nama, username login, email, nomor WhatsApp, password).
   * Generator Password Kuat Terintegrasi: Fitur tombol generate dan salin password otomatis (kombinasi 10 karakter: huruf besar, huruf kecil, angka, dan simbol khusus) dengan validasi minimal 8 karakter di backend.
   * Otomatisasi Kategori Kas: Sistem otomatis membuat 7 kategori kas default (Iuran Wajib, Donasi, Operasional, Konsumsi, ATK, dll) agar ormawa baru siap pakai.
 

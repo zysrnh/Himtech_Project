@@ -66,18 +66,26 @@ class LoginController extends Controller
                 ]);
         }
 
-        // 1. Verifikasi Keberadaan & Status Organisasi
-        $organization = Organization::where('code', $orgCode)
-            ->where('status', 'active')
-            ->first();
+        // 1. Verifikasi Keberadaan & Status Keaktifan Organisasi
+        $organization = Organization::where('code', $orgCode)->first();
 
-        if (!$organization) {
+        if (! $organization) {
             RateLimiter::hit($throttleKey, 60);
 
             return back()
                 ->withInput($request->only('organization_code', 'username'))
                 ->withErrors([
-                    'organization_code' => 'Kode organisasi tidak ditemukan atau sedang tidak aktif.',
+                    'organization_code' => 'Kode organisasi tidak ditemukan di dalam sistem.',
+                ]);
+        }
+
+        if ($organization->status !== 'active') {
+            RateLimiter::hit($throttleKey, 60);
+
+            return back()
+                ->withInput($request->only('organization_code', 'username'))
+                ->withErrors([
+                    'organization_code' => "Organisasi {$organization->name} ({$organization->code}) sedang dinonaktifkan oleh Administrator.",
                 ]);
         }
 
@@ -134,7 +142,7 @@ class LoginController extends Controller
             }
 
             // Jika akun user baru dan memasukkan kata sandi awal default (nomor anggota / NIM)
-            if (!$memberUser && $request->password === $member->member_number) {
+            if (! $memberUser && $request->password === $member->member_number) {
                 RateLimiter::clear($throttleKey);
 
                 $memberUser = User::create([

@@ -22,11 +22,11 @@ use Illuminate\View\View;
 class OrganizationController extends Controller
 {
     /**
-     * Tampilkan halaman daftar organisasi lengkap & form penambahan.
+     * Tampilkan halaman daftar seluruh organisasi terdaftar.
      */
     public function index(): View|RedirectResponse
     {
-        if (!Auth::check() || !Auth::user()->is_super_admin) {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
             return redirect()->route('admin.login')->withErrors([
                 'email' => 'Silakan login sebagai Super Admin untuk mengakses panel pusat.',
             ]);
@@ -34,13 +34,29 @@ class OrganizationController extends Controller
 
         $totalOrganizations = Organization::count();
         $activeOrganizations = Organization::where('status', 'active')->count();
+        $inactiveOrganizations = Organization::where('status', 'inactive')->count();
         $organizations = Organization::latest()->paginate(10);
 
         return view('admin.organizations.index', [
             'organizations' => $organizations,
             'totalOrganizations' => $totalOrganizations,
             'activeOrganizations' => $activeOrganizations,
+            'inactiveOrganizations' => $inactiveOrganizations,
         ]);
+    }
+
+    /**
+     * Tampilkan formulir terpisah untuk pendaftaran organisasi baru.
+     */
+    public function create(): View|RedirectResponse
+    {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Silakan login sebagai Super Admin untuk mengakses panel pusat.',
+            ]);
+        }
+
+        return view('admin.organizations.create');
     }
 
     /**
@@ -48,7 +64,7 @@ class OrganizationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (!Auth::check() || !Auth::user()->is_super_admin) {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -71,7 +87,7 @@ class OrganizationController extends Controller
         $code = Str::upper($validated['code']);
 
         // Gunakan password yang diisi, atau generate password kuat acak jika dikosongkan
-        if (!empty($validated['staff_password'])) {
+        if (! empty($validated['staff_password'])) {
             $password = $validated['staff_password'];
         } else {
             $password = Str::password(10, letters: true, numbers: true, symbols: true, spaces: false);
@@ -142,7 +158,7 @@ class OrganizationController extends Controller
         });
 
         // 6. Blast Kredensial via WhatsApp (Fonnte API)
-        if ($staff && !empty($staff->phone)) {
+        if ($staff && ! empty($staff->phone)) {
             FonnteService::sendStaffAccountCreated(
                 phone: $staff->phone,
                 staffName: $staff->name,
@@ -155,7 +171,7 @@ class OrganizationController extends Controller
         }
 
         // 7. Blast Kredensial via Email (SMTP)
-        if ($staff && !empty($staff->email)) {
+        if ($staff && ! empty($staff->email)) {
             try {
                 Mail::to($staff->email)->send(new StaffAccountCreatedMail(
                     staffName: $staff->name,
@@ -167,10 +183,41 @@ class OrganizationController extends Controller
                     username: $staff->username
                 ));
             } catch (\Throwable $e) {
-                Log::warning("Gagal mengirim email kredensial staff ke [{$staff->email}]: " . $e->getMessage());
+                Log::warning("Gagal mengirim email kredensial staff ke [{$staff->email}]: ".$e->getMessage());
             }
         }
 
         return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) berhasil didaftarkan. Kredensial akun staff telah dikirim via WhatsApp dan Email.");
+    }
+
+    /**
+     * Ubah status aktif / nonaktif organisasi.
+     */
+    public function toggleStatus(Organization $organization): RedirectResponse
+    {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $newStatus = $organization->status === 'active' ? 'inactive' : 'active';
+        $organization->update(['status' => $newStatus]);
+
+        $statusLabel = $newStatus === 'active' ? 'diaktifkan kembali' : 'dinonaktifkan';
+
+        // Catat ke log aktivitas
+        ActivityLog::create([
+            'organization_id' => $organization->id,
+            'user_id' => Auth::id(),
+            'action' => 'toggle_organization_status',
+            'subject_type' => Organization::class,
+            'subject_id' => $organization->id,
+            'payload' => [
+                'organization_name' => $organization->name,
+                'organization_code' => $organization->code,
+                'new_status' => $newStatus,
+            ],
+        ]);
+
+        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$organization->name} ({$organization->code}) berhasil {$statusLabel}.");
     }
 }

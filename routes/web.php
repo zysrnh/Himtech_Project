@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationContro
 use App\Http\Controllers\Anggota\DashboardController as AnggotaDashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Depan / Landing Page
@@ -43,4 +42,6 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 // Panel Pusat Super Admin
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/organizations', [AdminOrganizationController::class, 'index'])->name('admin.organizations.index');
+Route::get('/admin/organizations/create', [AdminOrganizationController::class, 'create'])->name('admin.organizations.create');
 Route::post('/admin/organizations', [AdminOrganizationController::class, 'store'])->name('admin.organizations.store');
+Route::patch('/admin/organizations/{organization}/toggle-status', [AdminOrganizationController::class, 'toggleStatus'])->name('admin.organizations.toggle-status');

@@ -217,3 +217,4 @@ class PaymentSettingController extends Controller
         return back()->with('success', "Metode pembayaran \"{$name}\" berhasil dihapus.");
     }
 }
+

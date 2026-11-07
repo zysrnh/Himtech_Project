@@ -97,3 +97,4 @@ class OrganizationController extends Controller
         return redirect()->route('admin.dashboard')->with('success', "Organisasi {$validated['name']} ({$code}) dan akun bendahara berhasil didaftarkan.");
     }
 }
+

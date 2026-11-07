@@ -155,3 +155,4 @@ B. TRANSPARANSI:
    - Kolom is_locked dan reversal_of pada transactions mencegah manipulasi kas.
    - Kolom proof_path mewajibkan adanya lampiran foto nota fisik atau struk transfer.
    - Tabel activity_logs mencatat riwayat perubahan secara permanen sehingga dapat diaudit kapan saja.
+

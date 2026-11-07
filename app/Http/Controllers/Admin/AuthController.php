@@ -18,6 +18,10 @@ class AuthController extends Controller
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check() && Auth::user()->is_super_admin) {
+            if (Auth::user()->isAdminPenerima()) {
+                return redirect()->route('admin.organizations.index', ['tab' => 'requests']);
+            }
+
             return redirect()->route('admin.dashboard');
         }
 
@@ -64,6 +68,10 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
+
+            if (Auth::user()->isAdminPenerima()) {
+                return redirect()->route('admin.organizations.index', ['tab' => 'requests']);
+            }
 
             return redirect()->intended(route('admin.dashboard'));
         }

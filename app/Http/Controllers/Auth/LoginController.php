@@ -26,6 +26,10 @@ class LoginController extends Controller
                 return redirect()->route('anggota.dashboard');
             }
 
+            if (Auth::user()->isAdminPenerima()) {
+                return redirect()->route('admin.organizations.index', ['tab' => 'requests']);
+            }
+
             if (Auth::user()->is_super_admin) {
                 return redirect()->route('admin.dashboard');
             }

@@ -19,8 +19,9 @@ class AdminManagementController extends Controller
      */
     public function index(): View|RedirectResponse
     {
-        if (! Auth::check() || ! Auth::user()->is_super_admin) {
-            return redirect()->route('admin.login');
+        if (! Auth::check() || ! Auth::user()->isSuperAdmin()) {
+            return redirect()->route('admin.organizations.index', ['tab' => 'requests'])
+                ->withErrors(['error' => 'Hanya Super Admin Kasly yang memiliki hak akses kelola administrator.']);
         }
 
         $admins = User::where('is_super_admin', true)->latest()->paginate(10);
@@ -37,8 +38,8 @@ class AdminManagementController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (! Auth::check() || ! Auth::user()->is_super_admin) {
-            abort(403);
+        if (! Auth::check() || ! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Akses ditolak.');
         }
 
         $validated = $request->validate([
@@ -76,8 +77,8 @@ class AdminManagementController extends Controller
      */
     public function destroy(User $user): RedirectResponse
     {
-        if (! Auth::check() || ! Auth::user()->is_super_admin) {
-            abort(403);
+        if (! Auth::check() || ! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Akses ditolak.');
         }
 
         if ($user->id === Auth::id()) {

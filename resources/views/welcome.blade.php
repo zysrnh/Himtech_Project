@@ -49,20 +49,13 @@
 
     <!-- Mobile Top Header (Mobile < 768px: Rapi & Bersih per NEUMORPHISM.md) -->
     <header class="md:hidden w-full pt-4 pb-2 px-4 sm:px-6">
-        <div class="landing-neu__container flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2.5 group">
+        <div class="landing-neu__container flex items-center justify-start">
+            <a href="/" class="flex items-center gap-2.5 group" title="{{ config('app.name', 'Kasly.') }}">
                 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-white/90 shadow-[3px_3px_8px_rgba(122,163,214,0.35),-3px_-3px_8px_rgba(255,255,255,0.9)] group-hover:scale-105 transition-transform">
-                    <img src="{{ asset('logo/icon-kasly.svg') }}" onerror="this.onerror=null; this.src='{{ asset('favicon.ico') }}';" alt="{{ config('app.name', 'Kasly') }}" class="w-5 h-5 object-contain rounded-sm">
+                    <img src="{{ asset('logo/icon-kasly.svg') }}" onerror="this.onerror=null; this.src='{{ asset('favicon.ico') }}';" alt="{{ config('app.name', 'Kasly.') }}" class="w-5 h-5 object-contain rounded-sm">
                 </div>
-                <span class="font-display font-bold text-xl text-navy-900 tracking-tight">Kasly</span>
+                <span class="font-display font-bold text-xl text-navy-900 tracking-tight">Kasly.</span>
             </a>
-
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-butter-100 text-navy-900 shadow-sm border border-white/60">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Kas Transparan</span>
-                </span>
-            </div>
         </div>
     </header>
 

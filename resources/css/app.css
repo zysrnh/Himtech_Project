@@ -1407,3 +1407,115 @@ html {
     border: 1px solid rgba(192, 82, 74, 0.25);
 }
 
+/* ==========================================================================
+   Mobile Bottom Toolbar & Mobile Landing Refinements (NEUMORPHISM.md)
+   ========================================================================== */
+@media (max-width: 767px) {
+    body.landing-neu {
+        padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    }
+
+    .landing-neu__hero-title {
+        font-size: clamp(28px, 6.5vw, 42px);
+        line-height: 1.18;
+    }
+
+    .wallet-tab-btn {
+        padding: 0 10px;
+        font-size: 11px;
+        gap: 4px;
+    }
+}
+
+.neu-bottomnav {
+    position: fixed;
+    z-index: 50;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 4px;
+    padding: 6px 8px;
+    border-radius: 28px;
+    background: var(--neu-surface);
+    box-shadow: 10px 14px 28px var(--neu-dark), -6px -6px 18px var(--neu-light), 0 8px 24px rgba(47, 72, 98, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: transform 250ms var(--ease), box-shadow 200ms ease;
+}
+
+@media (min-width: 768px) {
+    .neu-bottomnav {
+        display: none !important;
+    }
+}
+
+.neu-bottomnav__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 52px;
+    border-radius: 18px;
+    border: 0;
+    background: transparent;
+    color: var(--navy-500);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.neu-bottomnav__item svg {
+    transition: transform 180ms ease, color 180ms ease;
+}
+
+.neu-bottomnav__item:hover {
+    color: var(--navy-900);
+}
+
+.neu-bottomnav__item:active,
+.neu-bottomnav__item.is-pressed {
+    transform: scale(0.92);
+}
+
+.neu-bottomnav__item.is-active,
+.neu-bottomnav__item[aria-current="page"] {
+    background: var(--neu-surface);
+    color: var(--navy-900);
+    box-shadow: var(--inset-sm);
+    font-weight: 700;
+}
+
+.neu-bottomnav__item.is-active svg,
+.neu-bottomnav__item[aria-current="page"] svg {
+    color: var(--navy-900);
+    transform: translateY(-1px);
+}
+
+/* Primary CTA Item in Bottomnav (Masuk / Akun) */
+.neu-bottomnav__item--cta {
+    background: var(--grad-primary);
+    color: #ffffff !important;
+    box-shadow: 4px 6px 14px rgba(47, 72, 98, 0.3), -2px -2px 8px var(--neu-light);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.neu-bottomnav__item--cta svg {
+    color: #ffffff !important;
+}
+
+.neu-bottomnav__item--cta:active,
+.neu-bottomnav__item--cta.is-pressed {
+    box-shadow: var(--inset-sm);
+    transform: scale(0.94);
+}
+

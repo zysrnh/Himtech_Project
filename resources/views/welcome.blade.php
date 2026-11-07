@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>{{ config('app.name', 'Kasly') }} - Kas Organisasi Transparan</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -16,8 +16,8 @@
 </head>
 <body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Floating Capsule Navbar (revisi/image.png + NEUMORPHISM.md) -->
-    <header class="floating-capsule-wrapper">
+    <!-- Floating Capsule Navbar (Desktop & Tablet >= 768px: NEUMORPHISM.md) -->
+    <header class="hidden md:block floating-capsule-wrapper">
         <div class="landing-neu__container w-full">
             <nav class="floating-capsule-nav" aria-label="Navigasi Utama">
                 <!-- Left Circular Icon Button with Official Kasly Logo -->
@@ -44,6 +44,25 @@
                     </a>
                 @endauth
             </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Top Header (Mobile < 768px: Rapi & Bersih per NEUMORPHISM.md) -->
+    <header class="md:hidden w-full pt-4 pb-2 px-4 sm:px-6">
+        <div class="landing-neu__container flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-white/90 shadow-[3px_3px_8px_rgba(122,163,214,0.35),-3px_-3px_8px_rgba(255,255,255,0.9)] group-hover:scale-105 transition-transform">
+                    <img src="{{ asset('logo/icon-kasly.svg') }}" onerror="this.onerror=null; this.src='{{ asset('favicon.ico') }}';" alt="{{ config('app.name', 'Kasly') }}" class="w-5 h-5 object-contain rounded-sm">
+                </div>
+                <span class="font-display font-bold text-xl text-navy-900 tracking-tight">Kasly</span>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-butter-100 text-navy-900 shadow-sm border border-white/60">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Kas Transparan</span>
+                </span>
+            </div>
         </div>
     </header>
 
@@ -547,6 +566,58 @@
         </div>
     </footer>
 
+    <!-- Mobile Bottom Toolbar (HP & Tablet < 768px per NEUMORPHISM.md section 4 & 7) -->
+    <nav class="neu-bottomnav md:hidden" data-nav aria-label="Navigasi Bawah">
+        <!-- 1. Beranda -->
+        <a href="#" class="neu-bottomnav__item is-active" data-section="top" aria-label="Beranda" aria-current="page">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span>Beranda</span>
+        </a>
+
+        <!-- 2. Fitur -->
+        <a href="#fitur" class="neu-bottomnav__item" data-section="fitur" aria-label="Fitur">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+            <span>Fitur</span>
+        </a>
+
+        <!-- 3. Cara Kerja / Alur -->
+        <a href="#cara-kerja" class="neu-bottomnav__item" data-section="cara-kerja" aria-label="Cara Kerja">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            <span>Alur</span>
+        </a>
+
+        <!-- 4. FAQ -->
+        <a href="#faq" class="neu-bottomnav__item" data-section="faq" aria-label="FAQ">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>FAQ</span>
+        </a>
+
+        <!-- 5. Masuk / Akun (Primary CTA Button) -->
+        @auth
+            <a href="{{ route('dashboard') }}" class="neu-bottomnav__item neu-bottomnav__item--cta" aria-label="Dashboard">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span>Akun</span>
+            </a>
+        @else
+            <a href="{{ route('login') }}" class="neu-bottomnav__item neu-bottomnav__item--cta" aria-label="Masuk">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                <span>Masuk</span>
+            </a>
+        @endauth
+    </nav>
+
     <script>
         const kasThemes = {
             kas: {
@@ -662,6 +733,7 @@
                 '.floating-capsule-nav__link',
                 '.floating-capsule-nav__btn',
                 '.floating-capsule-nav__icon-circle',
+                '.neu-bottomnav__item',
                 '.neu-btn',
                 '.wallet-tab-btn',
                 '.cutout-pill-btn',
@@ -678,12 +750,22 @@
 
             // Enhanced Smooth Scrolling with offset & target animation
             function handleSmoothScroll(targetId, activeTrigger) {
+                if (targetId === 'top' || targetId === '' || targetId === '#') {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                    updateActiveNav('top');
+                    return;
+                }
+
                 const targetEl = document.getElementById(targetId);
                 if (!targetEl) return;
 
-                // Hitung offset navbar floating secara presisi agar judul tidak tertutup
+                // Hitung offset navbar floating secara presisi (desktop fixed navbar, mobile static header)
+                const isMobile = window.innerWidth < 768;
                 const nav = document.querySelector('.floating-capsule-wrapper');
-                const offset = nav ? nav.offsetHeight + 18 : 96;
+                const offset = isMobile ? 20 : (nav ? nav.offsetHeight + 18 : 96);
                 const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
 
                 window.scrollTo({
@@ -691,13 +773,7 @@
                     behavior: 'smooth'
                 });
 
-                // Update active state di navbar
-                document.querySelectorAll('.floating-capsule-nav__link').forEach(link => {
-                    link.classList.remove('is-active');
-                });
-                if (activeTrigger) {
-                    activeTrigger.classList.add('is-active');
-                }
+                updateActiveNav(targetId);
 
                 // Micro animation efek pulse pada section yang dituju
                 targetEl.classList.remove('section-scroll-focused');
@@ -705,9 +781,34 @@
                 targetEl.classList.add('section-scroll-focused');
             }
 
+            function updateActiveNav(activeId) {
+                // Update Desktop Navbar
+                document.querySelectorAll('.floating-capsule-nav__link').forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href === `#${activeId}`) {
+                        link.classList.add('is-active');
+                    } else {
+                        link.classList.remove('is-active');
+                    }
+                });
+
+                // Update Mobile Bottom Toolbar
+                document.querySelectorAll('.neu-bottomnav__item').forEach(item => {
+                    const sec = item.getAttribute('data-section');
+                    if (sec === activeId) {
+                        item.classList.add('is-active');
+                        item.setAttribute('aria-current', 'page');
+                    } else {
+                        item.classList.remove('is-active');
+                        item.removeAttribute('aria-current');
+                    }
+                });
+            }
+
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
-                    const targetId = this.getAttribute('href').replace('#', '');
+                    const href = this.getAttribute('href');
+                    const targetId = href === '#' ? (this.getAttribute('data-section') || 'top') : href.replace('#', '');
                     if (targetId) {
                         e.preventDefault();
                         handleSmoothScroll(targetId, this);
@@ -718,18 +819,20 @@
             // Scroll Spy: otomatis sorot tautan navigasi sesuai posisi scroll halaman
             const sections = ['fitur', 'cara-kerja', 'faq', 'pilih-akses'].map(id => document.getElementById(id)).filter(Boolean);
             window.addEventListener('scroll', () => {
-                const scrollPos = window.pageYOffset + 140;
+                const scrollPos = window.pageYOffset;
+
+                // Jika di area paling atas (Hero)
+                if (scrollPos < 180) {
+                    updateActiveNav('top');
+                    return;
+                }
+
+                const offsetCheck = scrollPos + 180;
                 sections.forEach(sec => {
                     const top = sec.offsetTop;
                     const height = sec.offsetHeight;
-                    if (scrollPos >= top && scrollPos < top + height) {
-                        document.querySelectorAll('.floating-capsule-nav__link').forEach(link => {
-                            if (link.getAttribute('href') === `#${sec.id}`) {
-                                link.classList.add('is-active');
-                            } else {
-                                link.classList.remove('is-active');
-                            }
-                        });
+                    if (offsetCheck >= top && offsetCheck < top + height) {
+                        updateActiveNav(sec.id);
                     }
                 });
             }, { passive: true });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Anggota;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Payment\MidtransController;
 use App\Models\Member;
 use App\Models\Organization;
 use Illuminate\Http\Request;
@@ -17,16 +18,33 @@ class DashboardController extends Controller
         /** @var Member $member */
         $member = $request->attributes->get('current_member');
 
-        // Ringkasan Transparansi Kas Organisasi
-        $totalIncome = (float) $organization->transactions()->where('type', 'in')->sum('amount');
-        $totalExpense = (float) $organization->transactions()->where('type', 'out')->sum('amount');
-        $currentBalance = $totalIncome - $totalExpense;
-
         // Tagihan Saya
         $myBills = $member->duesBills()
             ->with('duesPeriod')
             ->latest('id')
             ->get();
+
+        // Auto-sync status pembayaran Midtrans untuk tagihan unpaid yang memiliki order id
+        $hasSynced = false;
+        foreach ($myBills->where('status', 'unpaid') as $unpaidBill) {
+            if (! empty($unpaidBill->midtrans_order_id)) {
+                if (MidtransController::syncBillStatus($unpaidBill)) {
+                    $hasSynced = true;
+                }
+            }
+        }
+
+        if ($hasSynced) {
+            $myBills = $member->duesBills()
+                ->with('duesPeriod')
+                ->latest('id')
+                ->get();
+        }
+
+        // Ringkasan Transparansi Kas Organisasi
+        $totalIncome = (float) $organization->transactions()->where('type', 'in')->sum('amount');
+        $totalExpense = (float) $organization->transactions()->where('type', 'out')->sum('amount');
+        $currentBalance = $totalIncome - $totalExpense;
 
         $unpaidBills = $myBills->where('status', 'unpaid');
         $totalUnpaidAmount = (float) $unpaidBills->sum('amount');

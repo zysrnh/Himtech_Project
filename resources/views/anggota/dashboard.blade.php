@@ -467,7 +467,7 @@
                         <div class="flex gap-2 pt-1">
                             <button
                                 type="button"
-                                onclick="window.location.reload()"
+                                onclick="checkPaymentStatus(this)"
                                 class="flex-1 h-9 px-4 rounded-xl bg-ice-200/80 text-navy-900 font-semibold text-xs hover:bg-ice-300 transition-colors cursor-pointer"
                             >
                                 Cek Status Pembayaran
@@ -556,6 +556,80 @@
     <!-- Script Midtrans & Modal Helper -->
     <script>
         let currentPayingBillId = null;
+        let statusPollTimer = null;
+
+        function startStatusPolling() {
+            stopStatusPolling();
+            statusPollTimer = setInterval(() => {
+                if (!currentPayingBillId) return;
+                silentCheckStatus();
+            }, 3000);
+        }
+
+        function stopStatusPolling() {
+            if (statusPollTimer) {
+                clearInterval(statusPollTimer);
+                statusPollTimer = null;
+            }
+        }
+
+        async function silentCheckStatus() {
+            if (!currentPayingBillId) return;
+            try {
+                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const res = await fetch(`/anggota/bills/${currentPayingBillId}/check-status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                    }
+                });
+                const data = await res.json();
+                if (data.is_paid) {
+                    stopStatusPolling();
+                    alert('Pembayaran terdeteksi LUNAS! Memperbarui status tagihan...');
+                    window.location.reload();
+                }
+            } catch (e) {
+                // background poll
+            }
+        }
+
+        async function checkPaymentStatus(btn) {
+            if (!currentPayingBillId) return;
+            const orig = btn ? btn.innerHTML : null;
+            if (btn) {
+                btn.innerHTML = 'Memeriksa...';
+                btn.disabled = true;
+            }
+            try {
+                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const res = await fetch(`/anggota/bills/${currentPayingBillId}/check-status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                    }
+                });
+                const data = await res.json();
+                if (data.is_paid) {
+                    stopStatusPolling();
+                    alert('Pembayaran berhasil diverifikasi LUNAS!');
+                    window.location.reload();
+                } else {
+                    alert('Pembayaran belum diterima oleh Midtrans. Jika sudah transfer di simulator/m-Banking, tunggu beberapa detik lalu coba lagi.');
+                }
+            } catch (e) {
+                alert('Kendala koneksi: ' + e.message);
+            } finally {
+                if (btn) {
+                    btn.innerHTML = orig;
+                    btn.disabled = false;
+                }
+            }
+        }
 
         function openPaymentModal(billId, title, amount, dueDate) {
             currentPayingBillId = billId;
@@ -567,11 +641,13 @@
         }
 
         function closePaymentModal() {
+            stopStatusPolling();
             document.getElementById('modal-pay-bill').classList.add('hidden');
             currentPayingBillId = null;
         }
 
         function backToStep1() {
+            stopStatusPolling();
             const step1 = document.getElementById('pay-step-1');
             const step2 = document.getElementById('pay-step-2');
             if (step1 && step2) {
@@ -636,6 +712,9 @@
                             document.getElementById('biller-code-row').classList.add('hidden');
                         }
                     }
+
+                    // Mulai polling otomatis setiap 3 detik
+                    startStatusPolling();
                 } else {
                     alert(data.message || 'Gagal menerbitkan nomor pembayaran.');
                 }

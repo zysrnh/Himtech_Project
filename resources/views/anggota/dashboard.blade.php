@@ -30,26 +30,34 @@
 
             <!-- Banner Notifikasi Selamat Datang / Lengkapi Profil -->
             @if (session('success'))
-                <div class="p-4 rounded-md bg-butter-100 text-navy-900 text-sm font-medium shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <span>{{ session('success') }}</span>
-                    <a
-                        href="{{ route('anggota.profile') }}"
-                        class="inline-flex items-center justify-center h-8 px-3 rounded bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shrink-0"
-                    >
-                        Sesuaikan Profil Saya &rarr;
-                    </a>
-                </div>
-            @elseif (str_starts_with($member->member_number, $organization->code.'-'))
-                <div class="p-4 rounded-md bg-white border border-ice-200 text-navy-900 text-xs shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                        <span class="font-semibold text-navy-900">ID Anggota Default: {{ $member->member_number }}</span>
-                        <p class="text-navy-500 mt-0.5">Anda bergabung menggunakan QR Code. Anda dapat melengkapi nama asli, NIM kampus, dan kata sandi di menu profil.</p>
+                <div class="p-4 sm:p-5 rounded-2xl bg-butter-100 border border-amber-300/80 shadow-[4px_4px_12px_rgba(245,158,11,0.18),-4px_-4px_12px_#ffffff] text-navy-900 text-xs sm:text-sm font-semibold flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                        <span>{{ session('success') }}</span>
                     </div>
                     <a
                         href="{{ route('anggota.profile') }}"
-                        class="inline-flex items-center justify-center h-8 px-3.5 rounded bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shrink-0"
+                        class="neu-btn neu-btn--primary h-9 px-4 rounded-full font-bold text-xs shrink-0 flex items-center gap-1.5"
                     >
-                        Lengkapi Profil
+                        <span>Sesuaikan Profil</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+            @elseif (str_starts_with($member->member_number, $organization->code.'-'))
+                <div class="p-4 sm:p-5 rounded-2xl bg-white/90 border border-ice-200/80 shadow-[4px_4px_12px_rgba(122,163,214,0.18),-4px_-4px_12px_#ffffff] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="neu-badge-ice text-[10px] py-0.5 px-2 font-mono">ID: {{ $member->member_number }}</span>
+                            <span class="font-bold text-xs sm:text-sm text-navy-900">Akun Anggota Default</span>
+                        </div>
+                        <p class="text-navy-500 text-xs mt-1">Anda bergabung menggunakan QR Code. Anda dapat melengkapi nama asli, NIM kampus, dan kata sandi di menu profil.</p>
+                    </div>
+                    <a
+                        href="{{ route('anggota.profile') }}"
+                        class="neu-btn neu-btn--primary h-9 px-4 rounded-full font-bold text-xs shrink-0 flex items-center gap-1.5"
+                    >
+                        <span>Lengkapi Profil</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </a>
                 </div>
             @endif
@@ -57,19 +65,22 @@
             <!-- Welcome Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
+                    <h1 class="font-display font-extrabold text-[26px] sm:text-[28px] text-navy-900 leading-tight tracking-tight">
                         Halo, {{ $member->name }}
                     </h1>
-                    <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                    <p class="text-xs sm:text-sm text-navy-500 mt-1">
                         Pantau status iuran kas pribadi dan keterbukaan saldo keuangan {{ $organization->name }}.
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
                     <a
                         href="{{ route('anggota.profile') }}"
-                        class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-ice-200 bg-white text-navy-900 font-medium text-xs hover:bg-ice-100 transition-colors shadow-sm"
+                        class="neu-btn h-10 px-4 rounded-full font-bold text-xs bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.18),-2px_-2px_6px_#ffffff] text-navy-900 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                     >
-                        Kelola Profil Saya
+                        <svg class="w-4 h-4 text-navy-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <span>Kelola Profil Saya</span>
                     </a>
                 </div>
             </div>
@@ -78,56 +89,59 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <!-- Saldo Kas Ormawa (Transparansi Terbuka) -->
-                <div class="bg-navy-900 text-white rounded-blob p-6 shadow-card flex flex-col justify-between">
-                    <div>
-                        <span class="text-xs text-white/70">Saldo Kas Organisasi (Transparan)</span>
-                        <p class="font-display font-semibold text-3xl tabular-nums mt-2">
+                <div class="bg-gradient-to-br from-navy-700 via-navy-900 to-[#182635] text-white rounded-[28px] p-6 sm:p-7 shadow-[8px_14px_32px_rgba(47,72,98,0.36),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-white/10 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 w-36 h-36 rounded-full bg-ice-400/10 blur-xl pointer-events-none"></div>
+                    <div class="relative z-1">
+                        <span class="text-xs text-ice-200 font-semibold uppercase tracking-wider block">Saldo Kas Ormawa (Transparan)</span>
+                        <p class="font-display font-extrabold text-3xl tabular-nums mt-2 text-white">
                             Rp {{ number_format($currentBalance, 0, ',', '.') }}
                         </p>
                     </div>
-                    <div class="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/70">
+                    <div class="pt-4 mt-4 border-t border-white/15 flex items-center justify-between text-xs text-ice-200/80 font-medium relative z-1">
                         <span>Masuk: Rp {{ number_format($totalIncome, 0, ',', '.') }}</span>
                         <span>Keluar: Rp {{ number_format($totalExpense, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
                 <!-- Status Tunggakan Iuran Saya -->
-                <div class="bg-white border border-ice-200 rounded-lg p-6 shadow-card flex flex-col justify-between">
+                <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 shadow-[6px_6px_20px_rgba(122,163,214,0.2),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-ice-200/80 flex flex-col justify-between">
                     <div>
-                        <span class="text-xs text-navy-500 font-normal">Tunggakan Iuran Saya</span>
-                        <p class="font-display font-semibold text-3xl tabular-nums {{ $unpaidBills->isNotEmpty() ? 'text-danger' : 'text-navy-900' }} mt-2">
+                        <span class="text-xs text-navy-500 font-semibold uppercase tracking-wider block">Tunggakan Iuran Saya</span>
+                        <p class="font-display font-extrabold text-3xl tabular-nums {{ $unpaidBills->isNotEmpty() ? 'text-danger' : 'text-navy-900' }} mt-2">
                             {{ $unpaidBills->count() }} Tagihan
                         </p>
-                        <p class="text-sm text-navy-500 mt-1">
-                            Total yang harus dibayar: <span class="font-semibold text-navy-900">Rp {{ number_format($totalUnpaidAmount, 0, ',', '.') }}</span>
+                        <p class="text-xs text-navy-500 mt-1.5 font-medium">
+                            Total kewajiban: <span class="font-bold text-navy-900 tabular-nums">Rp {{ number_format($totalUnpaidAmount, 0, ',', '.') }}</span>
                         </p>
                     </div>
-                    <div class="pt-4 mt-4 border-t border-ice-200 text-xs">
+                    <div class="pt-4 mt-4 border-t border-ice-200/70 text-xs">
                         @if ($unpaidBills->isEmpty())
-                            <span class="font-semibold text-navy-900 bg-butter-100 px-2 py-0.5 rounded">
-                                Semua tagihan kas Anda sudah lunas tepat waktu.
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-butter-100 border border-amber-300 font-bold text-navy-900 text-xs">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Semua tagihan lunas tepat waktu.
                             </span>
                         @else
-                            <span class="text-danger font-medium">
-                                Harap selesaikan pembayaran sebelum batas jatuh tempo.
+                            <span class="text-danger font-bold flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5 text-danger shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                Harap selesaikan sebelum jatuh tempo.
                             </span>
                         @endif
                     </div>
                 </div>
 
                 <!-- Info Kontak Pengurus -->
-                <div class="bg-white border border-ice-200 rounded-lg p-6 shadow-card flex flex-col justify-between">
+                <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 shadow-[6px_6px_20px_rgba(122,163,214,0.2),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-ice-200/80 flex flex-col justify-between">
                     <div>
-                        <span class="text-xs text-navy-500 font-normal">Bantuan & Konfirmasi Kas</span>
-                        <h2 class="font-display font-medium text-base text-navy-900 mt-2">
+                        <span class="text-xs text-navy-500 font-semibold uppercase tracking-wider block">Bantuan & Konfirmasi Kas</span>
+                        <h2 class="font-display font-bold text-base text-navy-900 mt-2">
                             Bendahara / Staff Ormawa
                         </h2>
                         <p class="text-xs text-navy-500 mt-1 leading-relaxed">
-                            Jika sudah melakukan pembayaran kas tunai atau transfer, konfirmasikan ke pengurus ormawa untuk diverifikasi.
+                            Jika sudah melakukan pembayaran kas tunai atau transfer, konfirmasikan ke pengurus ormawa untuk diverifikasi seketika.
                         </p>
                     </div>
-                    <div class="pt-4 mt-4 border-t border-ice-200 text-xs text-navy-500">
-                        Organisasi: <span class="font-semibold text-navy-900">{{ $organization->code }}</span>
+                    <div class="pt-4 mt-4 border-t border-ice-200/70 text-xs text-navy-500 font-medium">
+                        Kode Ormawa: <span class="font-mono font-bold text-navy-900">{{ $organization->code }}</span>
                     </div>
                 </div>
 
@@ -290,10 +304,10 @@
             </div>
 
             <!-- Bagian 1: Tabel Riwayat & Tagihan Iuran Saya -->
-            <div id="tagihan" class="bg-white rounded-lg p-6 sm:p-8 shadow-card border border-ice-200 space-y-4">
-                <div class="flex items-center justify-between pb-3 border-b border-ice-200">
+            <div id="tagihan" class="bg-white/90 rounded-[28px] p-6 sm:p-8 shadow-[6px_6px_20px_rgba(122,163,214,0.2),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-ice-200/80 space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-ice-200/70">
                     <div>
-                        <h2 class="font-display font-semibold text-lg text-navy-900">
+                        <h2 class="font-display font-bold text-lg sm:text-xl text-navy-900">
                             Tagihan & Riwayat Pembayaran Kas Saya
                         </h2>
                         <p class="text-xs text-navy-500 mt-0.5">
@@ -307,55 +321,55 @@
                         Belum ada tagihan kas yang diterbitkan untuk akun anggota Anda.
                     </div>
                 @else
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto neu-scroll rounded-2xl border border-ice-200/70 shadow-xs">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead>
-                                <tr class="border-b border-ice-200 text-xs text-navy-500 bg-ice-100/40">
-                                    <th class="py-3 px-4 font-medium">Periode Tagihan</th>
-                                    <th class="py-3 px-4 font-medium">Batas Jatuh Tempo</th>
-                                    <th class="py-3 px-4 font-medium">Nominal</th>
-                                    <th class="py-3 px-4 font-medium">Status</th>
-                                    <th class="py-3 px-4 font-medium">Ketepatan Waktu</th>
-                                    <th class="py-3 px-4 font-medium">Tanggal Bayar</th>
-                                    <th class="py-3 px-4 font-medium text-right">Aksi</th>
+                                <tr class="border-b border-ice-200/80 text-xs text-navy-600 bg-ice-100/60 font-semibold">
+                                    <th class="py-3 px-4">Periode Tagihan</th>
+                                    <th class="py-3 px-4">Batas Jatuh Tempo</th>
+                                    <th class="py-3 px-4">Nominal</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4">Ketepatan Waktu</th>
+                                    <th class="py-3 px-4">Tanggal Bayar</th>
+                                    <th class="py-3 px-4 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-ice-100 text-sm">
+                            <tbody class="divide-y divide-ice-100 text-sm bg-white">
                                 @foreach ($myBills as $bill)
                                     <tr class="hover:bg-ice-100/30 transition-colors">
-                                        <td class="py-3 px-4 font-medium text-navy-900 text-sm">
+                                        <td class="py-3.5 px-4 font-bold text-navy-900 text-xs sm:text-sm">
                                             {{ $bill->duesPeriod->title ?? 'Iuran Kas' }}
                                         </td>
-                                        <td class="py-3 px-4 text-xs text-navy-500">
+                                        <td class="py-3.5 px-4 text-xs text-navy-500">
                                             {{ $bill->duesPeriod?->due_date?->format('d M Y') ?? '-' }}
                                         </td>
-                                        <td class="py-3 px-4 font-semibold tabular-nums text-navy-900 text-sm">
+                                        <td class="py-3.5 px-4 font-bold tabular-nums text-navy-900 text-xs sm:text-sm">
                                             Rp {{ number_format($bill->amount, 0, ',', '.') }}
                                         </td>
-                                        <td class="py-3 px-4 text-xs">
+                                        <td class="py-3.5 px-4 text-xs">
                                             @if ($bill->status === 'paid')
-                                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-butter-100 text-navy-900 font-semibold text-xs">
+                                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-butter-100 border border-amber-300 text-navy-900 font-bold text-xs shadow-2xs">
                                                     Lunas
                                                 </span>
                                             @elseif ($bill->status === 'pending')
-                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-semibold text-xs border border-amber-300">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-xs border border-amber-300">
                                                     <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
                                                     Menunggu ACC
                                                 </span>
                                             @else
-                                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-danger/10 text-danger font-semibold text-xs">
+                                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-danger/10 text-danger font-bold text-xs border border-danger/20">
                                                     Belum Dibayar
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="py-3 px-4 text-xs">
+                                        <td class="py-3.5 px-4 text-xs">
                                             @if ($bill->status === 'paid')
                                                 @if ($bill->is_on_time)
-                                                    <span class="font-semibold text-navy-900">
+                                                    <span class="font-bold text-navy-900">
                                                         Tepat Waktu
                                                     </span>
                                                 @else
-                                                    <span class="text-danger font-semibold">
+                                                    <span class="text-danger font-bold">
                                                         Terlambat
                                                     </span>
                                                 @endif
@@ -363,15 +377,15 @@
                                                 <span class="text-navy-500">-</span>
                                             @endif
                                         </td>
-                                        <td class="py-3 px-4 text-xs text-navy-500 tabular-nums">
+                                        <td class="py-3.5 px-4 text-xs text-navy-500 tabular-nums">
                                             {{ $bill->paid_at?->format('d/m/Y H:i') ?? '-' }}
                                         </td>
-                                        <td class="py-3 px-4 text-right">
+                                        <td class="py-3.5 px-4 text-right">
                                             @if ($bill->status === 'unpaid')
                                                 <button
                                                     type="button"
                                                     onclick="openPaymentModal('{{ $bill->id }}', '{{ $bill->duesPeriod->title ?? 'Iuran Kas' }}', '{{ $bill->amount }}', '{{ $bill->duesPeriod?->due_date?->format('d M Y') ?? '-' }}')"
-                                                    class="h-8 px-3.5 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer inline-flex items-center gap-1.5"
+                                                    class="neu-btn neu-btn--primary h-8 px-4 rounded-full font-bold text-xs shadow-xs hover:scale-105 active:scale-95 inline-flex items-center gap-1.5 transition-all cursor-pointer"
                                                 >
                                                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -379,11 +393,11 @@
                                                     <span>Bayar</span>
                                                 </button>
                                             @elseif ($bill->status === 'pending')
-                                                <span class="text-xs font-semibold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                                                <span class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
                                                     Menunggu ACC
                                                 </span>
                                             @else
-                                                <span class="text-xs text-navy-500 italic">Lunas</span>
+                                                <span class="text-xs text-navy-500 font-medium italic">Lunas</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -395,12 +409,12 @@
             </div>
 
             <!-- Bagian 2: Tabel Mutasi Kas Terbuka Organisasi (Transparansi Finansial) -->
-            <div id="buku-kas" class="bg-white rounded-2xl p-6 sm:p-8 shadow-[3px_3px_12px_rgba(122,163,214,0.18),-3px_-3px_12px_rgba(255,255,255,0.9)] border border-ice-200/80 space-y-6">
+            <div id="buku-kas" class="bg-white/90 rounded-[28px] p-6 sm:p-8 shadow-[6px_6px_20px_rgba(122,163,214,0.2),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-ice-200/80 space-y-6">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-ice-200/70">
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                            <h2 class="font-display font-semibold text-lg sm:text-xl text-navy-900">
+                            <h2 class="font-display font-bold text-lg sm:text-xl text-navy-900">
                                 Buku Kas Mutasi Terbuka Organisasi
                             </h2>
                         </div>
@@ -409,23 +423,23 @@
                         </p>
                     </div>
 
-                    <!-- Filter Tabs: Semua, Pemasukan, Pengeluaran -->
-                    <div class="flex items-center p-1 rounded-xl bg-ice-100/80 border border-ice-200/70 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.2)] shrink-0 self-start md:self-auto">
+                    <!-- Filter Tabs Neumorphic: Semua, Pemasukan, Pengeluaran -->
+                    <div class="flex items-center p-1 rounded-full bg-ice-100/80 border border-ice-200/70 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.2)] shrink-0 self-start md:self-auto">
                         <a
                             href="?tx_type=all#buku-kas"
-                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all {{ ($txType ?? 'all') === 'all' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                            class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all {{ ($txType ?? 'all') === 'all' ? 'bg-white text-navy-900 shadow-[1px_1px_4px_rgba(122,163,214,0.2)]' : 'text-navy-500 hover:text-navy-900' }}"
                         >
                             Semua
                         </a>
                         <a
                             href="?tx_type=in#buku-kas"
-                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all {{ ($txType ?? 'all') === 'in' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                            class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all {{ ($txType ?? 'all') === 'in' ? 'bg-white text-navy-900 shadow-[1px_1px_4px_rgba(122,163,214,0.2)]' : 'text-navy-500 hover:text-navy-900' }}"
                         >
                             Pemasukan (+)
                         </a>
                         <a
                             href="?tx_type=out#buku-kas"
-                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all {{ ($txType ?? 'all') === 'out' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                            class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all {{ ($txType ?? 'all') === 'out' ? 'bg-white text-navy-900 shadow-[1px_1px_4px_rgba(122,163,214,0.2)]' : 'text-navy-500 hover:text-navy-900' }}"
                         >
                             Pengeluaran (-)
                         </a>

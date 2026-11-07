@@ -275,10 +275,8 @@
                         <!-- Tombol Aksi Download & Share WhatsApp -->
                         <div class="flex flex-wrap items-center gap-3 pt-1">
                             <a
-                                href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ urlencode($registrationUrl) }}"
-                                target="_blank"
-                                download="QR_Registrasi_{{ $organization->code }}.png"
-                                class="inline-flex items-center justify-center h-10 px-4 rounded-md bg-navy-900 text-white text-xs font-medium hover:bg-navy-700 transition-colors shadow-sm"
+                                href="{{ route('pengurus.anggota.token.download-qr', $activeToken) }}"
+                                class="inline-flex items-center justify-center h-10 px-4 rounded-md bg-navy-900 text-white text-xs font-medium hover:bg-navy-700 transition-colors shadow-sm cursor-pointer"
                             >
                                 Download Gambar QR (PNG)
                             </a>

@@ -10,9 +10,11 @@ use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -114,6 +116,39 @@ class MemberController extends Controller
 
         return redirect()->route('pengurus.anggota.index')
             ->with('success', "Pengaturan QR Code aktif berhasil diperbarui! Kuota diubah menjadi {$token->max_uses} anggota dan berlaku hingga {$token->expires_at->format('d M Y H:i')}. Barcode QR dan tautan yang sudah dibagikan di WhatsApp tetap berlaku.");
+    }
+
+    /**
+     * Unduh langsung file gambar QR Code (.png) tanpa membuka tab / halaman baru.
+     */
+    public function downloadQr(Request $request, MemberRegistrationToken $token): Response|RedirectResponse
+    {
+        /** @var Organization $organization */
+        $organization = $request->attributes->get('current_organization');
+
+        if ($token->organization_id !== $organization->id) {
+            abort(403);
+        }
+
+        $registrationUrl = route('anggota.register.qr', ['token' => $token->token]);
+        $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data='.urlencode($registrationUrl);
+
+        try {
+            $response = Http::timeout(10)->get($qrApiUrl);
+
+            if (! $response->successful()) {
+                return back()->withErrors(['qr' => 'Gagal mengunduh gambar QR dari penyedia.']);
+            }
+
+            $filename = 'QR_Registrasi_'.$organization->code.'.png';
+
+            return response($response->body(), 200, [
+                'Content-Type' => 'image/png',
+                'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            ]);
+        } catch (\Throwable $e) {
+            return back()->withErrors(['qr' => 'Gagal menghubungi generator QR: '.$e->getMessage()]);
+        }
     }
 
     /**

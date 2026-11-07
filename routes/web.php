@@ -57,6 +57,7 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     Route::put('/anggota/{member}', [MemberController::class, 'update'])->name('anggota.update');
     Route::post('/anggota/renew-qr', [MemberController::class, 'renewToken'])->name('anggota.renew-qr');
     Route::put('/anggota/token/{token}', [MemberController::class, 'updateToken'])->name('anggota.token.update');
+    Route::get('/anggota/token/{token}/download-qr', [MemberController::class, 'downloadQr'])->name('anggota.token.download-qr');
     Route::patch('/anggota/{member}/toggle-status', [MemberController::class, 'toggleStatus'])->name('anggota.toggle-status');
     Route::delete('/anggota/{member}', [MemberController::class, 'destroy'])->name('anggota.destroy');
 });

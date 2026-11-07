@@ -88,12 +88,15 @@ A. Status Milestone 1: SELESAI & SIAP UJI (Implemented & Live Demo):
    2. Landing Page Lengkap berbasis Ice & Butter v2 dengan formulir pendaftaran ormawa mandiri (/ajukan-organisasi).
    3. Panel Khusus Admin Penerima Organisasi untuk review dan ACC pendaftaran dengan otomatisasi pembuatan akun pengelola.
    4. Otomasi Pengiriman Kredensial via WhatsApp Gateway (Fonnte API) dan Email Notifikasi resmi (SMTP).
-   5. Portal Login Tunggal Universal (/login) dengan deteksi otomatis peran (Pengurus vs Anggota) dan proteksi anti-brute force (Rate Limiting 5x/menit).
-   6. Dashboard Ringkasan Pengurus (/pengurus/dashboard) dengan Indikator Kedisiplinan Iuran (% skor tepat waktu) dan telemetri tunggakan real-time.
-   7. Manajemen Staf & Bendahara bertingkat oleh Admin Organisasi (/pengurus/staff).
-   8. Portal Transparansi Anggota (/anggota/dashboard) dengan pelacakan status is_on_time dan buku kas terbuka.
-   9. Sistem Pembukuan Locked Ledger dengan mekanisme pembalik (reversal) dan audit trail permanen (activity_logs).
-   10. Desain Responsif & Flat Design (Ice & Butter v2: Tanpa gradien, tipografi Outfit + Plus Jakarta Sans).
+   5. Portal Login Tunggal Universal (/login) dengan deteksi otomatis peran (Pengurus vs Anggota) dan proteksi anti-brute force (Rate Limiting 5x/menit). [STATUS: OK - SELESAI]
+   6. Modul Autentikasi Khusus Super Admin & Admin Penerima (/admin/login) dengan isolasi wewenang ketat dan redirect cerdas. [STATUS: OK - SELESAI]
+   7. Sistem Registrasi Mandiri Anggota via QR Code & Tautan Berbatas Waktu & Kuota (/daftar-anggota) dengan auto-login akun default (NIM), direct download PNG, penyesuaian kuota aktif, dan modal edit data anggota. [STATUS: OK - SELESAI]
+   8. Dashboard Ringkasan Pengurus (/pengurus/dashboard) dengan Indikator Kedisiplinan Iuran (% skor tepat waktu) dan telemetri tunggakan real-time.
+   9. Manajemen Staf & Bendahara bertingkat oleh Admin Organisasi (/pengurus/staff). [STATUS: OK - SELESAI]
+   10. Portal Transparansi Anggota (/anggota/dashboard) dengan pelacakan status is_on_time dan buku kas terbuka.
+   11. Portal Profil Mandiri Pengurus (/pengurus/profile) dan Anggota (/anggota/profile) untuk pembaruan profil & kata sandi mandiri. [STATUS: OK - SELESAI]
+   12. Sistem Pembukuan Locked Ledger dengan mekanisme pembalik (reversal) dan audit trail permanen (activity_logs).
+   13. Desain Responsif & Flat Design (Ice & Butter v2: Tanpa gradien, tipografi Outfit + Plus Jakarta Sans).
 
 B. Status Milestone 2: SEDANG BERJALAN (In Active Sprint - Pengerjaan Berjalan):
    1. Modul Manajemen Tagihan Iuran (/pengurus/tagihan):
@@ -103,9 +106,10 @@ B. Status Milestone 2: SEDANG BERJALAN (In Active Sprint - Pengerjaan Berjalan):
    2. Modul Buku Kas Mutasi Mandiri (/pengurus/buku-kas):
       - Form pencatatan kas masuk dan kas keluar dengan upload bukti nota/struk belanja fisik.
       - Rekapitulasi mutasi dan filter berdasarkan kategori kas.
-   3. Modul Buku Induk Anggota Ormawa (/pengurus/anggota):
-      - Tambah anggota manual atau import daftar anggota angkatan.
-      - Aktivasi dan penonaktifan keanggotaan mahasiswa.
+   3. Modul Buku Induk Anggota Ormawa (/pengurus/anggota): SELESAI
+      - Pendaftaran mandiri via QR Code dan form manual.
+      - Edit data anggota (NIM, Nama, No. WA) dengan sinkronisasi login.
+      - Kontrol status aktivasi/nonaktif dan hapus anggota.
 
 C. Status Milestone 3: OUT-OF-SCOPE (Sengaja Ditunda untuk Rilis Masa Depan):
    1. Integrasi Payment Gateway Pihak Ketiga (Midtrans/Xendit/QRIS Otomatis):
@@ -168,6 +172,16 @@ US-06: Manajemen Staf & Delegasi Bendahara
   * Sistem otomatis membagikan kredensial login staf baru via WhatsApp Gateway Fonnte dan Email.
   * Admin Organisasi dapat menonaktifkan atau menghapus akun staf jika masa jabatan berakhir.
 
+US-07: Registrasi Mandiri Anggota via QR Code Berbatas Waktu & Kuota
+- Format: Sebagai calon anggota ormawa, saya ingin mendaftar ke organisasi secara mandiri dengan memindai QR Code dari grup WhatsApp agar tidak merepotkan bendahara menginput satu per satu.
+- Kriteria Selesai (Acceptance Criteria):
+  * Pengurus dapat mengunduh gambar QR Code resmi (.png) secara direct download dari /pengurus/anggota atau membagikan tautan unik ke grup WhatsApp.
+  * Mahasiswa membuka /daftar-anggota dengan token unik, memindai QR lewat kamera perangkat atau mengunggah gambar QR dari galeri.
+  * Sistem memvalidasi kuota dan masa berlaku token. Jika valid, pendaftar menginput NIM, Nama, dan No. WA.
+  * Akun anggota dan akun login dibuat otomatis (username & password default = NIM) lalu sistem melakukan auto-login langsung ke portal anggota.
+  * Pengurus dapat mengubah batas kuota maksimal dan memperpanjang masa berlaku QR yang sedang aktif tanpa mengubah gambar barcode atau link yang sudah dibagikan di WhatsApp.
+  * Pengurus dapat mengoreksi data anggota (NIM, Nama, No. WA) via modal edit di tabel anggota yang otomatis menyinkronkan data login.
+
 --------------------------------------------------------------------------------
 7. DESAIN & PENGALAMAN PENGGUNA (UI/UX & USER FLOW)
 --------------------------------------------------------------------------------
@@ -207,4 +221,11 @@ B. Diagram Alur Pengguna (User Flows):
    -> Transaksi Terkunci di Database (is_locked = true, created_by tercatat)
    -> Saldo Kas Berkurang Otomatis
    -> [Seluruh Anggota] Membuka /anggota/dashboard -> Melihat mutasi terbaru dan saldo akhir ormawa.
+
+   ALUR 4: Registrasi Mandiri Anggota via QR Code
+   [Pengurus] -> Klik "Download Gambar QR (PNG)" atau "Bagikan ke Grup WhatsApp" dari /pengurus/anggota
+   -> [Mahasiswa di Grup WA] -> Klik link pendaftaran atau scan QR Code via kamera / unggah foto QR di /daftar-anggota
+   -> Masukkan NIM, Nama Lengkap, dan Nomor WhatsApp
+   -> Sistem validasi kuota & waktu kedaluwarsa -> Simpan data anggota & akun login default (NIM)
+   -> Auto-login langsung ke /anggota/dashboard (Mahasiswa langsung dapat melihat saldo kas ormawa & tagihannya)
 ================================================================================

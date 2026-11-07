@@ -32,17 +32,20 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Seluruh Model Eloquent Laravel terhubung lengkap (User, Organization, Member, CashCategory, Transaction, DuesPeriod, DuesBill, ActivityLog).
 
 ================================================================================
-3. MODUL AUTENTIKASI KHUSUS SUPER ADMIN
+3. MODUL AUTENTIKASI KHUSUS SUPER ADMIN & ADMIN PENERIMA [STATUS: OK - SELESAI]
 ================================================================================
 - Endpoint login terpisah di /admin/login untuk menjamin keamanan akses dan isolasi peran dari pengguna biasa.
 - Tampilan form login elegan berbasis Ice & Butter v2 (input berlatar ice-100 tanpa border tebal, focus ring ice-400, dan tombol primer navy-900).
+- Dukungan Autentikasi Fleksibel: Administrator dapat login menggunakan Username resmi maupun alamat Email.
 - Controller autentikasi (Admin\AuthController) dengan validasi wajib flag is_super_admin = true.
-- Proteksi brute force & penanganan pesan error jika kredensial tidak cocok atau akun bukan Super Admin.
+- Pemisahan Peran Cerdas Berdasarkan admin_role:
+  * Super Admin Kasly (admin_role = 'super_admin') diarahkan ke Overview Telemetri Sistem (/admin/dashboard).
+  * Admin Penerima Organisasi (admin_role = 'admin_penerima') otomatis diarahkan langsung ke daftar pengajuan ormawa pending (/admin/organizations?tab=requests).
+- Proteksi brute force (Rate Limiting 5x/menit) & penanganan pesan error jika kredensial tidak cocok atau akun bukan administrator.
 - Fitur Logout aman (/admin/logout) yang membersihkan sesi dan me-regenerasi token CSRF.
-- Seeder Akun Super Admin (SuperAdminSeeder) yang terdaftar otomatis di database:
-  * Email: admin@kasly.id
-  * Password: password
-  * Role: is_super_admin = true
+- Seeder Akun Administrator Resmi Terdaftar:
+  * Super Admin: admin@kasly.id / admin_kasly | Pass: password
+  * Admin Penerima: admin.organisasi@kasly.id / admin_organisasi | Pass: password
 
 ================================================================================
 4. PANEL PUSAT SUPER ADMIN: MODULARISASI & KONTROL STATUS ORGANISASI
@@ -96,15 +99,16 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Desain berprinsip data-first: Menghilangkan elemen dekoratif hampa seperti label uppercase berjarak lebar dan penomoran 01/02.
 
 ================================================================================
-7. PORTAL AUTENTIKASI TUNGGAL DENGAN DETEKSI PERAN OTOMATIS & PROTEKSI KEAMANAN
+7. PORTAL AUTENTIKASI TUNGGAL DENGAN DETEKSI PERAN OTOMATIS & PROTEKSI KEAMANAN [STATUS: OK - SELESAI]
 ================================================================================
-- Portal Login Super Admin: /admin/login (terisolasi mutlak untuk administrator pusat sistem).
+- Portal Login Super Admin & Admin Penerima: /admin/login (terisolasi mutlak untuk administrator sistem).
 - Portal Login Tunggal Universal: /login
   * 1 Formulir Terpadu Tanpa Tab: Menghilangkan kerumitan pemilihan tab atau toggle. Cukup memasukkan Kode Organisasi, Username/NIM, dan Kata Sandi.
   * Deteksi Otomatis Peran (Role Auto-Detection):
-    - Jika identitas cocok dengan akun Staff/Bendahara pada organisasi tersebut -> otomatis diarahkan ke Panel Pengurus (/pengurus/dashboard).
+    - Jika identitas cocok dengan akun Staff/Bendahara/PIC pada organisasi tersebut -> otomatis diarahkan ke Panel Pengurus (/pengurus/dashboard).
     - Jika identitas cocok dengan Nomor Anggota / NIM pada organisasi tersebut -> otomatis diarahkan ke Portal Anggota (/anggota/dashboard).
   * Pengenalan Fleksibel Kredensial Pengurus: Staff dapat login menggunakan username unik ormawa maupun alamat email resmi.
+  * Tautan Cepat Pendaftaran Mandiri Anggota: Terdapat tombol "Daftar sebagai Anggota via QR Code" yang langsung membuka portal pemindaian QR / pendaftaran mandiri (/daftar-anggota).
   * URL ramah pengguna: /pengurus/login dan /anggota/login otomatis diarahkan ke halaman login tunggal /login.
 - Lapisan Proteksi Keamanan Berlapis (Security Layers):
   * Proteksi Anti-Brute Force (Rate Limiting): Dibatasi maksimal 5 percobaan gagal per menit pada seluruh endpoint login (Admin, Pengurus, Anggota). Jika terlampaui, sistem otomatis mengunci akses sementara selama 60 detik dengan hitungan mundur.
@@ -179,7 +183,7 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Contoh mutasi kas masuk dan kas keluar lengkap dengan tanggal dan kategori.
 
 ================================================================================
-13. MANAJEMEN STAFF & BENDAHARA OLEH ADMIN ORGANISASI
+13. MANAJEMEN STAFF & BENDAHARA OLEH ADMIN ORGANISASI [STATUS: OK - SELESAI]
 ================================================================================
 - Endpoint Pengurus: /pengurus/staff
 - Hak Akses Berjenjang:
@@ -190,7 +194,7 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Kontrol Status Staf: Fitur aktivasi / penonaktifan staf dan penghapusan staf dari kepengurusan ormawa.
 
 ================================================================================
-14. SPESIALISASI PERAN ADMIN PENERIMA ORGANISASI (PORTAL ACC & ONBOARDING)
+14. SPESIALISASI PERAN ADMIN PENERIMA ORGANISASI (PORTAL ACC & ONBOARDING) [STATUS: OK - SELESAI]
 ================================================================================
 - Endpoint Khusus: /admin/organizations?tab=requests
 - Konsep & Tujuan: Memisahkan kewenangan antara Super Admin Kasly (master platform) dan Admin Penerima Organisasi (tingkat operasional kampus/koordinator ormawa yang bertugas menerima dan menyetujui pendaftaran ormawa dari landing page).
@@ -211,7 +215,28 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Tersedia tombol navigasi "<- Ke Panel Admin Kasly" di panel pengurus untuk memudahkan administrator kembali ke panel pusat tanpa mengetik URL manual.
 
 ================================================================================
-15. REKAPITULASI KREDENSIAL DEMO SISTEM SIAP UJI
+15. SISTEM REGISTRASI MANDIRI ANGGOTA VIA QR CODE BERBATAS WAKTU & KUOTA [STATUS: OK - SELESAI]
+================================================================================
+- Endpoint Publik Pendaftaran Anggota: /daftar-anggota (dengan parameter token ?token=xxx)
+- Alur Pendaftaran Mandiri Anggota:
+  * Calon anggota memindai QR Code menggunakan kamera smartphone/laptop atau mengunggah file foto QR Code dari galeri perangkat.
+  * Sistem memvalidasi token registrasi: mengecek keaktifan token, batas waktu kedaluwarsa (expires_at), dan sisa kuota pendaftar (used_count < max_uses).
+  * Pengisian formulir instan: Mahasiswa mengisi NIM/Nomor Anggota, Nama Lengkap, dan Nomor WhatsApp.
+  * Pembuatan Akun Otomatis:
+    - Data Anggota (Member) dibuat dan dihubungkan ke organisasi yang menerbitkan token.
+    - Akun User Login dibuat otomatis dengan username huruf kecil dari NIM dan kata sandi awal default sama dengan NIM.
+    - Sistem langsung melakukan autentikasi otomatis (auto-login) dan mengarahkan anggota baru ke Portal Transparansi Anggota (/anggota/dashboard).
+- Panel Pengelolaan QR & Anggota oleh Pengurus (/pengurus/anggota):
+  * Kartu QR Code Interaktif: Menampilkan barcode visual resmi, token unik, telemetri kuota terpakai vs kuota maksimal, sisa kuota, serta hitungan mundur masa berlaku.
+  * Direct Download QR Image: Tombol "Download Gambar QR (PNG)" memicu pengunduhan langsung file gambar QR ke perangkat pengguna melalui header Content-Disposition resmi tanpa membuka tab atau halaman lain.
+  * Tautan WhatsApp Siap Sebar: Tombol "Bagikan ke Grup WhatsApp" otomatis menyusun teks undangan pendaftaran resmi lengkap dengan tautan unik organisasi.
+  * Fleksibilitas Pengaturan QR Aktif: Pengurus dapat menyesuaikan kuota maksimal dan memperpanjang durasi masa berlaku (+12 jam, +24 jam, +48 jam, +72 jam, +7 hari) pada QR yang sedang aktif tanpa mengubah barcode atau tautan yang sudah beredar di WhatsApp.
+  * Fitur Refresh / Buat QR Baru: Opsi darurat untuk membatalkan token lama dan menerbitkan barcode QR baru dengan kuota dan waktu segar.
+  * Fitur Edit Data Anggota: Pengurus dapat mengoreksi NIM, Nama, dan Nomor WhatsApp anggota langsung dari tabel via modal popup. Perubahan NIM otomatis menyinkronkan username login anggota.
+  * Portal Profil Mandiri Anggota (/anggota/profile): Anggota mahasiswa dapat memperbarui nama, nomor WhatsApp, serta mengganti kata sandi kapan saja secara mandiri.
+
+================================================================================
+16. REKAPITULASI KREDENSIAL DEMO SISTEM SIAP UJI
 ================================================================================
 1. Super Admin Kasly:
    - URL: /admin/login

@@ -74,3 +74,4 @@ class EnsureOrganizationStaff
         return $next($request);
     }
 }
+

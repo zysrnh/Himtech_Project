@@ -33,7 +33,7 @@
             </nav>
 
             <div>
-                <a href="#pilih-akses" class="inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+                <a href="{{ route('login') }}" class="inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
                     Masuk
                 </a>
             </div>
@@ -52,10 +52,10 @@
                     Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('anggota.login') }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                    <a href="{{ route('login', ['role' => 'anggota']) }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
                         Masuk sebagai Anggota
                     </a>
-                    <a href="{{ route('pengurus.login') }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-white border border-ice-200 text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
+                    <a href="{{ route('login', ['role' => 'pengurus']) }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-white border border-ice-200 text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
                         Masuk sebagai Pengurus
                     </a>
                 </div>
@@ -80,7 +80,7 @@
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ route('anggota.login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                        <a href="{{ route('login', ['role' => 'anggota']) }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
                             Masuk sebagai Anggota
                         </a>
                     </div>
@@ -97,7 +97,7 @@
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ route('pengurus.login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+                        <a href="{{ route('login', ['role' => 'pengurus']) }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
                             Masuk sebagai Pengurus
                         </a>
                     </div>

@@ -62,3 +62,4 @@ class EnsureOrganizationMember
         return $next($request);
     }
 }
+

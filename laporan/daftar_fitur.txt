@@ -89,11 +89,12 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 ================================================================================
 7. PORTAL AUTENTIKASI MULTI-PERAN TERISOLASI
 ================================================================================
-- Pemisahan portal login spesifik peran:
-  * Super Admin: /admin/login (akses administrator pusat sistem).
-  * Pengurus / Staff: /pengurus/login (akses bendahara & staff ormawa via Email + Kata Sandi).
-  * Anggota: /anggota/login (akses mahasiswa via Kode Organisasi + NIM/Nomor Anggota + Kata Sandi).
-- Endpoint helper /login dengan auto-routing cerdas sesuai kebutuhan role.
+- Portal Login Super Admin: /admin/login (terisolasi khusus administrator pusat sistem).
+- Portal Login Terpadu Pengguna: /login
+  * Tab 1 - Pengurus / Staff: Akses bendahara & staff ormawa via Email + Kata Sandi.
+  * Tab 2 - Anggota Ormawa: Akses mahasiswa via Kode Organisasi + NIM/Nomor Anggota + Kata Sandi.
+  * Dukungan query parameter otomatis (?role=pengurus atau ?role=anggota).
+  * URL ramah pengguna: /pengurus/login dan /anggota/login otomatis mengarahkan ke tab masing-masing pada /login.
 - Middleware Keamanan Multi-Tenant:
   * EnsureOrganizationStaff: Memastikan hanya pengurus sah yang dapat mengelola kas ormawanya.
   * EnsureOrganizationMember: Memastikan anggota hanya dapat melihat data kas pada ormawa tempatnya terdaftar.

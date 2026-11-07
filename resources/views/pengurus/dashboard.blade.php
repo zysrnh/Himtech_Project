@@ -62,7 +62,7 @@
                     </a>
                 @endif
                 <a
-                    href="#anggota"
+                    href="{{ route('pengurus.anggota.index') }}"
                     class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
                 >
                     Data Anggota

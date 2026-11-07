@@ -6,8 +6,10 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationController;
 use App\Http\Controllers\Anggota\DashboardController as AnggotaDashboardController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\MemberRegistrationController;
 use App\Http\Controllers\OrganizationRequestController;
 use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
+use App\Http\Controllers\Pengurus\MemberController;
 use App\Http\Controllers\Pengurus\StaffController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +23,10 @@ Route::get('/', function () {
 Route::get('/ajukan-organisasi', [OrganizationRequestController::class, 'showForm'])->name('ajukan-organisasi');
 Route::post('/ajukan-organisasi', [OrganizationRequestController::class, 'store'])->name('ajukan-organisasi.submit');
 Route::get('/ajukan-organisasi/sukses', [OrganizationRequestController::class, 'success'])->name('ajukan-organisasi.success');
+
+// Pendaftaran Mandiri Anggota via QR Code Ormawa (Scan / Upload / Token Berbatas Waktu & Kuota)
+Route::get('/daftar-anggota', [MemberRegistrationController::class, 'showForm'])->name('anggota.register.qr');
+Route::post('/daftar-anggota', [MemberRegistrationController::class, 'register'])->name('anggota.register.qr.submit');
 
 // Portal Login Tunggal Universal (Pengurus & Anggota)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -44,14 +50,23 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
     Route::patch('/staff/{user}/toggle-status', [StaffController::class, 'toggleStatus'])->name('staff.toggle-status');
     Route::delete('/staff/{user}', [StaffController::class, 'destroy'])->name('staff.destroy');
+
+    // Manajemen Anggota & QR Code Registrasi Berbatas Waktu & Kuota
+    Route::get('/anggota', [MemberController::class, 'index'])->name('anggota.index');
+    Route::post('/anggota', [MemberController::class, 'store'])->name('anggota.store');
+    Route::post('/anggota/renew-qr', [MemberController::class, 'renewToken'])->name('anggota.renew-qr');
+    Route::patch('/anggota/{member}/toggle-status', [MemberController::class, 'toggleStatus'])->name('anggota.toggle-status');
+    Route::delete('/anggota/{member}', [MemberController::class, 'destroy'])->name('anggota.destroy');
 });
 
 // Portal Transparansi Anggota
 Route::middleware(['auth', 'anggota'])->prefix('anggota')->name('anggota.')->group(function () {
     Route::get('/dashboard', [AnggotaDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'showAnggotaProfile'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'updateAnggotaProfile'])->name('profile.update');
 });
 
-// Autentikasi Khusus Super Admin
+// Autentikasi Khusus Super Admin & Admin Penerima
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
@@ -64,7 +79,7 @@ Route::post('/admin/organizations', [AdminOrganizationController::class, 'store'
 Route::patch('/admin/organizations/{organization}/toggle-status', [AdminOrganizationController::class, 'toggleStatus'])->name('admin.organizations.toggle-status');
 Route::delete('/admin/organizations/{organization}', [AdminOrganizationController::class, 'destroy'])->name('admin.organizations.destroy');
 
-// Persetujuan (Approval) Pengajuan Organisasi oleh Super Admin
+// Persetujuan (Approval) Pengajuan Organisasi oleh Super Admin / Admin Penerima
 Route::post('/admin/organizations/requests/{organizationRequest}/approve', [AdminOrganizationController::class, 'approveRequest'])->name('admin.organizations.requests.approve');
 Route::post('/admin/organizations/requests/{organizationRequest}/reject', [AdminOrganizationController::class, 'rejectRequest'])->name('admin.organizations.requests.reject');
 

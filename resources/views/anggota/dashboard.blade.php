@@ -29,7 +29,13 @@
             </div>
 
             <!-- Identitas Anggota & Logout -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+                <a
+                    href="{{ route('anggota.profile') }}"
+                    class="inline-flex items-center justify-center h-10 px-3.5 rounded-md border border-ice-200 bg-white text-navy-900 font-medium text-xs hover:bg-ice-100 transition-colors"
+                >
+                    Profil Saya
+                </a>
                 <div class="text-right hidden sm:block">
                     <p class="text-sm font-semibold text-navy-900 leading-tight">
                         {{ $member->name }}

@@ -55,6 +55,21 @@ class Organization extends Model
         return $this->hasMany(ActivityLog::class);
     }
 
+    public function registrationTokens(): HasMany
+    {
+        return $this->hasMany(MemberRegistrationToken::class);
+    }
+
+    public function activeRegistrationToken(): ?MemberRegistrationToken
+    {
+        return $this->registrationTokens()
+            ->where('is_active', true)
+            ->where('expires_at', '>', now())
+            ->whereColumn('used_count', '<', 'max_uses')
+            ->latest('id')
+            ->first();
+    }
+
     public function calculateBalance(): float
     {
         $in = (float) $this->transactions()->where('type', 'in')->sum('amount');
@@ -63,4 +78,3 @@ class Organization extends Model
         return $in - $out;
     }
 }
-

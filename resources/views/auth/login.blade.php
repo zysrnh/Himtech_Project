@@ -126,10 +126,24 @@
                 <div class="pt-2">
                     <button
                         type="submit"
-                        class="w-full h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer"
+                        class="w-full h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer shadow-sm"
                     >
                         Masuk ke Sistem Kasly
                     </button>
+                </div>
+
+                <!-- Registrasi Anggota via QR Code -->
+                <div class="pt-3 text-center border-t border-ice-200 mt-2">
+                    <p class="text-xs text-navy-500">
+                        Belum terdaftar sebagai anggota ormawa?
+                    </p>
+                    <a
+                        href="{{ route('anggota.register.qr') }}"
+                        class="inline-flex items-center gap-1 text-xs font-semibold text-navy-900 hover:text-navy-700 underline mt-1 transition-colors"
+                    >
+                        <span>Daftar Mandiri dengan QR Code Ormawa</span>
+                        <span>&rarr;</span>
+                    </a>
                 </div>
             </form>
         </div>

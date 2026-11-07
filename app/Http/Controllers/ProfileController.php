@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -118,7 +119,74 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('pengurus.profile')->with('success', 'Profil dan informasi kontak pengurus berhasil diperbarui.');
+        return redirect()->route('pengurus.profile')->with('success', 'Profil kepengurusan berhasil diperbarui.');
+    }
+
+    /**
+     * Tampilkan formulir profil Anggota Mahasiswa.
+     */
+    public function showAnggotaProfile(): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+        $member = Member::where('user_id', $user->id)
+            ->where('organization_id', session('active_organization_id'))
+            ->first();
+
+        return view('anggota.profile', [
+            'user' => $user,
+            'member' => $member,
+        ]);
+    }
+
+    /**
+     * Perbarui profil mandiri anggota mahasiswa (Nama, WA, Email, dan Ubah Password).
+     */
+    public function updateAnggotaProfile(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'phone' => ['required', 'string', 'max:25'],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'phone.required' => 'Nomor WhatsApp wajib diisi.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+            'password.min' => 'Kata sandi baru minimal 6 karakter.',
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'] ?? null;
+        $user->phone = $validated['phone'];
+
+        if (! empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
+
+        // Update data anggota terkait
+        $member = Member::where('user_id', $user->id)
+            ->where('organization_id', session('active_organization_id'))
+            ->first();
+
+        if ($member) {
+            $member->update([
+                'name' => $validated['name'],
+                'phone' => $validated['phone'],
+            ]);
+        }
+
+        return redirect()->route('anggota.profile')->with('success', 'Profil dan kata sandi akun anggota Anda berhasil diperbarui.');
     }
 }
-

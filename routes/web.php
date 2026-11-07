@@ -15,6 +15,7 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name(
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-// Dashboard Panel Pusat Super Admin
+// Panel Pusat Super Admin
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/admin/organizations', [AdminOrganizationController::class, 'index'])->name('admin.organizations.index');
 Route::post('/admin/organizations', [AdminOrganizationController::class, 'store'])->name('admin.organizations.store');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Panel Pusat Super Admin - {{ config('app.name', 'Kasly') }}</title>
+    <title>Overview Sistem - {{ config('app.name', 'Kasly') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +28,12 @@
                 <a
                     href="{{ route('admin.dashboard') }}"
                     class="flex items-center h-11 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm transition-colors"
+                >
+                    Overview
+                </a>
+                <a
+                    href="{{ route('admin.organizations.index') }}"
+                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
                 >
                     Organisasi
                 </a>
@@ -63,7 +69,7 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area: Overview -->
     <main class="flex-1 min-w-0 p-8">
         <div class="max-w-[1120px] mx-auto space-y-8">
 
@@ -71,34 +77,21 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="font-display font-semibold text-[28px] text-navy-900">
-                        Panel Pusat Super Admin
+                        Overview Sistem
                     </h1>
                     <p class="text-sm text-navy-500 mt-1">
-                        Kelola data organisasi dan pantau penggunaan sistem Kasly secara terpusat.
+                        Ringkasan telemetri, metrik global, dan status operasional sistem Kasly.
                     </p>
                 </div>
                 <div>
                     <a
-                        href="#form-tambah-organisasi"
+                        href="{{ route('admin.organizations.index') }}"
                         class="inline-flex items-center justify-center h-11 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors"
                     >
-                        Tambah Organisasi Baru
+                        Kelola Organisasi
                     </a>
                 </div>
             </div>
-
-            <!-- Notifikasi Sukses / Error -->
-            @if (session('success'))
-                <div class="p-4 rounded-md bg-butter-100 text-navy-900 text-sm font-medium shadow-card">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="p-4 rounded-md bg-danger/10 text-danger text-sm font-medium">
-                    Ada kesalahan saat pengisian form. Silakan periksa kembali input Anda.
-                </div>
-            @endif
 
             <!-- Kartu Hero Stat (radius-blob khas Ice & Butter v2) -->
             <div class="bg-navy-900 text-white rounded-blob p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -124,45 +117,40 @@
                 </div>
             </div>
 
-            <!-- Bagian Tabel Organisasi -->
-            <div class="bg-white rounded-lg shadow-card overflow-hidden">
-                <div class="p-6 border-b border-ice-200">
-                    <h2 class="font-display font-medium text-lg text-navy-900">
-                        Daftar Organisasi Terdaftar
-                    </h2>
-                    <p class="text-sm text-navy-500 mt-0.5">
-                        Organisasi yang terdaftar di dalam sistem Kasly dengan data terisolasi.
-                    </p>
-                </div>
+            <!-- 2 Kolom Ringkasan -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                @if ($organizations->isEmpty())
-                    <!-- Empty State Sesuai v2: 1 Kalimat & 1 Tombol -->
-                    <div class="p-12 text-center">
-                        <p class="text-sm text-navy-500">
-                            Belum ada organisasi yang terdaftar di dalam sistem Kasly.
-                        </p>
-                    </div>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-ice-200 text-xs font-medium text-navy-500">
-                                    <th class="py-3 px-6">Kode Organisasi</th>
-                                    <th class="py-3 px-6">Nama Organisasi</th>
-                                    <th class="py-3 px-6">Status</th>
-                                    <th class="py-3 px-6">Terdaftar Sejak</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-ice-200 text-sm">
-                                @foreach ($organizations as $org)
-                                    <tr class="hover:bg-ice-100/50 transition-colors">
-                                        <td class="py-4 px-6 font-semibold text-navy-900 font-display">
-                                            {{ $org->code }}
-                                        </td>
-                                        <td class="py-4 px-6 text-navy-900 font-medium">
-                                            {{ $org->name }}
-                                        </td>
-                                        <td class="py-4 px-6">
+                <!-- Kolom 1: Organisasi Terbaru -->
+                <div class="bg-white rounded-lg shadow-card p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-4 border-b border-ice-200">
+                            <h2 class="font-display font-medium text-lg text-navy-900">
+                                Organisasi Terbaru
+                            </h2>
+                            <a href="{{ route('admin.organizations.index') }}" class="text-xs font-semibold text-navy-500 hover:text-navy-900 transition-colors">
+                                Lihat Semua
+                            </a>
+                        </div>
+
+                        @if ($recentOrganizations->isEmpty())
+                            <div class="py-12 text-center">
+                                <p class="text-sm text-navy-500">
+                                    Belum ada organisasi yang terdaftar.
+                                </p>
+                            </div>
+                        @else
+                            <div class="divide-y divide-ice-200">
+                                @foreach ($recentOrganizations as $org)
+                                    <div class="py-4 flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold text-navy-900">
+                                                {{ $org->name }}
+                                            </p>
+                                            <p class="text-xs text-navy-500 mt-0.5 font-display">
+                                                Kode: {{ $org->code }} · {{ $org->created_at->format('d M Y') }}
+                                            </p>
+                                        </div>
+                                        <div>
                                             @if ($org->status === 'active')
                                                 <span class="inline-block px-2.5 py-1 rounded-full bg-butter-100 text-navy-900 text-xs font-semibold">
                                                     Aktif
@@ -172,160 +160,70 @@
                                                     Nonaktif
                                                 </span>
                                             @endif
-                                        </td>
-                                        <td class="py-4 px-6 text-navy-500 tabular-nums">
-                                            {{ $org->created_at->format('d M Y') }}
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 @endforeach
-                            </tbody>
-                        </table>
+                            </div>
+                        @endif
                     </div>
 
-                    @if ($organizations->hasPages())
-                        <div class="p-4 border-t border-ice-200">
-                            {{ $organizations->links() }}
-                        </div>
-                    @endif
-                @endif
-            </div>
-
-            <!-- Bagian Form Tambah Organisasi Baru -->
-            <div id="form-tambah-organisasi" class="bg-white rounded-lg p-8 shadow-card">
-                <div>
-                    <h2 class="font-display font-medium text-xl text-navy-900">
-                        Tambah Organisasi Baru
-                    </h2>
-                    <p class="text-sm text-navy-500 mt-1">
-                        Daftarkan entitas ormawa baru sekaligus buatkan akun Bendahara pertamanya.
-                    </p>
+                    <div class="pt-4 border-t border-ice-200">
+                        <a
+                            href="{{ route('admin.organizations.index') }}"
+                            class="w-full flex items-center justify-center h-10 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors"
+                        >
+                            Ke Halaman Organisasi
+                        </a>
+                    </div>
                 </div>
 
-                <form action="{{ route('admin.organizations.store') }}" method="POST" class="mt-8 space-y-6">
-                    @csrf
+                <!-- Kolom 2: Status Sistem & Audit Log -->
+                <div class="bg-white rounded-lg shadow-card p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="pb-4 border-b border-ice-200">
+                            <h2 class="font-display font-medium text-lg text-navy-900">
+                                Status & Aktivitas Sistem
+                            </h2>
+                        </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Kolom Kiri: Data Organisasi -->
-                        <div class="space-y-4">
-                            <div>
-                                <label for="name" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Nama Organisasi
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value="{{ old('name') }}"
-                                    required
-                                    placeholder="Contoh: Himpunan Mahasiswa Teknologi"
-                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >
-                                @error('name')
-                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                                @enderror
+                        <!-- Status Cards -->
+                        <div class="grid grid-cols-2 gap-4 my-4">
+                            <div class="p-4 rounded-md bg-ice-100">
+                                <span class="text-xs text-navy-500 block">Isolasi Multi-Tenant</span>
+                                <span class="text-sm font-semibold text-navy-900 mt-1 block">Aktif Normal</span>
                             </div>
-
-                            <div>
-                                <label for="code" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Kode Organisasi (Huruf Kapital, Tanpa Spasi)
-                                </label>
-                                <input
-                                    type="text"
-                                    id="code"
-                                    name="code"
-                                    value="{{ old('code') }}"
-                                    required
-                                    placeholder="Contoh: HIMTECH"
-                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >
-                                @error('code')
-                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="description" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Deskripsi Singkat (Opsional)
-                                </label>
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    rows="3"
-                                    placeholder="Deskripsi kegiatan atau ormawa..."
-                                    class="w-full p-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >{{ old('description') }}</textarea>
-                                @error('description')
-                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                                @enderror
+                            <div class="p-4 rounded-md bg-ice-100">
+                                <span class="text-xs text-navy-500 block">Integritas Audit Log</span>
+                                <span class="text-sm font-semibold text-navy-900 mt-1 block">Terkunci</span>
                             </div>
                         </div>
 
-                        <!-- Kolom Kanan: Data Akun Bendahara Awal -->
-                        <div class="space-y-4">
-                            <div>
-                                <label for="treasurer_name" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Nama Lengkap Bendahara Awal
-                                </label>
-                                <input
-                                    type="text"
-                                    id="treasurer_name"
-                                    name="treasurer_name"
-                                    value="{{ old('treasurer_name') }}"
-                                    required
-                                    placeholder="Contoh: Zaki Yusron"
-                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >
-                                @error('treasurer_name')
-                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="treasurer_email" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Email Bendahara (Untuk Login Pengurus)
-                                </label>
-                                <input
-                                    type="email"
-                                    id="treasurer_email"
-                                    name="treasurer_email"
-                                    value="{{ old('treasurer_email') }}"
-                                    required
-                                    placeholder="Contoh: bendahara@himtech.id"
-                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >
-                                @error('treasurer_email')
-                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="treasurer_password" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Password Awal (Kosongkan jika default: password)
-                                </label>
-                                <input
-                                    type="password"
-                                    id="treasurer_password"
-                                    name="treasurer_password"
-                                    placeholder="Minimal 6 karakter"
-                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >
-                                @error('treasurer_password')
-                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                                @enderror
-                            </div>
+                        <!-- Log Aktivitas Terkini -->
+                        <div class="mt-4">
+                            <p class="text-xs font-medium text-navy-500 mb-3">Log Terakhir</p>
+                            @if ($recentActivities->isEmpty())
+                                <p class="text-xs text-navy-500 py-4 text-center">Belum ada aktivitas tercatat.</p>
+                            @else
+                                <div class="space-y-3">
+                                    @foreach ($recentActivities as $log)
+                                        <div class="text-xs text-navy-900 p-3 rounded-md bg-ice-100/50 flex items-center justify-between">
+                                            <div>
+                                                <span class="font-semibold">{{ $log->action }}</span>
+                                                <span class="text-navy-500 block mt-0.5">
+                                                    {{ $log->payload['organization_name'] ?? 'Sistem' }}
+                                                </span>
+                                            </div>
+                                            <span class="text-[11px] text-navy-500 tabular-nums">
+                                                {{ $log->created_at->diffForHumans() }}
+                                            </span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
+                </div>
 
-                    <!-- Tombol Simpan -->
-                    <div class="pt-4 flex justify-end">
-                        <button
-                            type="submit"
-                            class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer"
-                        >
-                            Daftarkan Organisasi & Akun Bendahara
-                        </button>
-                    </div>
-                </form>
             </div>
 
         </div>

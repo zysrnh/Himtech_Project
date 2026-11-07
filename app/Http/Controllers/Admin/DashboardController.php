@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Member;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +13,7 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Tampilkan halaman utama dashboard panel pusat super admin.
+     * Tampilkan halaman overview sistem super admin.
      */
     public function index(): View|RedirectResponse
     {
@@ -26,14 +27,18 @@ class DashboardController extends Controller
         $activeOrganizations = Organization::where('status', 'active')->count();
         $totalMembers = Member::count();
 
-        $organizations = Organization::latest()->paginate(10);
+        // 5 Organisasi yang baru didaftarkan
+        $recentOrganizations = Organization::latest()->take(5)->get();
+
+        // 5 Log aktivitas terbaru
+        $recentActivities = ActivityLog::with('user', 'organization')->latest()->take(5)->get();
 
         return view('admin.dashboard', [
             'totalOrganizations' => $totalOrganizations,
             'activeOrganizations' => $activeOrganizations,
             'totalMembers' => $totalMembers,
-            'organizations' => $organizations,
+            'recentOrganizations' => $recentOrganizations,
+            'recentActivities' => $recentActivities,
         ]);
     }
 }
-

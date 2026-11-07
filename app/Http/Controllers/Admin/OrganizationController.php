@@ -13,9 +13,32 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class OrganizationController extends Controller
 {
+    /**
+     * Tampilkan halaman daftar organisasi lengkap & form penambahan.
+     */
+    public function index(): View|RedirectResponse
+    {
+        if (!Auth::check() || !Auth::user()->is_super_admin) {
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Silakan login sebagai Super Admin untuk mengakses panel pusat.',
+            ]);
+        }
+
+        $totalOrganizations = Organization::count();
+        $activeOrganizations = Organization::where('status', 'active')->count();
+        $organizations = Organization::latest()->paginate(10);
+
+        return view('admin.organizations.index', [
+            'organizations' => $organizations,
+            'totalOrganizations' => $totalOrganizations,
+            'activeOrganizations' => $activeOrganizations,
+        ]);
+    }
+
     /**
      * Simpan organisasi baru beserta akun bendahara awalnya.
      */
@@ -94,7 +117,6 @@ class OrganizationController extends Controller
             ]);
         });
 
-        return redirect()->route('admin.dashboard')->with('success', "Organisasi {$validated['name']} ({$code}) dan akun bendahara berhasil didaftarkan.");
+        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) dan akun bendahara berhasil didaftarkan.");
     }
 }
-

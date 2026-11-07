@@ -310,8 +310,33 @@
                 </div>
             </div>
 
-            <!-- Tab / Pilihan Cara Bayar -->
-            <div class="space-y-4">
+            @php
+                $cashMethod = $paymentMethods->firstWhere('type', 'cash');
+                $cashlessMethods = $paymentMethods->whereIn('type', ['bank', 'ewallet', 'qris']);
+            @endphp
+
+            <!-- Switcher Tab 2 Metode: Cashless vs Cash -->
+            <div class="flex items-center p-1 rounded-xl bg-ice-100/80 border border-ice-200/70 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.2)]">
+                <button
+                    type="button"
+                    onclick="switchPaymentTab('cashless')"
+                    id="tab-btn-cashless"
+                    class="flex-1 h-8 rounded-lg font-bold text-xs transition-all cursor-pointer bg-white text-navy-900 shadow-xs"
+                >
+                    Metode Cashless (Non-Tunai)
+                </button>
+                <button
+                    type="button"
+                    onclick="switchPaymentTab('cash')"
+                    id="tab-btn-cash"
+                    class="flex-1 h-8 rounded-lg font-bold text-xs transition-all cursor-pointer text-navy-500 hover:text-navy-900"
+                >
+                    Metode Cash (Tunai)
+                </button>
+            </div>
+
+            <!-- KONTEN TAB CASHLESS -->
+            <div id="tab-content-cashless" class="space-y-4">
                 @if ($organization->is_midtrans_enabled)
                     <!-- Opsi 1: Pembayaran Instan Otomatis (Midtrans Sandbox) -->
                     <div class="p-4 rounded-xl bg-white border border-ice-200/80 shadow-[3px_3px_10px_rgba(122,163,214,0.12)] space-y-3">
@@ -352,11 +377,11 @@
                 <div class="p-4 rounded-xl bg-ice-100/50 border border-ice-200/70 space-y-3">
                     <span class="text-xs font-bold text-navy-900">2. Transfer Manual ke Rekening Bendahara</span>
 
-                    @if ($paymentMethods->isEmpty())
+                    @if ($cashlessMethods->isEmpty())
                         <p class="text-xs text-navy-500 italic">Bendahara belum menambahkan nomor rekening bank ormawa.</p>
                     @else
                         <div class="space-y-2">
-                            @foreach ($paymentMethods as $pm)
+                            @foreach ($cashlessMethods as $pm)
                                 <div class="p-3 rounded-xl bg-white border border-ice-200/70 flex items-center justify-between gap-3 text-xs">
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-1.5">
@@ -389,11 +414,29 @@
                         <p class="text-[11px] text-navy-500">Setelah transfer, silakan konfirmasikan bukti pembayaran ke Bendahara untuk diverifikasi.</p>
                     @endif
                 </div>
+            </div>
 
-                <!-- Opsi 3: Bayar Tunai -->
-                <div class="p-3 rounded-xl bg-white border border-ice-200/60 text-xs text-navy-500 flex items-center justify-between">
-                    <span>Bayar Tunai Langsung</span>
-                    <span class="font-medium text-navy-700">Setor ke Bendahara saat kegiatan</span>
+            <!-- KONTEN TAB CASH (TUNAI) -->
+            <div id="tab-content-cash" class="space-y-4 hidden">
+                <div class="p-4 rounded-xl bg-ice-100/60 border border-ice-200/80 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-navy-900">Pembayaran Kas Tunai Langsung</span>
+                        <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">FISIK</span>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-white border border-ice-200/70 space-y-1.5 text-xs">
+                        <p class="text-navy-500">PIC / Bendahara Penerima:</p>
+                        <p class="font-bold text-navy-900">{{ $cashMethod?->account_holder ?? 'Bendahara Ormawa' }}</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-white border border-ice-200/70 space-y-1.5 text-xs">
+                        <p class="text-navy-500">Petunjuk Serah Terima:</p>
+                        <p class="text-navy-700 leading-relaxed">{{ $cashMethod?->instructions ?? 'Silakan serahkan uang tunai langsung ke Bendahara saat pertemuan/kumpul rutin ormawa.' }}</p>
+                    </div>
+
+                    <p class="text-[11px] text-navy-500 leading-relaxed">
+                        Bendahara akan langsung memverifikasi pelunasan Anda pada aplikasi Kasly begitu uang tunai diterima secara fisik.
+                    </p>
                 </div>
             </div>
         </div>
@@ -414,6 +457,29 @@
         function closePaymentModal() {
             document.getElementById('modal-pay-bill').classList.add('hidden');
             currentPayingBillId = null;
+        }
+
+        function switchPaymentTab(tab) {
+            const btnCashless = document.getElementById('tab-btn-cashless');
+            const btnCash = document.getElementById('tab-btn-cash');
+            const contentCashless = document.getElementById('tab-content-cashless');
+            const contentCash = document.getElementById('tab-content-cash');
+
+            if (tab === 'cashless') {
+                btnCashless.classList.add('bg-white', 'text-navy-900', 'shadow-xs');
+                btnCashless.classList.remove('text-navy-500');
+                btnCash.classList.remove('bg-white', 'text-navy-900', 'shadow-xs');
+                btnCash.classList.add('text-navy-500');
+                contentCashless.classList.remove('hidden');
+                contentCash.classList.add('hidden');
+            } else {
+                btnCash.classList.add('bg-white', 'text-navy-900', 'shadow-xs');
+                btnCash.classList.remove('text-navy-500');
+                btnCashless.classList.remove('bg-white', 'text-navy-900', 'shadow-xs');
+                btnCashless.classList.add('text-navy-500');
+                contentCash.classList.remove('hidden');
+                contentCashless.classList.add('hidden');
+            }
         }
 
         function copyToClipboard(text, btn) {

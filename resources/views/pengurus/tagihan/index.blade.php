@@ -53,16 +53,16 @@
                 </div>
 
                 <div class="flex items-center gap-2.5 shrink-0">
-                    <button
-                        type="button"
-                        onclick="openModal('modal-payment-methods')"
+                    <a
+                        href="{{ route('pengurus.pembayaran.index') }}"
                         class="h-10 px-4 rounded-xl bg-white text-navy-900 font-semibold text-xs border border-ice-200/70 shadow-[2px_2px_6px_rgba(122,163,214,0.2),-2px_-2px_6px_rgba(255,255,255,0.9)] hover:bg-ice-100/60 active:shadow-[inset_2px_2px_4px_rgba(122,163,214,0.3)] transition-all cursor-pointer flex items-center gap-2"
                     >
                         <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <span>Metode Pembayaran</span>
-                    </button>
+                        <span>Atur Metode Pembayaran</span>
+                    </a>
 
                     <button
                         type="button"
@@ -361,125 +361,7 @@
         </div>
     </div>
 
-    <!-- Modal 2: Pengaturan Metode Pembayaran Ormawa (Bank, E-Wallet, QRIS, Midtrans) -->
-    <div id="modal-payment-methods" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs hidden">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-ice-200/80 space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar animate-scale-up">
-            <div class="flex items-center justify-between pb-3 border-b border-ice-200/70">
-                <div>
-                    <h3 class="font-display font-semibold text-lg text-navy-900">Metode Pembayaran Ormawa</h3>
-                    <p class="text-xs text-navy-500 mt-0.5">Atur rekening bank, e-wallet, gambar QRIS, dan saklar Midtrans.</p>
-                </div>
-                <button type="button" onclick="closeModal('modal-payment-methods')" class="text-navy-500 hover:text-navy-900 font-bold text-lg cursor-pointer">&times;</button>
-            </div>
-
-            <!-- Saklar Midtrans Sandbox -->
-            <div class="p-4 rounded-xl bg-ice-100/70 border border-ice-200/80 flex items-center justify-between gap-4">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-navy-900">Midtrans Sandbox (QRIS & VA Otomatis)</span>
-                        <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">OTOMATIS</span>
-                    </div>
-                    <p class="text-[11px] text-navy-500 mt-0.5">Izinkan anggota membayar instan via QRIS Dinamis & Virtual Account yang otomatis lunas seketika.</p>
-                </div>
-
-                <form action="{{ route('pengurus.tagihan.toggle-midtrans') }}" method="POST">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="h-8 px-3 rounded-lg font-bold text-xs cursor-pointer transition-colors {{ $organization->is_midtrans_enabled ? 'bg-emerald-600 text-white' : 'bg-ice-200 text-navy-700' }}"
-                    >
-                        {{ $organization->is_midtrans_enabled ? 'Aktif' : 'Nonaktif' }}
-                    </button>
-                </form>
-            </div>
-
-            <!-- Daftar Rekening & QRIS yang Sedang Aktif -->
-            <div class="space-y-3">
-                <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider">Rekening & QRIS Terdaftar</h4>
-
-                @if ($paymentMethods->isEmpty())
-                    <p class="text-xs text-navy-500 italic bg-ice-100/40 p-3 rounded-xl text-center">Belum ada rekening bank atau QRIS yang didaftarkan.</p>
-                @else
-                    <div class="space-y-2">
-                        @foreach ($paymentMethods as $pm)
-                            <div class="p-3 rounded-xl bg-ice-100/50 border border-ice-200/60 flex items-center justify-between gap-3">
-                                <div class="min-w-0 flex-1 text-xs">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-navy-900">{{ $pm->channel_name }}</span>
-                                        <span class="neu-badge-ice text-[9px] py-0 px-1.5">{{ strtoupper($pm->type) }}</span>
-                                    </div>
-                                    @if ($pm->account_number)
-                                        <p class="font-mono text-navy-700 font-semibold mt-0.5">{{ $pm->account_number }} (a.n. {{ $pm->account_holder }})</p>
-                                    @endif
-                                    @if ($pm->instructions)
-                                        <p class="text-[10px] text-navy-500 mt-0.5">{{ $pm->instructions }}</p>
-                                    @endif
-                                </div>
-
-                                <form action="{{ route('pengurus.tagihan.payment-methods.destroy', $pm->id) }}" method="POST" onsubmit="return confirm('Hapus metode pembayaran ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-danger hover:underline text-xs font-bold cursor-pointer">Hapus</button>
-                                </form>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-
-            <!-- Form Tambah Rekening / QRIS Baru -->
-            <div class="pt-3 border-t border-ice-200/70 space-y-3">
-                <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider">+ Tambah Rekening / E-Wallet / QRIS</h4>
-
-                <form action="{{ route('pengurus.tagihan.payment-methods.store') }}" method="POST" enctype="multipart/form-data" class="space-y-3">
-                    @csrf
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-navy-700 mb-1">Jenis</label>
-                            <select name="type" required class="w-full h-9 px-3 rounded-xl bg-ice-100 text-navy-900 font-medium text-xs border border-ice-200">
-                                <option value="bank">Rekening Bank</option>
-                                <option value="ewallet">E-Wallet (DANA/GoPay/OVO)</option>
-                                <option value="qris">QRIS Statis Ormawa</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-navy-700 mb-1">Nama Channel / Bank</label>
-                            <input type="text" name="channel_name" required placeholder="Contoh: Bank BCA / DANA" class="w-full h-9 px-3 rounded-xl bg-ice-100 text-navy-900 text-xs border border-ice-200">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-navy-700 mb-1">Nomor Rekening / No. HP</label>
-                            <input type="text" name="account_number" placeholder="Contoh: 1234567890" class="w-full h-9 px-3 rounded-xl bg-ice-100 text-navy-900 text-xs border border-ice-200">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-navy-700 mb-1">Atas Nama (A.N.)</label>
-                            <input type="text" name="account_holder" placeholder="Contoh: Siti Nurhaliza" class="w-full h-9 px-3 rounded-xl bg-ice-100 text-navy-900 text-xs border border-ice-200">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-700 mb-1">Petunjuk Pembayaran (Opsional)</label>
-                        <input type="text" name="instructions" placeholder="Contoh: Beri berita transfer NIM Anda" class="w-full h-9 px-3 rounded-xl bg-ice-100 text-navy-900 text-xs border border-ice-200">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-700 mb-1">Upload Gambar QRIS (Khusus QRIS, Maks 2MB)</label>
-                        <input type="file" name="qris_image" accept="image/*" class="w-full text-xs text-navy-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-ice-200 file:text-navy-900 hover:file:bg-ice-300">
-                    </div>
-
-                    <div class="pt-2 text-right">
-                        <button type="submit" class="h-8 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors cursor-pointer">
-                            Simpan Metode Bayar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal 3: Quick Verify Pembayaran Kas Manual -->
+    <!-- Modal 2: Quick Verify Pembayaran Kas Manual (Cash & Cashless) -->
     <div id="modal-verify-payment" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs hidden">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-ice-200/80 space-y-4 animate-scale-up">
             <div class="flex items-center justify-between pb-2 border-b border-ice-200/70">
@@ -494,22 +376,21 @@
             <form id="verify-form" method="POST" action="" class="space-y-3">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-navy-700 mb-1">Metode Diterima</label>
+                    <label class="block text-xs font-semibold text-navy-700 mb-1">Metode Penerimaan</label>
                     <select name="payment_method" required class="w-full h-9 px-3 rounded-xl bg-ice-100 text-navy-900 font-medium text-xs border border-ice-200">
-                        <option value="cash">Tunai / Cash (Diterima Langsung)</option>
-                        <option value="transfer">Transfer Bank (BCA/Mandiri/BRI)</option>
-                        <option value="qris">QRIS Statis Ormawa / E-Wallet</option>
-                        <option value="other">Lainnya</option>
+                        <option value="cash">Metode Cash: Tunai Langsung ke Bendahara</option>
+                        <option value="transfer">Metode Cashless: Transfer Bank (BCA / Mandiri / BRI / dll)</option>
+                        <option value="qris">Metode Cashless: QRIS Statis Ormawa / E-Wallet</option>
                     </select>
                 </div>
 
                 <p class="text-[11px] text-navy-500 bg-ice-100/60 p-2.5 rounded-lg border border-ice-200/50">
-                    Sistem otomatis mengevaluasi ketepatan waktu pembayaran berdasarkan tanggal jatuh tempo periode ini, dan otomatis mencatat transaksi kas masuk.
+                    Sistem otomatis mengevaluasi ketepatan waktu pembayaran berdasarkan tanggal jatuh tempo periode ini, dan otomatis mencatat mutasi kas masuk ke Buku Kas ormawa.
                 </p>
 
                 <div class="flex items-center justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('modal-verify-payment')" class="h-8 px-3 rounded-lg bg-ice-100 text-navy-700 font-semibold text-xs cursor-pointer">Batal</button>
-                    <button type="submit" class="h-8 px-4 rounded-lg bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer">Konfirmasi Lunas</button>
+                    <button type="submit" class="h-8 px-4 rounded-lg bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer">Konfirmasi Lunas</button>
                 </div>
             </form>
         </div>

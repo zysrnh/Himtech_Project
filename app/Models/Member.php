@@ -42,4 +42,3 @@ class Member extends Model
         return $this->hasMany(DuesBill::class);
     }
 }
-

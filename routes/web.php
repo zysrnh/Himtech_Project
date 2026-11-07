@@ -12,6 +12,7 @@ use App\Http\Controllers\Payment\MidtransController;
 use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
 use App\Http\Controllers\Pengurus\DuesBillController;
 use App\Http\Controllers\Pengurus\MemberController;
+use App\Http\Controllers\Pengurus\PaymentSettingController;
 use App\Http\Controllers\Pengurus\StaffController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -63,14 +64,19 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     Route::patch('/anggota/{member}/toggle-status', [MemberController::class, 'toggleStatus'])->name('anggota.toggle-status');
     Route::delete('/anggota/{member}', [MemberController::class, 'destroy'])->name('anggota.destroy');
 
-    // Manajemen Tagihan Iuran & Metode Pembayaran Ormawa
+    // Jadwal Tagihan Iuran Kas Ormawa
     Route::get('/tagihan', [DuesBillController::class, 'index'])->name('tagihan.index');
     Route::post('/tagihan/period', [DuesBillController::class, 'storePeriod'])->name('tagihan.period.store');
     Route::post('/tagihan/bills/{bill}/verify', [DuesBillController::class, 'verifyPayment'])->name('tagihan.bills.verify');
     Route::post('/tagihan/bills/{bill}/remind', [DuesBillController::class, 'sendReminder'])->name('tagihan.bills.remind');
-    Route::post('/tagihan/payment-methods', [DuesBillController::class, 'storePaymentMethod'])->name('tagihan.payment-methods.store');
-    Route::delete('/tagihan/payment-methods/{paymentMethod}', [DuesBillController::class, 'destroyPaymentMethod'])->name('tagihan.payment-methods.destroy');
-    Route::post('/tagihan/toggle-midtrans', [DuesBillController::class, 'toggleMidtrans'])->name('tagihan.toggle-midtrans');
+
+    // Pengaturan Khusus Metode Pembayaran (Cash & Cashless)
+    Route::get('/metode-pembayaran', [PaymentSettingController::class, 'index'])->name('pembayaran.index');
+    Route::post('/metode-pembayaran/toggle-midtrans', [PaymentSettingController::class, 'toggleMidtrans'])->name('pembayaran.toggle-midtrans');
+    Route::post('/metode-pembayaran/cash', [PaymentSettingController::class, 'updateCash'])->name('pembayaran.update-cash');
+    Route::post('/metode-pembayaran/cashless', [PaymentSettingController::class, 'storeCashless'])->name('pembayaran.store-cashless');
+    Route::post('/metode-pembayaran/qris', [PaymentSettingController::class, 'updateQris'])->name('pembayaran.update-qris');
+    Route::delete('/metode-pembayaran/{paymentMethod}', [PaymentSettingController::class, 'destroy'])->name('pembayaran.destroy');
 });
 
 // Portal Transparansi Anggota

@@ -15,7 +15,7 @@
     if ($user && $user->is_super_admin && !session('active_role')) {
         $roleName = 'Super Admin';
     }
-    $isFinanceActive = in_array($active, ['dashboard', 'tagihan', 'buku-kas']);
+    $isFinanceActive = in_array($active, ['dashboard', 'tagihan', 'pembayaran', 'buku-kas']);
     $isOrmawaActive = in_array($active, ['anggota', 'staff']);
 @endphp
 
@@ -95,7 +95,14 @@
                         class="neu-nav-subitem {{ $active === 'tagihan' ? 'is-active' : '' }}"
                     >
                         <span class="w-1.5 h-1.5 rounded-full {{ $active === 'tagihan' ? 'bg-navy-900' : 'bg-ice-400' }} shrink-0"></span>
-                        <span>Tagihan Iuran</span>
+                        <span>Jadwal & Tagihan</span>
+                    </a>
+                    <a
+                        href="{{ route('pengurus.pembayaran.index') }}"
+                        class="neu-nav-subitem {{ $active === 'pembayaran' ? 'is-active' : '' }}"
+                    >
+                        <span class="w-1.5 h-1.5 rounded-full {{ $active === 'pembayaran' ? 'bg-navy-900' : 'bg-ice-400' }} shrink-0"></span>
+                        <span>Metode Pembayaran</span>
                     </a>
                     <a
                         href="{{ route('pengurus.dashboard') }}#buku-kas"

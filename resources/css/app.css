@@ -127,6 +127,156 @@ body {
     box-shadow: var(--raised);
     padding: clamp(24px, 3vw, 32px);
     box-sizing: border-box;
+    transition: box-shadow 250ms var(--ease), transform 250ms var(--ease);
+}
+
+/* Hover lift pada semua card */
+@media (hover: hover) {
+    .landing-neu .neu-card:hover, .access-neu .neu-card:hover {
+        box-shadow: var(--raised-lg);
+        transform: translateY(-3px);
+    }
+}
+
+/* ---- Access Cards (Pilih Akses) ---- */
+.landing-neu .neu-card--access, .access-neu .neu-card--access {
+    border-top: 3px solid var(--ice-200);
+}
+
+/* Icon containers for access cards */
+.neu-card--access-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--raised-xs);
+    transition: box-shadow 250ms var(--ease);
+}
+
+.neu-card--access-icon--butter {
+    background: var(--butter-100);
+    color: var(--navy-900);
+}
+
+.neu-card--access-icon--ice {
+    background: var(--ice-100);
+    color: var(--navy-900);
+    box-shadow: var(--inset-sm);
+}
+
+.neu-card--access-icon--navy {
+    background: var(--grad-primary);
+    color: var(--white);
+    box-shadow: var(--glow-btn);
+}
+
+/* ---- Feature Cards (Keunggulan) ---- */
+.landing-neu .neu-card--feature {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(28px, 3vw, 36px);
+}
+
+.neu-card--feature-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 4px 4px 0 0;
+}
+
+.neu-card--feature-accent--ice {
+    background: linear-gradient(90deg, var(--ice-400), var(--ice-200));
+}
+
+.neu-card--feature-accent--butter {
+    background: linear-gradient(90deg, var(--butter-100), var(--ice-400));
+}
+
+.neu-card--feature-accent--navy {
+    background: var(--grad-primary);
+}
+
+.neu-card--feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ice-100);
+    box-shadow: var(--inset-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---- Step Cards (Cara Kerja) ---- */
+.landing-neu .neu-card--step {
+    position: relative;
+}
+
+.neu-card--step-number {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.neu-card--step-number--navy {
+    background: var(--grad-primary);
+    color: var(--white);
+    box-shadow: var(--glow-btn);
+}
+
+.neu-card--step-number--ice {
+    background: var(--ice-100);
+    color: var(--ice-400);
+    box-shadow: var(--inset-sm);
+}
+
+.neu-card--step-number--butter {
+    background: var(--butter-100);
+    color: var(--navy-900);
+    box-shadow: var(--raised-xs);
+}
+
+/* Progress bar inside step cards */
+.neu-card--step-progress {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ice-100);
+    box-shadow: var(--inset-sm);
+    overflow: hidden;
+}
+
+.neu-card--step-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--grad-fill);
+    transition: width 600ms var(--ease);
+}
+
+/* ---- FAQ Cards ---- */
+.landing-neu .neu-card--faq {
+    border-left: 3px solid var(--ice-200);
+}
+
+.neu-card--faq-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ice-100);
+    box-shadow: var(--inset-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ice-400);
 }
 
 .landing-neu .neu-card--preview {

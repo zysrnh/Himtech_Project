@@ -107,58 +107,79 @@
 
         <!-- Pilih Akses Kamu Section -->
         <section id="pilih-akses" class="landing-neu__container landing-neu__access-section">
-            <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
-                Pilih akses kamu
-            </h2>
+            <div class="mb-8">
+                <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
+                    Pilih akses kamu
+                </h2>
+                <p class="text-sm text-navy-500 mt-1">Masuk sesuai peran kamu di dalam sistem pengelolaan kas organisasi.</p>
+            </div>
 
-            <div class="access-neu mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card Anggota -->
-                <div id="login-anggota" class="neu-card flex flex-col justify-between">
+            <div class="access-neu grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
+                <!-- Card 1: Anggota -->
+                <div id="login-anggota" class="neu-card neu-card--access flex flex-col justify-between group">
                     <div>
-                        <h3 class="font-display font-medium text-lg text-navy-900">
-                            Anggota
+                        <div class="mb-5">
+                            <div class="neu-card--access-icon neu-card--access-icon--butter">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-navy-900">
+                            Portal Anggota
                         </h3>
                         <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Login dengan kode organisasi dan NIM kamu. Pantau status iuran dan riwayat keterbukaan kas ormawa.
+                            Cukup gunakan <strong>Kode Organisasi</strong> dan <strong>NIM</strong>. Pantau saldo kas, riwayat pembayaran, serta status tagihan pribadi secara mandiri.
                         </p>
                     </div>
-                    <div class="mt-8">
-                        <a href="{{ route('login') }}" class="neu-btn w-full">
-                            Masuk sebagai Anggota
+                    <div class="mt-8 pt-4 border-t border-ice-200/60">
+                        <a href="{{ route('login') }}" class="neu-btn w-full font-semibold text-navy-900 flex items-center justify-center gap-2">
+                            <span>Masuk sebagai Anggota</span>
+                            <svg class="w-4 h-4 text-navy-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Card Staff dan Bendahara -->
-                <div id="login-pengurus" class="neu-card flex flex-col justify-between">
+                <!-- Card 2: Pengurus -->
+                <div id="login-pengurus" class="neu-card neu-card--access flex flex-col justify-between group">
                     <div>
-                        <h3 class="font-display font-medium text-lg text-navy-900">
-                            Staff dan Bendahara
+                        <div class="mb-5">
+                            <div class="neu-card--access-icon neu-card--access-icon--ice">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-navy-900">
+                            Staff & Bendahara
                         </h3>
                         <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Login dengan kode organisasi dan username kamu. Kelola pembukuan kas, tagihan, dan laporan bulanan.
+                            Login dengan <strong>Kode Organisasi</strong> dan <strong>Username</strong>. Catat mutasi kas, upload bukti nota, buat tagihan, serta kelola anggota.
                         </p>
                     </div>
-                    <div class="mt-8">
-                        <a href="{{ route('login') }}" class="neu-btn w-full">
-                            Masuk sebagai Pengurus
+                    <div class="mt-8 pt-4 border-t border-ice-200/60">
+                        <a href="{{ route('login') }}" class="neu-btn w-full font-semibold text-navy-900 flex items-center justify-center gap-2">
+                            <span>Masuk sebagai Pengurus</span>
+                            <svg class="w-4 h-4 text-navy-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Card Ajukan Organisasi -->
-                <div class="neu-card flex flex-col justify-between">
+                <!-- Card 3: Ajukan Organisasi -->
+                <div class="neu-card neu-card--access flex flex-col justify-between group">
                     <div>
-                        <h3 class="font-display font-medium text-lg text-navy-900">
-                            Belum punya organisasi?
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Ajukan pendaftaran ormawa secara online dan kelola kas bersama.
-                        </p>
-                    </div>
-                    <div class="mt-8">
-                        <a href="{{ route('ajukan-organisasi') }}" class="neu-btn w-full">
+                        <div class="mb-5">
+                            <div class="neu-card--access-icon neu-card--access-icon--navy">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-navy-900">
                             Ajukan Organisasi
+                        </h3>
+                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
+                            Organisasi atau himpunan kamu belum terdaftar? Ajukan pendaftaran online untuk mendapatkan database kas mandiri dan akun Staff pengelola awal.
+                        </p>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-ice-200/60">
+                        <a href="{{ route('ajukan-organisasi') }}" class="neu-btn w-full font-semibold text-navy-900 flex items-center justify-center gap-2">
+                            <span>Ajukan Sekarang</span>
+                            <svg class="w-4 h-4 text-navy-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
@@ -167,26 +188,24 @@
 
         <!-- Solusi & Keunggulan Utama Kasly Section -->
         <section id="fitur" class="landing-neu__container py-12 md:py-16">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-                <div>
-                    <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
-                        Keunggulan sistem kas Kasly
-                    </h2>
-                    <p class="mt-2 text-sm sm:text-base text-navy-500 max-w-2xl">
-                        Meningkatkan kedisiplinan bayar kas dan menjaga keterbukaan penggunaan dana bersama ormawa.
-                    </p>
-                </div>
-                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-butter-100 text-navy-900 self-start sm:self-auto shadow-sm">
-                    Fitur Unggulan
-                </span>
+            <div class="mb-8">
+                <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
+                    Keunggulan sistem kas Kasly
+                </h2>
+                <p class="mt-1 text-sm sm:text-base text-navy-500 max-w-2xl">
+                    Meningkatkan kedisiplinan bayar kas dan menjaga keterbukaan penggunaan dana bersama ormawa.
+                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- 1. Buku Kas Anti-Manipulasi -->
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.45),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] flex items-center justify-center text-navy-900 mb-5">
-                            <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <div class="neu-card neu-card--feature group">
+                    <div class="neu-card--feature-accent neu-card--feature-accent--ice"></div>
+                    <div class="relative">
+                        <div class="mb-5">
+                            <div class="neu-card--feature-icon">
+                                <svg class="w-5 h-5 text-ice-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </div>
                         </div>
                         <h3 class="font-display font-semibold text-lg text-navy-900">
                             Buku Kas Terkunci
@@ -195,17 +214,16 @@
                             Setiap mutasi kas terkunci dan dilengkapi nota fisik serta jejak audit otomatis yang tidak dapat diubah sepihak.
                         </p>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-ice-200/60 flex items-center justify-between text-xs font-medium text-navy-500">
-                        <span>Integritas</span>
-                        <span class="text-navy-900 font-semibold">Audit Trail</span>
-                    </div>
                 </div>
 
                 <!-- 2. Evaluasi Disiplin Waktu -->
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.45),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] flex items-center justify-center text-navy-900 mb-5">
-                            <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="neu-card neu-card--feature group">
+                    <div class="neu-card--feature-accent neu-card--feature-accent--butter"></div>
+                    <div class="relative">
+                        <div class="mb-5">
+                            <div class="neu-card--feature-icon">
+                                <svg class="w-5 h-5 text-ice-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
                         </div>
                         <h3 class="font-display font-semibold text-lg text-navy-900">
                             Disiplin Jatuh Tempo
@@ -214,17 +232,16 @@
                             Tagihan kas bulanan terbit terjadwal. Status ketepatan waktu tercatat transparan per anggota demi kedisiplinan.
                         </p>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-ice-200/60 flex items-center justify-between text-xs font-medium text-navy-500">
-                        <span>Ketepatan Waktu</span>
-                        <span class="text-navy-900 font-semibold">Otomatisasi Iuran</span>
-                    </div>
                 </div>
 
                 <!-- 3. Notifikasi WhatsApp & Email -->
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.45),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] flex items-center justify-center text-navy-900 mb-5">
-                            <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                <div class="neu-card neu-card--feature group">
+                    <div class="neu-card--feature-accent neu-card--feature-accent--navy"></div>
+                    <div class="relative">
+                        <div class="mb-5">
+                            <div class="neu-card--feature-icon">
+                                <svg class="w-5 h-5 text-ice-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            </div>
                         </div>
                         <h3 class="font-display font-semibold text-lg text-navy-900">
                             Pengingat WhatsApp
@@ -233,17 +250,16 @@
                             Terintegrasi gateway WhatsApp Fonnte dan email notifikasi untuk mengirimkan rincian akun serta tagihan berkala.
                         </p>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-ice-200/60 flex items-center justify-between text-xs font-medium text-navy-500">
-                        <span>Notifikasi</span>
-                        <span class="text-navy-900 font-semibold">Fonnte & Email</span>
-                    </div>
                 </div>
 
                 <!-- 4. Akses Mandiri Multi-Tenant -->
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.45),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] flex items-center justify-center text-navy-900 mb-5">
-                            <svg class="w-6 h-6 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <div class="neu-card neu-card--feature group">
+                    <div class="neu-card--feature-accent neu-card--feature-accent--ice"></div>
+                    <div class="relative">
+                        <div class="mb-5">
+                            <div class="neu-card--feature-icon">
+                                <svg class="w-5 h-5 text-ice-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            </div>
                         </div>
                         <h3 class="font-display font-semibold text-lg text-navy-900">
                             Portal Anggota Mandiri
@@ -252,51 +268,65 @@
                             Anggota dapat memeriksa riwayat iuran dan saldo kas ormawa sendiri tanpa perlu menagih rekap manual ke bendahara.
                         </p>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-ice-200/60 flex items-center justify-between text-xs font-medium text-navy-500">
-                        <span>Akses Data</span>
-                        <span class="text-navy-900 font-semibold">Multi-Tenant Aman</span>
-                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Cara Kerja Section -->
         <section id="cara-kerja" class="landing-neu__container py-12 md:py-16">
-            <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
-                Cara kerja
-            </h2>
+            <div class="mb-8">
+                <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
+                    Cara kerja sistem Kasly
+                </h2>
+                <p class="text-sm text-navy-500 mt-1">Tiga langkah praktis memulai transparansi kas di organisasi kamu.</p>
+            </div>
 
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-display font-semibold text-lg text-navy-900">
-                            1. Organisasi didaftarkan
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Admin membuat organisasi dan akun Staff pengelola awal dengan kredensial aman.
-                        </p>
+                <!-- Langkah 1 -->
+                <div class="neu-card neu-card--step group">
+                    <div class="neu-card--step-number neu-card--step-number--navy">
+                        1
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-navy-900 mt-5">
+                        Organisasi Didaftarkan
+                    </h3>
+                    <p class="mt-3 text-sm text-navy-500 leading-relaxed">
+                        Organisasi didaftarkan ke sistem dan otomatis mendapatkan <strong>Kode Organisasi</strong> unik, kategori kas default, serta akun Staff awal.
+                    </p>
+                    <div class="neu-card--step-progress mt-6">
+                        <div class="neu-card--step-progress-fill" style="width: 33%"></div>
                     </div>
                 </div>
 
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-display font-semibold text-lg text-navy-900">
-                            2. Anggota ditambahkan
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Pengurus menambah anggota manual atau impor. Setiap anggota mendapat ID login mandiri.
-                        </p>
+                <!-- Langkah 2 -->
+                <div class="neu-card neu-card--step group">
+                    <div class="neu-card--step-number neu-card--step-number--ice">
+                        2
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-navy-900 mt-5">
+                        Anggota Ditambahkan
+                    </h3>
+                    <p class="mt-3 text-sm text-navy-500 leading-relaxed">
+                        Pengurus mendaftarkan anggota ormawa secara manual atau impor data. Setiap anggota langsung memiliki akses masuk menggunakan nomor identitas/NIM.
+                    </p>
+                    <div class="neu-card--step-progress mt-6">
+                        <div class="neu-card--step-progress-fill" style="width: 66%"></div>
                     </div>
                 </div>
 
-                <div class="neu-card flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-display font-semibold text-lg text-navy-900">
-                            3. Kas dikelola transparan
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Pencatatan mutasi otomatis terkunci dengan nota fisik. Anggota dapat memantau saldo kapan saja.
-                        </p>
+                <!-- Langkah 3 -->
+                <div class="neu-card neu-card--step group">
+                    <div class="neu-card--step-number neu-card--step-number--butter">
+                        3
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-navy-900 mt-5">
+                        Kas Dikelola Transparan
+                    </h3>
+                    <p class="mt-3 text-sm text-navy-500 leading-relaxed">
+                        Tagihan kas berkala terbit otomatis. Pengurus mencatat setoran dan pengeluaran dengan bukti nota, anggota memantau saldo secara real-time.
+                    </p>
+                    <div class="neu-card--step-progress mt-6">
+                        <div class="neu-card--step-progress-fill" style="width: 100%"></div>
                     </div>
                 </div>
             </div>
@@ -304,35 +334,50 @@
 
         <!-- Pertanyaan Umum Section -->
         <section id="faq" class="landing-neu__container py-12 md:py-16">
-            <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
-                Pertanyaan umum
-            </h2>
+            <div class="mb-8">
+                <h2 class="font-display font-semibold text-2xl md:text-[28px] text-navy-900">
+                    Pertanyaan umum
+                </h2>
+                <p class="text-sm text-navy-500 mt-1">Jawaban atas pertanyaan seputar penggunaan sistem Kasly.</p>
+            </div>
 
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="neu-card flex flex-col justify-between">
-                    <h3 class="font-display font-semibold text-base text-navy-900">
-                        Apakah anggota perlu email?
+                <!-- FAQ 1 -->
+                <div class="neu-card neu-card--faq group">
+                    <div class="neu-card--faq-icon">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-base md:text-lg text-navy-900 mt-4">
+                        Apakah anggota wajib memiliki email?
                     </h3>
                     <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                        Tidak. Anggota cukup login dengan kode organisasi dan nomor identitas/NIM anggota.
+                        Tidak. Anggota cukup memasukkan <strong>Kode Organisasi</strong> dan <strong>NIM</strong> resmi mereka untuk langsung masuk dan memeriksa saldo serta tagihan.
                     </p>
                 </div>
 
-                <div class="neu-card flex flex-col justify-between">
-                    <h3 class="font-display font-semibold text-base text-navy-900">
-                        Apa yang terjadi jika pengurus berganti?
+                <!-- FAQ 2 -->
+                <div class="neu-card neu-card--faq group">
+                    <div class="neu-card--faq-icon">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-base md:text-lg text-navy-900 mt-4">
+                        Bagaimana jika terjadi pergantian pengurus?
                     </h3>
                     <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                        Akun lama dinonaktifkan, akun baru dibuat, dan seluruh arsip riwayat kas tetap aman tersimpan.
+                        Super Admin atau ketua ormawa dapat menonaktifkan akun pengurus lama dan menerbitkan akun pengurus baru. Seluruh arsip transaksi kas masa lalu tetap utuh.
                     </p>
                 </div>
 
-                <div class="neu-card flex flex-col justify-between">
-                    <h3 class="font-display font-semibold text-base text-navy-900">
-                        Apakah data organisasi aman & terpisah?
+                <!-- FAQ 3 -->
+                <div class="neu-card neu-card--faq group">
+                    <div class="neu-card--faq-icon">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-base md:text-lg text-navy-900 mt-4">
+                        Apakah data organisasi aman & tidak tertukar?
                     </h3>
                     <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                        Ya. Sistem mengisolasi data antar organisasi secara mutlak (multi-tenant) sehingga tidak akan tertukar.
+                        Sangat aman. Setiap organisasi dipisahkan melalui isolasi multi-tenant di basis data. Anggota ormawa A tidak akan pernah bisa melihat data kas ormawa B.
                     </p>
                 </div>
             </div>

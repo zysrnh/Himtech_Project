@@ -256,6 +256,31 @@
                 </form>
             </div>
 
+            <!-- Danger Zone / Keluar Sesi Akun Pengurus -->
+            <div class="bg-white rounded-2xl p-5 sm:p-6 border border-red-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-red-50 border border-red-200 text-danger flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-semibold text-sm sm:text-base text-navy-900">Keluar Sesi Akun</h3>
+                        <p class="text-xs text-navy-500 mt-0.5">Akhiri sesi login pengurus pada perangkat ini dengan aman.</p>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    onclick="openLogoutModal()"
+                    class="h-10 px-5 rounded-xl bg-red-50 text-danger border border-red-200 font-semibold text-xs hover:bg-red-600 hover:text-white transition-colors cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                >
+                    <svg class="w-4 h-4 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span>Keluar Sesi</span>
+                </button>
+            </div>
+
         </div>
     </main>
 

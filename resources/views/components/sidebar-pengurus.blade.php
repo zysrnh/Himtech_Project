@@ -40,6 +40,16 @@
         <a href="{{ route('pengurus.profile') }}" class="w-8 h-8 rounded-full overflow-hidden border border-ice-200/80 shadow-xs" title="Profil">
             <img src="{{ $user ? $user->avatarUrl() : asset('logo/logo-light.svg') }}" alt="{{ $user->name ?? 'User' }}" class="w-full h-full object-cover">
         </a>
+        <button
+            type="button"
+            onclick="openLogoutModal()"
+            class="w-8 h-8 rounded-lg bg-red-50 text-danger border border-red-200/80 hover:bg-red-100 flex items-center justify-center transition-colors shadow-xs cursor-pointer"
+            title="Keluar Sesi"
+        >
+            <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </button>
     </div>
 </header>
 
@@ -249,19 +259,17 @@
             </div>
         </div>
 
-        <form action="{{ route('pengurus.logout') }}" method="POST">
-            @csrf
-            <button
-                type="submit"
-                class="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-ice-100/90 text-navy-900 font-semibold text-xs border border-ice-200/80 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),1px_1px_3px_rgba(122,163,214,0.25)] hover:bg-ice-200/70 active:shadow-[inset_2px_2px_4px_rgba(122,163,214,0.35)] transition-all cursor-pointer"
-                title="Keluar Sesi"
-            >
-                <svg class="w-3.5 h-3.5 text-navy-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span class="sidebar-btn-text">Keluar Sesi</span>
-            </button>
-        </form>
+        <button
+            type="button"
+            onclick="openLogoutModal()"
+            class="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-ice-100/90 text-navy-900 font-semibold text-xs border border-ice-200/80 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),1px_1px_3px_rgba(122,163,214,0.25)] hover:bg-red-50 hover:text-danger hover:border-red-200 active:shadow-[inset_2px_2px_4px_rgba(122,163,214,0.35)] transition-all cursor-pointer"
+            title="Keluar Sesi"
+        >
+            <svg class="w-3.5 h-3.5 text-current shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span class="sidebar-btn-text">Keluar Sesi</span>
+        </button>
     </div>
 </aside>
 
@@ -308,7 +316,58 @@
     </a>
 </nav>
 
+<!-- Modal Konfirmasi Logout Sesi (Neumorphic Solid Clean) -->
+<div id="modal-logout-confirm" style="display: none;" onclick="if(event.target === this) closeLogoutModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-ice-200 text-center space-y-4">
+        <div class="w-12 h-12 rounded-xl bg-red-50 border border-red-200 text-danger mx-auto flex items-center justify-center shadow-xs">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </div>
+
+        <div>
+            <h3 class="font-display font-semibold text-base text-navy-900">Keluar Sesi Pengurus?</h3>
+            <p class="text-xs text-navy-500 mt-1 leading-relaxed">
+                Sesi Anda saat ini akan diakhiri. Anda perlu memasukkan email & kata sandi lagi untuk mengakses kembali panel pengurus.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+            <button
+                type="button"
+                onclick="closeLogoutModal()"
+                class="h-9 px-4 rounded-lg bg-ice-100 text-navy-700 font-medium text-xs hover:bg-ice-200 transition-colors cursor-pointer"
+            >
+                Batal
+            </button>
+            <form action="{{ route('pengurus.logout') }}" method="POST" class="w-full">
+                @csrf
+                <button
+                    type="submit"
+                    class="w-full h-9 px-4 rounded-lg bg-danger text-white font-semibold text-xs hover:bg-red-700 transition-colors shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                    <span>Ya, Keluar</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+    window.openLogoutModal = function() {
+        const m = document.getElementById('modal-logout-confirm');
+        if (m) {
+            m.style.display = 'flex';
+        }
+    };
+
+    window.closeLogoutModal = function() {
+        const m = document.getElementById('modal-logout-confirm');
+        if (m) {
+            m.style.display = 'none';
+        }
+    };
+
     window.toggleAppSidebar = function() {
         const sb = document.querySelector('[data-app-sidebar]') || document.getElementById('sidebar-pengurus') || document.getElementById('sidebar-anggota');
         if (!sb) return;

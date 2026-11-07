@@ -124,9 +124,9 @@ class OrganizationController extends Controller
                 'is_super_admin' => false,
             ]);
 
-            // 3. Hubungkan di tabel pivot organization_user dengan role staff
+            // 3. Hubungkan di tabel pivot organization_user dengan role admin_organisasi
             $organization->users()->attach($staff->id, [
-                'role' => 'staff',
+                'role' => 'admin_organisasi',
                 'is_active' => true,
             ]);
 
@@ -237,9 +237,9 @@ class OrganizationController extends Controller
                 'is_super_admin' => false,
             ]);
 
-            // 3. Hubungkan di tabel pivot organization_user
+            // 3. Hubungkan di tabel pivot organization_user sebagai admin_organisasi
             $organization->users()->attach($staff->id, [
-                'role' => 'staff',
+                'role' => 'admin_organisasi',
                 'is_active' => true,
             ]);
 

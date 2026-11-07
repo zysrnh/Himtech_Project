@@ -91,13 +91,13 @@ class LoginController extends Controller
 
         $remember = $request->boolean('remember');
 
-        // 2. Deteksi Otomatis Akun: Cek Apakah Ini Pengurus / Staff
+        // 2. Deteksi Otomatis Akun: Cek Apakah Ini Pengurus (Admin Organisasi / Staff / Bendahara)
         $staffUser = $organization->users()
             ->where(function ($query) use ($inputIdentifier) {
                 $query->where('users.username', $inputIdentifier)
                     ->orWhere('users.email', $inputIdentifier);
             })
-            ->wherePivotIn('role', ['staff', 'bendahara'])
+            ->wherePivotIn('role', ['admin_organisasi', 'staff', 'bendahara'])
             ->wherePivot('is_active', true)
             ->first();
 

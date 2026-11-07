@@ -8,6 +8,7 @@ use App\Http\Controllers\Anggota\DashboardController as AnggotaDashboardControll
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\OrganizationRequestController;
 use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
+use App\Http\Controllers\Pengurus\StaffController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,12 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'showPengurusProfile'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'updatePengurusProfile'])->name('profile.update');
+
+    // Manajemen Staff & Bendahara oleh Admin Organisasi
+    Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
+    Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
+    Route::patch('/staff/{user}/toggle-status', [StaffController::class, 'toggleStatus'])->name('staff.toggle-status');
+    Route::delete('/staff/{user}', [StaffController::class, 'destroy'])->name('staff.destroy');
 });
 
 // Portal Transparansi Anggota

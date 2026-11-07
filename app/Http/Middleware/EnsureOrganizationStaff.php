@@ -13,11 +13,11 @@ class EnsureOrganizationStaff
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('pengurus.login');
         }
 
@@ -32,11 +32,11 @@ class EnsureOrganizationStaff
                 ->first();
         }
 
-        if (!$organization) {
-            // Coba ambil organisasi pertama tempat user terdaftar sebagai staff/bendahara
+        if (! $organization) {
+            // Coba ambil organisasi pertama tempat user terdaftar sebagai pengurus (admin_organisasi, staff, bendahara)
             $orgUser = $user->organizations()
                 ->where('organizations.status', 'active')
-                ->wherePivotIn('role', ['staff', 'bendahara'])
+                ->wherePivotIn('role', ['admin_organisasi', 'bendahara', 'staff'])
                 ->wherePivot('is_active', true)
                 ->first();
 
@@ -58,7 +58,7 @@ class EnsureOrganizationStaff
             }
         }
 
-        if (!$organization) {
+        if (! $organization) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -74,4 +74,3 @@ class EnsureOrganizationStaff
         return $next($request);
     }
 }
-

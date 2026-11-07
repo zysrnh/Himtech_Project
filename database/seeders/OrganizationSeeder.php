@@ -29,8 +29,8 @@ class OrganizationSeeder extends Seeder
             ]
         );
 
-        // 2. Akun Pengelola / Bendahara Utama
-        $bendahara = User::updateOrCreate(
+        // 2. Akun Admin Organisasi (Ketua / Pengelola yang Mendaftar)
+        $adminOrg = User::updateOrCreate(
             ['email' => 'zaki@himtech.id'],
             [
                 'name' => 'Muhammad Zaki',
@@ -41,10 +41,31 @@ class OrganizationSeeder extends Seeder
             ]
         );
 
-        // Hubungkan ke pivot jika belum ada
-        if (! $org->users()->where('users.id', $bendahara->id)->exists()) {
-            $org->users()->attach($bendahara->id, [
-                'role' => 'staff',
+        // Hubungkan sebagai admin_organisasi
+        if (! $org->users()->where('users.id', $adminOrg->id)->exists()) {
+            $org->users()->attach($adminOrg->id, [
+                'role' => 'admin_organisasi',
+                'is_active' => true,
+            ]);
+        } else {
+            $org->users()->updateExistingPivot($adminOrg->id, ['role' => 'admin_organisasi']);
+        }
+
+        // Akun Admin Staff / Bendahara (Dibuat oleh Admin Organisasi)
+        $staffBendahara = User::updateOrCreate(
+            ['email' => 'siti@himtech.id'],
+            [
+                'name' => 'Siti Nurhaliza',
+                'username' => 'siti_bendahara',
+                'phone' => '081299998888',
+                'password' => Hash::make('password'),
+                'is_super_admin' => false,
+            ]
+        );
+
+        if (! $org->users()->where('users.id', $staffBendahara->id)->exists()) {
+            $org->users()->attach($staffBendahara->id, [
+                'role' => 'bendahara',
                 'is_active' => true,
             ]);
         }
@@ -107,7 +128,7 @@ class OrganizationSeeder extends Seeder
             [
                 'amount' => 20000,
                 'due_date' => '2026-11-15',
-                'created_by' => $bendahara->id,
+                'created_by' => $staffBendahara->id,
             ]
         );
 
@@ -126,7 +147,7 @@ class OrganizationSeeder extends Seeder
                         'status' => 'paid',
                         'is_on_time' => true,
                         'paid_at' => '2026-11-05 10:00:00',
-                        'verified_by' => $bendahara->id,
+                        'verified_by' => $staffBendahara->id,
                         'payment_method' => 'transfer',
                     ]
                 );
@@ -144,7 +165,7 @@ class OrganizationSeeder extends Seeder
                         'status' => 'paid',
                         'is_on_time' => false,
                         'paid_at' => '2026-11-18 14:00:00',
-                        'verified_by' => $bendahara->id,
+                        'verified_by' => $staffBendahara->id,
                         'payment_method' => 'cash',
                     ]
                 );
@@ -179,7 +200,7 @@ class OrganizationSeeder extends Seeder
                 'category_id' => $categories['Iuran Wajib']->id ?? null,
                 'amount' => 160000,
                 'transaction_date' => '2026-11-05',
-                'created_by' => $bendahara->id,
+                'created_by' => $staffBendahara->id,
                 'is_locked' => true,
             ]
         );
@@ -194,7 +215,7 @@ class OrganizationSeeder extends Seeder
                 'category_id' => $categories['Konsumsi']->id ?? null,
                 'amount' => 50000,
                 'transaction_date' => '2026-11-06',
-                'created_by' => $bendahara->id,
+                'created_by' => $staffBendahara->id,
                 'is_locked' => true,
             ]
         );
@@ -209,7 +230,7 @@ class OrganizationSeeder extends Seeder
                 'category_id' => $categories['ATK & Perlengkapan']->id ?? null,
                 'amount' => 25000,
                 'transaction_date' => '2026-11-06',
-                'created_by' => $bendahara->id,
+                'created_by' => $staffBendahara->id,
                 'is_locked' => true,
             ]
         );

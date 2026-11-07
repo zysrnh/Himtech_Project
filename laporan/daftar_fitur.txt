@@ -177,3 +177,14 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * 10 Data Anggota Mahasiswa Sampel (NIM 2026001 - 2026010).
   * 1 Periode Iuran Kas (November 2026, Rp 20.000) dengan simulasi 6 anggota lunas tepat waktu, 2 lunas terlambat, dan 2 belum bayar.
   * Contoh mutasi kas masuk dan kas keluar lengkap dengan tanggal dan kategori.
+
+================================================================================
+13. MANAJEMEN STAFF & BENDAHARA OLEH ADMIN ORGANISASI
+================================================================================
+- Endpoint Pengurus: /pengurus/staff
+- Hak Akses Berjenjang:
+  * Admin Organisasi (pemohon yang disetujui dari landing page) berwenang membuat akun login staf kepengurusan untuk membantu operasional kas.
+  * Pilihan Peran: Bendahara (kelola kas, tagihan & pembukuan) atau Staff Operasional.
+  * Fitur Pembuatan Akun Staf Baru: Nama lengkap, username unik, email, no. WhatsApp, dan password (dengan generator acak kuat 10 karakter).
+  * Otomasi Dispatch Kredensial: Sistem otomatis mengirimkan Kode Organisasi, Username, dan Password ke nomor WhatsApp (via Fonnte) dan Email (via SMTP) staf baru.
+  * Kontrol Status Staf: Fitur aktivasi / penonaktifan staf dan penghapusan staf dari kepengurusan ormawa.

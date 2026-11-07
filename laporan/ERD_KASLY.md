@@ -229,3 +229,4 @@ Setiap tabel operasional (`members`, `dues_periods`, `dues_bills`, `transactions
 ### 3. Integritas Pembukuan (*Locked Ledger & Anti-Manipulasi*)
 - Kolom `transactions.is_locked = true` mencegah transaksi yang berasal dari pelunasan kas anggota dihapus sepihak oleh bendahara.
 - Kolom `transactions.proof_path` menampung path foto nota/struk belanja fisik untuk mendukung transparansi penuh dan pemeriksaan fisik oleh anggota.
+

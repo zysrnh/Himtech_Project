@@ -197,3 +197,4 @@ digambar di ERD karena bukan bagian dari entitas bisnis Kasly:
 - failed_jobs
 - sessions
 - migrations
+

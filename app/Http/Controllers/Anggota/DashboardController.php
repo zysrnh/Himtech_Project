@@ -39,6 +39,9 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Metode Pembayaran Ormawa Aktif (Rekening Bank, E-Wallet, QRIS)
+        $paymentMethods = $organization->paymentMethods()->where('is_active', true)->get();
+
         return view('anggota.dashboard', compact(
             'organization',
             'member',
@@ -48,8 +51,8 @@ class DashboardController extends Controller
             'myBills',
             'unpaidBills',
             'totalUnpaidAmount',
-            'publicTransactions'
+            'publicTransactions',
+            'paymentMethods'
         ));
     }
 }
-

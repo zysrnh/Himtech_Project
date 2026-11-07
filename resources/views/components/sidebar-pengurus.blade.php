@@ -91,7 +91,7 @@
                         <span>Overview Kas</span>
                     </a>
                     <a
-                        href="{{ route('pengurus.dashboard') }}#tagihan"
+                        href="{{ route('pengurus.tagihan.index') }}"
                         class="neu-nav-subitem {{ $active === 'tagihan' ? 'is-active' : '' }}"
                     >
                         <span class="w-1.5 h-1.5 rounded-full {{ $active === 'tagihan' ? 'bg-navy-900' : 'bg-ice-400' }} shrink-0"></span>

@@ -21,6 +21,10 @@ class DuesBill extends Model
         'paid_at',
         'verified_by',
         'payment_method',
+        'snap_token',
+        'midtrans_order_id',
+        'midtrans_payment_type',
+        'payment_channel',
     ];
 
     protected function casts(): array
@@ -52,4 +56,3 @@ class DuesBill extends Model
         return $this->belongsTo(User::class, 'verified_by');
     }
 }
-

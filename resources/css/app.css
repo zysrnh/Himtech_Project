@@ -1390,6 +1390,36 @@ html {
     transform: scale(0.92);
 }
 
+.neu-textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--neu-bg);
+    color: var(--navy-900);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--inset);
+    outline: none;
+    box-sizing: border-box;
+    transition: box-shadow 200ms var(--ease), transform 150ms ease;
+    resize: vertical;
+}
+
+.neu-textarea::placeholder {
+    color: var(--navy-500);
+    opacity: 0.55;
+}
+
+.neu-textarea:focus {
+    box-shadow: var(--inset-sm), 0 0 0 2px var(--ice-400);
+}
+
+.neu-textarea--error {
+    box-shadow: var(--inset-sm), 0 0 0 2px var(--danger);
+}
+
 /* Custom Neumorphic Checkbox */
 .neu-checkbox-custom {
     appearance: none;

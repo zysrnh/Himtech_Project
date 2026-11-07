@@ -30,7 +30,7 @@
                     <a href="#fitur" class="floating-capsule-nav__link">Fitur</a>
                     <a href="#cara-kerja" class="floating-capsule-nav__link hidden sm:inline-block">Cara Kerja</a>
                     <a href="#faq" class="floating-capsule-nav__link hidden md:inline-block">FAQ</a>
-                    <a href="{{ route('ajukan-organisasi') }}" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
+                    <a href="#pilih-akses" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
                 </div>
 
                 <!-- Right Pill Button with Micro-Animations -->
@@ -64,7 +64,7 @@
         <!-- Hero Section -->
         <section class="landing-neu__container landing-neu__hero-section">
             <div class="landing-neu__hero-grid">
-                <!-- Kolom Kiri: Teks Judul & Deskripsi -->
+                <!-- Kolom Kiri: Teks & Tombol Primer -->
                 <div class="contents lg:block">
                     <h1 class="landing-neu__hero-title font-display font-semibold text-navy-900 tracking-tight order-1">
                         Kas organisasi, rapi tanpa buku tulis.
@@ -72,26 +72,31 @@
                     <p class="landing-neu__hero-desc mt-2 lg:mt-6 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal order-3">
                         Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
                     </p>
+                    <div class="mt-4 lg:mt-8 flex flex-col sm:flex-row gap-4 order-4">
+                        <a href="#pilih-akses" class="neu-btn neu-btn--primary">
+                            Masuk ke Sistem Kasly
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Kolom Kanan: Pratinjau Kas Digital Model Stacked Card Interaktif -->
                 <div class="w-full order-2 lg:order-none">
                     <div class="tabbed-wallet-card">
-                        <!-- The 3-Tab Bar across the top: Pengeluaran, Pemasukan, Saldo -->
+                        <!-- The 3-Tab Bar across the top: Exact Match to media_1794038706460_3d4b4e58.png (Berdekatan) -->
                         <div class="wallet-tabs-bar" role="tablist">
-                            <!-- Tab 1: Pengeluaran (Left - Deep Midnight) -->
+                            <!-- Tab 1: Kas Cadangan (Left - Deep Midnight) -->
                             <button type="button" class="wallet-tab-btn tab-btn--cadangan" id="tab-cadangan" onclick="switchKasCard('cadangan')" role="tab" aria-selected="false">
-                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                                <span>Pengeluaran</span>
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                <span>Kas Cadangan</span>
                             </button>
 
-                            <!-- Tab 2: Pemasukan (Middle - Butter) -->
+                            <!-- Tab 2: Iuran Wajib (Middle - Butter) -->
                             <button type="button" class="wallet-tab-btn tab-btn--iuran" id="tab-iuran" onclick="switchKasCard('iuran')" role="tab" aria-selected="false">
-                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
-                                <span>Pemasukan</span>
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <span>Iuran Wajib</span>
                             </button>
 
-                            <!-- Tab 3: Kasly Saldo (Right Front Tab) -->
+                            <!-- Tab 3: Kas Utama (Right Front Tab) -->
                             <button type="button" class="wallet-tab-btn tab-btn--kas is-active" id="tab-kas" onclick="switchKasCard('kas')" role="tab" aria-selected="true">
                                 <span id="tab-kas-text">AKTIF</span>
                                 <span class="active-dot" id="active-dot"></span>
@@ -152,6 +157,39 @@
                                     <span class="card-text-title font-display font-semibold text-sm mt-0.5 block tabular-nums">2026/2027</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Cards underneath (Pemasukan & Pengeluaran) -->
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('iuran')">
+                            <div class="w-9 h-9 rounded-full bg-butter-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+                                ↑
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pemasukan</span>
+                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">+Rp 18.200.000</span>
+                            </div>
+                        </div>
+                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('cadangan')">
+                            <div class="w-9 h-9 rounded-full bg-ice-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-inner">
+                                ↓
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pengeluaran</span>
+                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">-Rp 3.350.000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Kepatuhan Iuran Bulanan -->
+                    <div class="neu-card !p-4 mt-3">
+                        <div class="flex items-center justify-between text-xs font-medium text-navy-500 mb-2">
+                            <span>Kepatuhan Iuran Bulanan</span>
+                            <span class="text-navy-900 font-semibold tabular-nums">94% Lunas (142/150)</span>
+                        </div>
+                        <div class="w-full h-2.5 rounded-full bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.55),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] overflow-hidden p-0.5">
+                            <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500 transition-all duration-500 progress-animated-glow" style="width: 94%;"></div>
                         </div>
                     </div>
                 </div>
@@ -589,24 +627,24 @@
             iuran: {
                 themeClass: 'theme--iuran',
                 tag: 'Pemasukan',
-                label: 'Total Pemasukan Kas',
+                label: 'Total Pemasukan Iuran',
                 amount: '+Rp 18.200.000',
-                detail: '142 Iuran Terverifikasi • 100% Transparan',
+                detail: '142 Anggota Lunas (94%) • 8 Tagihan Berjalan',
                 filletColor: '#FFF9D9',
                 kasTabBg: '#FFF9D9',
                 kasTabColor: '#2F4862',
-                kasLabel: 'Saldo'
+                kasLabel: 'Kas Utama'
             },
             cadangan: {
                 themeClass: 'theme--cadangan',
                 tag: 'Pengeluaran',
                 label: 'Total Pengeluaran Kas',
                 amount: '-Rp 3.350.000',
-                detail: '24 Transaksi Operasional • Bukti Nota Lengkap',
+                detail: '24 Transaksi Operasional • Dilengkapi Bukti Nota',
                 filletColor: '#182635',
                 kasTabBg: '#182635',
                 kasTabColor: '#FFFFFF',
-                kasLabel: 'Saldo'
+                kasLabel: 'Kas Utama'
             }
         };
 
@@ -653,7 +691,7 @@
                     kasTab.appendChild(dot);
                 }
             } else {
-                if (kasTabText) kasTabText.textContent = 'Saldo';
+                if (kasTabText) kasTabText.textContent = 'Kas Utama';
                 if (activeBtn && !activeBtn.querySelector('.active-dot')) {
                     const dot = document.createElement('span');
                     dot.className = 'active-dot';

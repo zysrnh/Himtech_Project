@@ -41,8 +41,8 @@
                     {{ $org->name ?? 'Kasly Ormawa' }}
                 </p>
             </div>
-            <div class="mt-1.5 flex items-center pl-8">
-                <span class="inline-flex items-center text-[10px] font-semibold text-navy-600 bg-ice-200/60 px-2 py-0.5 rounded-md border border-ice-200/80 shadow-none">
+            <div class="mt-0.5 flex items-center pl-8">
+                <span class="text-[11px] font-medium text-navy-500">
                     {{ $roleName }}
                 </span>
             </div>

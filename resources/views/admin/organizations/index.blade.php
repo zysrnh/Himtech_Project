@@ -46,6 +46,12 @@
                     @endif
                 </a>
                 <a
+                    href="{{ route('admin.admins.index') }}"
+                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                >
+                    Kelola Admin
+                </a>
+                <a
                     href="{{ route('admin.profile') }}"
                     class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
                 >

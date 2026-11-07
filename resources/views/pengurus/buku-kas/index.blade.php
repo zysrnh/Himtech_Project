@@ -241,7 +241,7 @@
                                             @if ($tx->proof_path)
                                                 <button
                                                     type="button"
-                                                    onclick="previewProof('{{ asset('storage/' . $tx->proof_path') }}', '{{ addslashes($tx->description) }}')"
+                                                    onclick="previewProof('{{ asset('storage/' . $tx->proof_path) }}', '{{ addslashes($tx->description) }}')"
                                                     class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-ice-100 text-navy-900 font-semibold text-[10.5px] hover:bg-ice-200 transition-colors cursor-pointer border border-ice-200/70 shadow-xs"
                                                 >
                                                     <svg class="w-3.5 h-3.5 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">

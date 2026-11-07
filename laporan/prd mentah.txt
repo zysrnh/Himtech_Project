@@ -1,59 +1,25 @@
-Informasi Dokumen (Document Information)
-
-Nama Produk atau Fitur
-
-Penulis (Product Manager/Owner)
-
-Tanggal & Status Dokumen (Draft, In Review, Approved)
-
-Target Waktu Peluncuran (Target Release)
-
-Ringkasan Eksekutif & Latar Belakang (Executive Summary & Background)
-
-Penjelasan singkat tentang apa yang dibangun.
-
-Masalah utama pengguna atau peluang bisnis yang memicu pembuatan produk ini.
-
-Tujuan & Metrik Kesuksesan (Objectives & Success Metrics/KPI)
-
-Tujuan (Goals): Apa yang ingin dicapai dari produk ini.
-
-Metrik: Cara mengukur kesuksesan setelah rilis (contoh: persentase retensi, penurunan komplain, peningkatan waktu respon).
-
-Target Pengguna (User Personas)
-
-Siapa audiens spesifik yang akan menggunakan produk ini.
-
-Apa karakteristik, kebiasaan, dan batasan mereka.
-
-Ruang Lingkup (Scope)
-
-In-Scope: Fitur atau modul apa saja yang pasti dikerjakan pada rilis ini (fokus pada Minimum Viable Product / MVP).
-
-Out-of-Scope: Hal-hal yang sengaja ditunda atau tidak dikerjakan agar proyek tidak bengkak (scope creep).
-
-Kebutuhan Fitur (Requirements & User Stories)
-
-Daftar fitur yang dijabarkan dari sudut pandang pengguna.
-
-Umumnya menggunakan format: Sebagai [User], saya ingin [Aksi] sehingga [Manfaat/Tujuan].
-
-Dilengkapi dengan Acceptance Criteria (Kriteria Selesai) untuk setiap fitur.
-
-Desain & Pengalaman Pengguna (UI/UX & User Flow)
-
-Tautan ke wireframe, mockup (Figma/Sketch), atau purwarupa (prototype).
-
-Diagram alur pengguna (user journey) dari awal masuk aplikasi hingga mencapai tujuan.
-
-Kebutuhan Teknis & Ketergantungan (Technical Requirements & Dependencies)
-
-Arsitektur sistem, struktur database, atau API yang dibutuhkan.
-
-Ketergantungan pada tim lain (contoh: butuh aset dari tim desain, butuh persetujuan tim legal, atau integrasi pihak ketiga seperti Fonnte/Midtrans).
-
-Rencana Rilis & Go-to-Market (Release Plan & GTM)
-
-Strategi peluncuran (apakah dirilis ke internal dulu, versi Beta terbatas, atau langsung publik).
-
-Persiapan materi edukasi pengguna (panduan, FAQ, atau training).
+Berikut adalah struktur standar Product Requirements Document (PRD) yang umum digunakan secara profesional:
+1.	Informasi Dokumen (Document Information)
+o	Nama Produk atau Fitur
+o	Penulis (Product Manager/Owner)
+o	Tanggal & Status Dokumen (Draft, In Review, Approved)
+o	Target Waktu Peluncuran (Target Release)
+2.	Ringkasan Eksekutif & Latar Belakang (Executive Summary & Background)
+o	Penjelasan singkat tentang apa yang dibangun.
+o	Masalah utama pengguna atau peluang bisnis yang memicu pembuatan produk ini.
+3.	Tujuan & Metrik Kesuksesan (Objectives & Success Metrics/KPI)
+o	Tujuan (Goals): Apa yang ingin dicapai dari produk ini.tyy
+o	Metrik: Cara mengukur kesuksesan setelah rilis (contoh: persentase retensi, penurunan komplain, peningkatan waktu respon).
+4.	Target Pengguna (User Personas)
+o	Siapa audiens spesifik yang akan menggunakan produk ini.
+o	Apa karakteristik, kebiasaan, dan batasan mereka.
+5.	Ruang Lingkup (Scope)
+o	In-Scope: Fitur atau modul apa saja yang pasti dikerjakan pada rilis ini (fokus pada Minimum Viable Product / MVP).
+o	Out-of-Scope: Hal-hal yang sengaja ditunda atau tidak dikerjakan agar proyek tidak bengkak (scope creep).
+6.	Kebutuhan Fitur (Requirements & User Stories)
+o	Daftar fitur yang dijabarkan dari sudut pandang pengguna.
+o	Umumnya menggunakan format: Sebagai [User], saya ingin [Aksi] sehingga [Manfaat/Tujuan].
+o	Dilengkapi dengan Acceptance Criteria (Kriteria Selesai) untuk setiap fitur.
+7.	Desain & Pengalaman Pengguna (UI/UX & User Flow)
+o	Tautan ke wireframe, mockup (Figma/Sketch), atau purwarupa (prototype).
+o	Diagram alur pengguna (user journey) dari awal masuk aplikasi hingga mencapai tujuan.

@@ -109,10 +109,7 @@
                 <!-- 1. Saldo Kas Aktif -->
                 <div class="bg-gradient-to-br from-navy-900 via-navy-700 to-navy-900 text-white rounded-[28px] p-6 sm:p-7 shadow-[6px_6px_20px_rgba(47,72,98,0.28),-4px_-4px_16px_rgba(255,255,255,0.7)] flex flex-col justify-between relative overflow-hidden border border-navy-700/60">
                     <div class="relative z-10">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs text-white/70 font-medium">Saldo Kas Aktif Saat Ini</span>
-                            <span class="neu-badge-pill text-[10px] py-0.5 px-2.5">REAL-TIME</span>
-                        </div>
+                        <span class="text-xs text-white/70 font-medium">Saldo Kas Aktif Saat Ini</span>
                         <p class="font-display font-bold text-3xl sm:text-4xl tabular-nums mt-3 tracking-tight text-white">
                             Rp {{ number_format($currentBalance, 0, ',', '.') }}
                         </p>
@@ -125,12 +122,7 @@
                 <!-- 2. Total Pemasukan -->
                 <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-navy-500">Total Kas Masuk</span>
-                            <span class="neu-badge-pill text-[10px] py-0.5 px-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200/80">
-                                + PEMASUKAN
-                            </span>
-                        </div>
+                        <span class="text-xs font-semibold text-navy-500">Total Kas Masuk</span>
                         <p class="font-display font-bold text-2xl sm:text-3xl tabular-nums text-navy-900 mt-3 tracking-tight">
                             Rp {{ number_format($totalIncome, 0, ',', '.') }}
                         </p>
@@ -143,12 +135,7 @@
                 <!-- 3. Total Pengeluaran -->
                 <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-navy-500">Total Kas Keluar</span>
-                            <span class="neu-badge-pill text-[10px] py-0.5 px-2.5 bg-red-50 text-danger border border-red-200/80">
-                                - PENGELUARAN
-                            </span>
-                        </div>
+                        <span class="text-xs font-semibold text-navy-500">Total Kas Keluar</span>
                         <p class="font-display font-bold text-2xl sm:text-3xl tabular-nums text-danger mt-3 tracking-tight">
                             Rp {{ number_format($totalExpense, 0, ',', '.') }}
                         </p>

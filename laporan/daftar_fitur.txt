@@ -1,0 +1,73 @@
+DAFTAR FITUR YANG TELAH DIKEMBANGKAN - SISTEM KASLY
+Tanggal: 2026-11-07
+Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pembayaran Iuran/Kas
+
+================================================================================
+1. LANDING PAGE FUNGSIONAL (PORTAL UTAMA)
+================================================================================
+- Halaman depan mandiri dengan identitas merek Kasly berbasis Design System Ice & Butter v2.
+- Navbar navigasi: Menampilkan logo Kasly, tautan bagian (Fitur, Cara Kerja, FAQ), dan tombol Masuk.
+- Hero Section: Judul utama "Kas organisasi, rapi tanpa buku tulis." dilengkapi subjudul dan dua tombol aksi cepat (Akses Anggota dan Akses Pengurus).
+- Segmentasi Akses Pengguna (Pilih Akses Kamu):
+  * Kartu Anggota: Gerbang masuk anggota menggunakan Kode Organisasi dan ID Anggota.
+  * Kartu Pengurus: Gerbang masuk Bendahara/Staff menggunakan Email dan Password.
+  * Kartu Onboarding Organisasi Baru: Tautan terintegrasi WhatsApp untuk pendaftaran ormawa baru ke Super Admin.
+- Showcase Fitur Utama: Paparan 5 pilar keunggulan sistem (Iuran otomatis, perhitungan saldo real-time, laporan bulanan, audit trail anti-hapus, dan isolasi data multi-tenant).
+- Panduan Cara Kerja: Penjelasan 3 tahap operasional sistem kas (Pendaftaran organisasi, penambahan anggota, dan pengelolaan kas transparan).
+- FAQ (Pertanyaan Umum): Jawaban ringkas seputar kebutuhan email, pergantian kepengurusan tahunan, dan jaminan isolasi data antar organisasi.
+- Footer resmi: Menampilkan hak cipta dan navigasi syarat/kebijakan.
+
+================================================================================
+2. PONDASI ARSITEKTUR BASIS DATA UNIVERSAL (MULTI-TENANT)
+================================================================================
+- Skema migrasi database terisolasi menggunakan partition key organization_id pada seluruh entitas kas.
+- Tabel Organisasi (organizations): Menyimpan identitas ormawa/himpunan/kelas, kode unik, dan status aktivasi.
+- Tabel Anggota (members): Pencatatan anggota dengan keunikan nomor anggota (NIM/ID) di dalam lingkup organisasinya.
+- Tabel Relasi Pengguna (organization_user): Pemisahan peran pengelola (Bendahara, Staff, Anggota) secara fleksibel.
+- Tabel Kategori Kas (cash_categories): Pengelompokan kas masuk dan kas keluar per organisasi.
+- Tabel Transaksi Buku Kas (transactions): Pencatatan mutasi kas dengan flag is_locked (anti-hapus sembarangan), pencatatan created_by, foreign key reversal_of untuk pembatalan transaksi sah, dan upload nota fisik.
+- Tabel Periode Iuran (dues_periods): Pengaturan jadwal kas dengan tanggal jatuh tempo (due_date) sebagai basis penilaian kedisiplinan bayar kas.
+- Tabel Tagihan Iuran (dues_bills): Pelacakan status bayar per anggota (unpaid, pending, paid) dan evaluasi otomatis status ketepatan waktu (is_on_time).
+- Tabel Log Aktivitas (activity_logs): Rekam jejak audit trail (siapa mengubah apa dan kapan) untuk transparansi mutlak.
+- Seluruh Model Eloquent Laravel terhubung lengkap (User, Organization, Member, CashCategory, Transaction, DuesPeriod, DuesBill, ActivityLog).
+
+================================================================================
+3. MODUL AUTENTIKASI KHUSUS SUPER ADMIN
+================================================================================
+- Endpoint login terpisah di /admin/login untuk menjamin keamanan akses dan isolasi peran dari pengguna biasa.
+- Tampilan form login elegan berbasis Ice & Butter v2 (input berlatar ice-100 tanpa border tebal, focus ring ice-400, dan tombol primer navy-900).
+- Controller autentikasi (Admin\AuthController) dengan validasi wajib flag is_super_admin = true.
+- Proteksi brute force & penanganan pesan error jika kredensial tidak cocok atau akun bukan Super Admin.
+- Fitur Logout aman (/admin/logout) yang membersihkan sesi dan me-regenerasi token CSRF.
+- Seeder Akun Super Admin (SuperAdminSeeder) yang terdaftar otomatis di database:
+  * Email: admin@kasly.id
+  * Password: password
+  * Role: is_super_admin = true
+
+================================================================================
+4. PANEL PUSAT / DASHBOARD SUPER ADMIN
+================================================================================
+- Endpoint dashboard terproteksi di /admin/dashboard (hanya dapat diakses setelah login Super Admin).
+- Sidebar Web 240px: Desain flat white dengan border ice-200, penanda menu aktif berlatar ice-100 (tanpa label kategori dekoratif sesuai aturan v2).
+- Kartu Hero Telemetri (radius-blob khas Ice & Butter): Menampilkan metrik global:
+  * Total Organisasi Terdaftar
+  * Total Organisasi Aktif
+  * Total Anggota Terdata di Seluruh Ormawa
+- Tabel Monitoring Organisasi: Menampilkan daftar organisasi terdaftar, kode unik, nama, status aktivasi badge (Aktif / Nonaktif), dan tanggal pendaftaran.
+- Pagination data organisasi yang terstruktur rapi.
+
+================================================================================
+5. SISTEM DESAIN & PANDUAN STYLING (ICE & BUTTER V2)
+================================================================================
+- Integrasi Tailwind CSS v4 dan kompilasi secepat kilat dengan Vite.
+- Palet warna konsisten:
+  * navy-900 (#2F4862): Teks utama, ikon, dan tombol primer.
+  * navy-500 (#4A6583): Teks sekunder dan label input.
+  * white (#FFFFFF): Permukaan kartu dan sidebar.
+  * ice-400 (#7AA3D6): Aksen sejuk dan focus ring.
+  * ice-200 (#B5CCEB): Garis batas dan pemisah tabel.
+  * ice-100 (#DDEBFC): Latar belakang layar dan kolom input.
+  * butter-100 (#FFF7CD): Penanda status positif dan lunas.
+  * danger (#C0524A): Penanda status negatif dan peringatan.
+- Tipografi resmi: Outfit (Headings & Saldo) dan Plus Jakarta Sans (Body Text).
+- Desain berprinsip data-first: Menghilangkan elemen dekoratif hampa seperti label uppercase berjarak lebar dan penomoran 01/02.

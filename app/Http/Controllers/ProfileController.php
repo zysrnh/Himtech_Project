@@ -132,6 +132,7 @@ class ProfileController extends Controller
         }
 
         $user = Auth::user();
+        $organization = Organization::find(session('active_organization_id'));
         $member = Member::where('user_id', $user->id)
             ->where('organization_id', session('active_organization_id'))
             ->first();
@@ -139,6 +140,7 @@ class ProfileController extends Controller
         return view('anggota.profile', [
             'user' => $user,
             'member' => $member,
+            'organization' => $organization,
         ]);
     }
 

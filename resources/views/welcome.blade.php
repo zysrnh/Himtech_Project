@@ -16,36 +16,35 @@
 </head>
 <body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Floating Capsule Navbar (Matching revisi/image.png) -->
+    <!-- Floating Capsule Navbar (revisi/image.png + NEUMORPHISM.md) -->
     <header class="floating-capsule-wrapper">
-        <nav class="floating-capsule-nav" aria-label="Navigasi Utama">
-            <!-- Left Circular Icon Button -->
-            <a href="/" class="floating-capsule-nav__icon-circle" title="Kasly">
-                <svg class="w-5 h-5 text-navy-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="4.8" fill="#2F4862" stroke="#2F4862"></circle>
-                    <ellipse cx="12" cy="12" rx="8.8" ry="3.2" transform="rotate(-25 12 12)" stroke="#2F4862" stroke-width="1.8" fill="none" stroke-linecap="round"></ellipse>
-                </svg>
-            </a>
-
-            <!-- Center Navigation Links -->
-            <div class="floating-capsule-nav__links">
-                <a href="#fitur" class="floating-capsule-nav__link">Fitur</a>
-                <a href="#cara-kerja" class="floating-capsule-nav__link hidden sm:inline-block">Cara Kerja</a>
-                <a href="#faq" class="floating-capsule-nav__link hidden md:inline-block">FAQ</a>
-                <a href="{{ route('ajukan-organisasi') }}" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
-            </div>
-
-            <!-- Right Pill Button -->
-            @auth
-                <a href="{{ route('dashboard') }}" class="floating-capsule-nav__btn">
-                    {{ auth()->user()->name ?? (auth()->user()->username ?? 'Dashboard') }}
+        <div class="landing-neu__container w-full">
+            <nav class="floating-capsule-nav" aria-label="Navigasi Utama">
+                <!-- Left Circular Icon Button with Official Kasly Logo -->
+                <a href="/" class="floating-capsule-nav__icon-circle" title="{{ config('app.name', 'Kasly') }}">
+                    <img src="{{ asset('logo/icon-kasly.svg') }}" onerror="this.onerror=null; this.src='{{ asset('favicon.ico') }}';" alt="{{ config('app.name', 'Kasly') }}" class="w-6 h-6 object-contain rounded-[6px]">
                 </a>
-            @else
-                <a href="{{ route('login') }}" class="floating-capsule-nav__btn">
-                    Masuk
-                </a>
-            @endauth
-        </nav>
+
+                <!-- Center Navigation Links with Micro-Animations & Smooth Scroll -->
+                <div class="floating-capsule-nav__links">
+                    <a href="#fitur" class="floating-capsule-nav__link">Fitur</a>
+                    <a href="#cara-kerja" class="floating-capsule-nav__link hidden sm:inline-block">Cara Kerja</a>
+                    <a href="#faq" class="floating-capsule-nav__link hidden md:inline-block">FAQ</a>
+                    <a href="#pilih-akses" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
+                </div>
+
+                <!-- Right Pill Button with Micro-Animations -->
+                @auth
+                    <a href="{{ route('dashboard') }}" class="floating-capsule-nav__btn">
+                        {{ auth()->user()->name ?? (auth()->user()->username ?? 'Dashboard') }}
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="floating-capsule-nav__btn">
+                        Masuk
+                    </a>
+                @endauth
+            </nav>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -178,7 +177,7 @@
                             <span class="text-navy-900 font-semibold tabular-nums">94% Lunas (142/150)</span>
                         </div>
                         <div class="w-full h-2.5 rounded-full bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.55),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] overflow-hidden p-0.5">
-                            <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500 transition-all duration-500" style="width: 94%;"></div>
+                            <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500 transition-all duration-500 progress-animated-glow" style="width: 94%;"></div>
                         </div>
                     </div>
                 </div>
@@ -656,6 +655,85 @@
                 }, 100);
             }
         }
+
+        // Global Micro-Animations: Press reaction on buttons & smooth nav interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            const interactiveSelectors = [
+                '.floating-capsule-nav__link',
+                '.floating-capsule-nav__btn',
+                '.floating-capsule-nav__icon-circle',
+                '.neu-btn',
+                '.wallet-tab-btn',
+                '.cutout-pill-btn',
+                '.neu-card--access-icon'
+            ];
+
+            document.querySelectorAll(interactiveSelectors.join(', ')).forEach(el => {
+                el.addEventListener('mousedown', () => el.classList.add('is-pressed'));
+                el.addEventListener('mouseup', () => el.classList.remove('is-pressed'));
+                el.addEventListener('mouseleave', () => el.classList.remove('is-pressed'));
+                el.addEventListener('touchstart', () => el.classList.add('is-pressed'), { passive: true });
+                el.addEventListener('touchend', () => el.classList.remove('is-pressed'), { passive: true });
+            });
+
+            // Enhanced Smooth Scrolling with offset & target animation
+            function handleSmoothScroll(targetId, activeTrigger) {
+                const targetEl = document.getElementById(targetId);
+                if (!targetEl) return;
+
+                // Hitung offset navbar floating secara presisi agar judul tidak tertutup
+                const nav = document.querySelector('.floating-capsule-wrapper');
+                const offset = nav ? nav.offsetHeight + 18 : 96;
+                const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+
+                window.scrollTo({
+                    top: Math.max(0, targetPosition),
+                    behavior: 'smooth'
+                });
+
+                // Update active state di navbar
+                document.querySelectorAll('.floating-capsule-nav__link').forEach(link => {
+                    link.classList.remove('is-active');
+                });
+                if (activeTrigger) {
+                    activeTrigger.classList.add('is-active');
+                }
+
+                // Micro animation efek pulse pada section yang dituju
+                targetEl.classList.remove('section-scroll-focused');
+                void targetEl.offsetWidth; // trigger reflow
+                targetEl.classList.add('section-scroll-focused');
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href').replace('#', '');
+                    if (targetId) {
+                        e.preventDefault();
+                        handleSmoothScroll(targetId, this);
+                    }
+                });
+            });
+
+            // Scroll Spy: otomatis sorot tautan navigasi sesuai posisi scroll halaman
+            const sections = ['fitur', 'cara-kerja', 'faq', 'pilih-akses'].map(id => document.getElementById(id)).filter(Boolean);
+            window.addEventListener('scroll', () => {
+                const scrollPos = window.pageYOffset + 140;
+                sections.forEach(sec => {
+                    const top = sec.offsetTop;
+                    const height = sec.offsetHeight;
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        document.querySelectorAll('.floating-capsule-nav__link').forEach(link => {
+                            if (link.getAttribute('href') === `#${sec.id}`) {
+                                link.classList.add('is-active');
+                            } else {
+                                link.classList.remove('is-active');
+                            }
+                        });
+                    }
+                });
+            }, { passive: true });
+        });
     </script>
 </body>
 </html>

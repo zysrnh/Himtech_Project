@@ -849,6 +849,14 @@ body {
 }
 
 /* ==========================================================================
+   Smooth Scrolling & Global Micro-Interactions
+   ========================================================================== */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 104px;
+}
+
+/* ==========================================================================
    Floating Capsule Navbar (revisi/image.png + NEUMORPHISM.md)
    ========================================================================== */
 .floating-capsule-wrapper {
@@ -856,11 +864,6 @@ body {
     top: 16px;
     z-index: 50;
     width: 100%;
-    max-width: 1440px;
-    margin-inline: auto;
-    padding-inline: clamp(16px, 3.5vw, 48px);
-    display: flex;
-    justify-content: center;
     pointer-events: none;
     box-sizing: border-box;
 }
@@ -876,13 +879,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    max-width: 1140px; /* Agak lebar, proporsional dengan container utama */
+    width: 100%; /* Sempurna sejajar dengan container hero & elemen ujung */
     box-sizing: border-box;
     /* Neumorphism Surface: gradasi halus 135deg per NEUMORPHISM.md */
     background: linear-gradient(135deg, #283e56 0%, #172433 100%);
     border-radius: 9999px;
-    padding: 8px 10px 8px 10px;
+    padding: 8px 12px 8px 10px;
     /* Neumorphism Bayangan Ganda: gelap kanan-bawah (--neu-dark), putih kiri-atas (--neu-light) */
     box-shadow: 10px 14px 28px var(--neu-dark), -6px -6px 18px var(--neu-light), 0 16px 36px rgba(47, 72, 98, 0.32);
     border: 1px solid rgba(255, 255, 255, 0.16);
@@ -893,14 +895,14 @@ body {
 
 @media (min-width: 640px) {
     .floating-capsule-nav {
-        padding: 8px 12px 8px 10px;
+        padding: 8px 16px 8px 10px;
     }
 }
 
-/* Lingkaran Ikon Kiri: Neumorphic Dual Raised Circle */
+/* Lingkaran Ikon Kiri: Neumorphic Dual Raised Circle + Press Animation */
 .floating-capsule-nav__icon-circle {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 9999px;
     background: linear-gradient(145deg, #ffffff 0%, #eaf1fa 100%);
     display: flex;
@@ -908,21 +910,24 @@ body {
     justify-content: center;
     flex-shrink: 0;
     box-shadow: 3px 3px 8px rgba(18, 28, 42, 0.35), -2px -2px 6px rgba(255, 255, 255, 0.25);
-    transition: transform 180ms var(--ease), box-shadow 180ms var(--ease);
+    transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
     text-decoration: none;
+    cursor: pointer;
+    user-select: none;
 }
 
 .floating-capsule-nav__icon-circle:hover {
-    transform: scale(1.05);
-    box-shadow: 4px 4px 10px rgba(18, 28, 42, 0.45), -2px -2px 7px rgba(255, 255, 255, 0.35);
+    transform: scale(1.08) rotate(-4deg);
+    box-shadow: 4px 6px 14px rgba(18, 28, 42, 0.45), -2px -2px 8px rgba(255, 255, 255, 0.35);
 }
 
-.floating-capsule-nav__icon-circle:active {
-    box-shadow: inset 2px 2px 5px rgba(47, 72, 98, 0.45);
-    transform: none;
+.floating-capsule-nav__icon-circle:active,
+.floating-capsule-nav__icon-circle.is-pressed {
+    transform: scale(0.90) rotate(2deg) translateY(1px);
+    box-shadow: inset 2px 2px 6px rgba(47, 72, 98, 0.55), inset -1px -1px 3px rgba(255, 255, 255, 0.2);
 }
 
-/* Nav Links Tengah: Spacing Lebar & Efek Neumorphic Inset Hover */
+/* Nav Links Tengah: Spacing Lebar & Animasi Tekan (Micro-Animation) */
 .floating-capsule-nav__links {
     display: flex;
     align-items: center;
@@ -952,16 +957,46 @@ body {
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
-    padding: 6px 14px;
+    padding: 7px 18px;
     border-radius: 9999px;
-    transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
+    position: relative;
+    user-select: none;
+    cursor: pointer;
 }
 
 .floating-capsule-nav__link:hover {
     color: var(--butter-100);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3), inset -1px -1px 3px rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.3), inset -1px -1px 3px rgba(255, 255, 255, 0.1);
+    transform: translateY(-1.5px);
+}
+
+/* Animasi ketika ditekan (Active Press Micro-Animation) */
+.floating-capsule-nav__link:active,
+.floating-capsule-nav__link.is-pressed {
+    color: var(--butter-100);
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.55), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+    transform: scale(0.92) translateY(1.5px);
+}
+
+/* Active Highlight ketika berada di section tertentu (Scroll Spy / Click Active) */
+.floating-capsule-nav__link.is-active {
+    color: var(--butter-100);
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.4), inset -1px -1px 2px rgba(255, 255, 255, 0.15);
+}
+
+/* Efek target pulse saat tombol navigasi ditekan */
+@keyframes section-scroll-pulse {
+    0% { transform: scale(1); filter: brightness(1); }
+    35% { transform: scale(1.008); filter: brightness(1.03); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+.section-scroll-focused {
+    animation: section-scroll-pulse 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .floating-capsule-nav__link:focus-visible {
@@ -969,7 +1004,7 @@ body {
     outline-offset: 2px;
 }
 
-/* Tombol Pill Kanan: Neumorphic Dual Raised -> Butter Hover */
+/* Tombol Pill Kanan: Neumorphic Dual Raised -> Butter Hover + Press Animation */
 .floating-capsule-nav__btn {
     background: linear-gradient(145deg, #ffffff 0%, #f0f6fd 100%);
     color: var(--navy-900);
@@ -979,24 +1014,27 @@ body {
     border-radius: 9999px;
     text-decoration: none;
     box-shadow: 4px 4px 12px rgba(18, 28, 42, 0.32), -2px -2px 6px rgba(255, 255, 255, 0.25);
-    transition: all 180ms var(--ease);
+    transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    user-select: none;
 }
 
 .floating-capsule-nav__btn:hover {
     background: linear-gradient(145deg, #FFF9D9 0%, var(--butter-100) 100%);
     color: var(--navy-900);
     box-shadow: 6px 8px 18px rgba(18, 28, 42, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.35);
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.02);
 }
 
-.floating-capsule-nav__btn:active {
-    box-shadow: inset 2px 2px 6px rgba(47, 72, 98, 0.4);
-    transform: none;
+.floating-capsule-nav__btn:active,
+.floating-capsule-nav__btn.is-pressed {
+    transform: translateY(2px) scale(0.94);
+    box-shadow: inset 2px 2px 6px rgba(47, 72, 98, 0.45);
 }
 
 .floating-capsule-nav__btn:focus-visible {
@@ -1004,6 +1042,11 @@ body {
     outline-offset: 3px;
 }
 
+/* ==========================================================================
+   Full-Page Micro-Animations
+   ========================================================================== */
+
+/* 1. Hero Primary Button Animasi Tekan */
 .neu-btn--primary {
     background: var(--grad-primary);
     color: var(--white) !important;
@@ -1011,16 +1054,124 @@ body {
     padding: 14px 36px;
     font-size: 15px;
     font-weight: 600;
+    transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    user-select: none;
 }
-
 .neu-btn--primary:hover {
-    box-shadow: 8px 12px 24px rgba(47, 72, 98, 0.36), -4px -4px 14px var(--neu-light);
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(47, 72, 98, 0.38), -4px -4px 12px var(--neu-light);
+}
+.neu-btn--primary:active,
+.neu-btn--primary.is-pressed {
+    transform: translateY(2px) scale(0.95);
+    box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.45);
 }
 
-.neu-btn--primary:active {
-    box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.35);
-    transform: none;
+/* 2. Wallet 3-Tab Buttons Animasi Tekan */
+.wallet-tab-btn {
+    transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    user-select: none;
+}
+.wallet-tab-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+.wallet-tab-btn:active,
+.wallet-tab-btn.is-pressed {
+    transform: translateY(2px) scale(0.93);
+}
+
+/* 3. Kartu Interaktif Saldo */
+.tabbed-wallet-card {
+    transition: transform 250ms var(--ease), filter 250ms var(--ease);
+}
+.tabbed-wallet-card:hover {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 22px 42px rgba(47, 72, 98, 0.28));
+}
+
+/* 4. Activity Cards (Pemasukan & Pengeluaran) */
+.landing-neu [onclick*="switchKasCard"] {
+    transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    user-select: none;
+}
+.landing-neu [onclick*="switchKasCard"]:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--raised-lg);
+}
+.landing-neu [onclick*="switchKasCard"]:active,
+.landing-neu [onclick*="switchKasCard"].is-pressed {
+    transform: scale(0.95) translateY(1.5px);
+    box-shadow: var(--inset-sm);
+}
+
+/* 5. Progress Bar Shimmer Glow Animation */
+@keyframes shimmer-sweep-bar {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+}
+.progress-animated-glow {
+    position: relative;
+    overflow: hidden;
+}
+.progress-animated-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    animation: shimmer-sweep-bar 2.6s infinite ease-in-out;
+}
+
+/* 6. Access Cards & Cutout Pill Button */
+.cutout-card {
+    transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 240ms ease;
+}
+.cutout-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 42px rgba(47, 72, 98, 0.14);
+}
+.cutout-card:hover .neu-card--access-icon {
+    transform: scale(1.1) rotate(4deg);
+    transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cutout-pill-btn {
+    transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    user-select: none;
+}
+.cutout-pill-btn:hover {
+    transform: scale(1.06) translateX(2px);
+    box-shadow: 0 8px 18px rgba(47, 72, 98, 0.28);
+}
+.cutout-pill-btn:active,
+.cutout-pill-btn.is-pressed {
+    transform: scale(0.92) translateY(2px);
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* 7. Feature Cards & Step Cards Hover & Micro Animation */
+.neu-card--feature,
+.neu-card--step,
+.neu-card--faq {
+    transition: all 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.neu-card--feature:hover,
+.neu-card--step:hover,
+.neu-card--faq:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--raised-lg);
+}
+.neu-card--feature:hover .neu-card--feature-icon,
+.neu-card--faq:hover .neu-card--faq-icon {
+    transform: scale(1.15) rotate(-4deg);
+    transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.neu-card--step:hover .neu-card--step-number {
+    transform: scale(1.1) rotate(4deg);
+    transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .neu-input {

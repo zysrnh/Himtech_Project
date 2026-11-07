@@ -38,7 +38,7 @@
             <!-- Right Pill Button -->
             @auth
                 <a href="{{ route('dashboard') }}" class="floating-capsule-nav__btn">
-                    {{ auth()->user()->email ?? 'Dashboard' }}
+                    {{ auth()->user()->name ?? (auth()->user()->username ?? 'Dashboard') }}
                 </a>
             @else
                 <a href="{{ route('login') }}" class="floating-capsule-nav__btn">

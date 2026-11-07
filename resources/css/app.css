@@ -783,7 +783,6 @@ body {
     overflow: hidden;
 }
 
-<<<<<<< HEAD
 /* ===== Komponen Neumorphism Universal Sesuai NEUMORPHISM.md ===== */
 .neu-card {
     background: var(--neu-surface);
@@ -845,7 +844,10 @@ body {
 }
 
 .neu-btn:focus-visible {
-=======
+    outline: 2px solid var(--ice-400);
+    outline-offset: 3px;
+}
+
 /* ==========================================================================
    Floating Capsule Navbar (revisi/image.png + NEUMORPHISM.md)
    ========================================================================== */
@@ -998,12 +1000,10 @@ body {
 }
 
 .floating-capsule-nav__btn:focus-visible {
->>>>>>> 36deda3dbfe085a73a0de2eea7dc8d4102ab4682
     outline: 2px solid var(--ice-400);
     outline-offset: 3px;
 }
 
-<<<<<<< HEAD
 .neu-btn--primary {
     background: var(--grad-primary);
     color: var(--white) !important;
@@ -1059,6 +1059,4 @@ body {
     font-weight: 600;
     color: var(--navy-500);
 }
-=======
->>>>>>> 36deda3dbfe085a73a0de2eea7dc8d4102ab4682
 

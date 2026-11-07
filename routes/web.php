@@ -36,6 +36,18 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Redirect cerdas rute 'dashboard' ke panel yang sesuai peran aktif
+Route::middleware('auth')->get('/dashboard', function () {
+    if (session('active_role') === 'anggota') {
+        return redirect()->route('anggota.dashboard');
+    }
+    if (auth()->user()->is_super_admin && ! session('active_role')) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return redirect()->route('pengurus.dashboard');
+})->name('dashboard');
+
 // Backward compatibility redirect untuk tautan login spesifik
 Route::get('/pengurus/login', fn () => redirect()->route('login'))->name('pengurus.login');
 Route::get('/anggota/login', fn () => redirect()->route('login'))->name('anggota.login');

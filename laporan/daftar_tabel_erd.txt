@@ -1,0 +1,199 @@
+================================================================================
+DAFTAR MODEL & TABEL YANG AMAN DIBIKIN ERD - SISTEM KASLY
+Tanggal Pembaruan: 2026-11-07
+================================================================================
+
+A. TABEL & MODEL YANG BOLEH DAN AMAN MASUK ERD
+--------------------------------------------------------------------------------
+Berikut adalah tabel dan model yang sudah ada di database, sudah ada modelnya,
+sudah terhubung relasinya, dan siap kamu gambar di ERD:
+
+1. Tabel: organizations
+   - Model: App\Models\Organization.php
+   - Keterangan: Master data organisasi / himpunan / tenant ormawa.
+   - Kolom Utama:
+     * id (PK)
+     * code (Unique)
+     * name
+     * description
+     * status
+     * is_midtrans_enabled
+
+2. Tabel: users
+   - Model: App\Models\User.php
+   - Keterangan: Akun login (Super Admin, Admin Ormawa, Bendahara, Anggota).
+   - Kolom Utama:
+     * id (PK)
+     * name
+     * username (Unique)
+     * email (Unique)
+     * phone
+     * password
+     * avatar_path
+     * is_super_admin
+     * admin_role
+
+3. Tabel: organization_user
+   - Model: (Pivot Table Many-to-Many antara users dan organizations)
+   - Keterangan: Menentukan peran user di organisasi tertentu.
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * user_id (FK -> users.id)
+     * member_id (FK -> members.id, Nullable)
+     * role (admin_organisasi, bendahara, staff, anggota)
+     * is_active
+
+4. Tabel: members
+   - Model: App\Models\Member.php
+   - Keterangan: Buku induk anggota ormawa (mahasiswa).
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * user_id (FK -> users.id, Nullable)
+     * member_number (NIM Mahasiswa)
+     * name
+     * phone
+     * is_active
+
+5. Tabel: dues_periods
+   - Model: App\Models\DuesPeriod.php
+   - Keterangan: Periode tagihan kas mingguan / bulanan.
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * created_by (FK -> users.id)
+     * title (Nama Periode)
+     * amount (Nominal Kas)
+     * due_date (Batas Jatuh Tempo penentu kedisiplinan)
+
+6. Tabel: dues_bills
+   - Model: App\Models\DuesBill.php
+   - Keterangan: Lembar tagihan kas per anggota (penentu lunas & tepat waktu).
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * dues_period_id (FK -> dues_periods.id)
+     * member_id (FK -> members.id)
+     * verified_by (FK -> users.id, Nullable)
+     * amount
+     * status (unpaid, pending, paid)
+     * is_on_time (boolean: true = tepat waktu, false = terlambat)
+     * paid_at (tanggal pelunasan)
+     * payment_method (cash, transfer, midtrans)
+     * payment_channel (manual_cash, qris, va)
+     * snap_token
+     * midtrans_order_id
+     * proof_path
+
+7. Tabel: cash_categories
+   - Model: App\Models\CashCategory.php
+   - Keterangan: Pengelompokan kas masuk dan kas keluar.
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * name (Nama Kategori)
+     * type (in, out)
+
+8. Tabel: transactions
+   - Model: App\Models\Transaction.php
+   - Keterangan: Buku kas mutasi finansial (pemasukan & pengeluaran).
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * category_id (FK -> cash_categories.id)
+     * created_by (FK -> users.id)
+     * type (in = masuk, out = keluar)
+     * amount (Nominal transaksi)
+     * transaction_date (Tanggal transaksi)
+     * description (Keterangan / Keperluan)
+     * proof_path (Foto nota / struk fisik belanja)
+     * is_locked (Kunci transaksi anti-manipulasi)
+     * reversal_of
+
+9. Tabel: organization_payment_methods
+   - Model: App\Models\OrganizationPaymentMethod.php
+   - Keterangan: Kanal bayar mandiri ormawa (Cash, Rekening Transfer, QRIS).
+   - Kolom Utama:
+     * id (PK)
+     * organization_id (FK -> organizations.id)
+     * type (cash, bank, ewallet, qris)
+     * channel_name
+     * account_number
+     * account_holder
+     * qris_image_path
+     * instructions
+     * is_active
+
+10. Tabel: member_registration_tokens
+    - Model: App\Models\MemberRegistrationToken.php
+    - Keterangan: Token QR Code pendaftaran anggota mandiri berbatas kuota & waktu.
+    - Kolom Utama:
+      * id (PK)
+      * organization_id (FK -> organizations.id)
+      * created_by (FK -> users.id)
+      * token (Unique)
+      * max_uses (Batas kuota)
+      * used_count (Kuota terpakai)
+      * expires_at
+      * is_active
+
+11. Tabel: organization_requests
+    - Model: App\Models\OrganizationRequest.php
+    - Keterangan: Formulir pendaftaran ormawa baru dari landing page.
+    - Kolom Utama:
+      * id (PK)
+      * approved_by (FK -> users.id, Nullable)
+      * name
+      * code
+      * pic_name
+      * pic_username
+      * pic_email
+      * pic_phone
+      * status (pending, approved, rejected)
+      * approved_at
+
+12. Tabel: activity_logs
+    - Model: App\Models\ActivityLog.php
+    - Keterangan: Rekam jejak audit aktivitas finansial dan aksi sistem.
+    - Kolom Utama:
+      * id (PK)
+      * organization_id (FK -> organizations.id, Nullable)
+      * user_id (FK -> users.id, Nullable)
+      * action
+      * subject_type
+      * subject_id
+      * payload (JSON)
+
+
+================================================================================
+B. REKOMENDASI PILIHAN ERD UNTUK LAPORAN / SLIDE
+================================================================================
+
+1. JIKA INGIN VERSI UTAMA / SIMPEL (Paling direkomendasikan untuk diagram inti):
+   Cukup gunakan 8 Tabel Utama:
+   - organizations
+   - users
+   - organization_user
+   - members
+   - dues_periods
+   - dues_bills
+   - cash_categories
+   - transactions
+
+2. JIKA INGIN VERSI LENGKAP 100%:
+   Gunakan seluruh 12 tabel di atas (termasuk payment methods, token QR, dan request pendaftaran).
+
+
+================================================================================
+C. TABEL YANG JANGAN / TIDAK PERLU DIMASUKKAN KE ERD
+================================================================================
+Tabel-tabel bawaan internal Laravel framework berikut TIDAK BOLEH / TIDAK PERLU
+digambar di ERD karena bukan bagian dari entitas bisnis Kasly:
+- cache
+- cache_locks
+- jobs
+- job_batches
+- failed_jobs
+- sessions
+- migrations

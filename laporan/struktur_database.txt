@@ -33,11 +33,12 @@ Keunggulan Pola Perancangan Ini:
      * Many-to-Many ke users melalui organization_user
 
 2. TABEL: users (Entitas Akun Pengguna Global)
-   - Deskripsi: Menyimpan kredensial autentikasi sistem.
+   - Deskripsi: Menyimpan kredensial autentikasi sistem dan kontak pengurus/anggota.
    - Kolom:
      * id: BIGINT (Primary Key, Auto Increment)
      * name: VARCHAR(255) - Nama pengguna
      * email: VARCHAR(255) (Nullable, Unique) - Alamat email pengguna
+     * phone: VARCHAR(30) (Nullable) - Nomor WhatsApp pengurus/pengguna untuk blast kredensial via Fonnte
      * password: VARCHAR(255) - Hash kata sandi pengguna (Bcrypt)
      * is_super_admin: BOOLEAN (Default: false) - Hak akses administrator pusat
      * remember_token: VARCHAR(100) (Nullable)

@@ -1,5 +1,5 @@
-DAFTAR FITUR YANG TELAH DIKEMBANGKAN - SISTEM KASLY
-Tanggal: 2026-11-07
+DAFTAR FITUR YANG TELAH DIKEMBANGKAN & ROADMAP PENGEMBANGAN - SISTEM KASLY
+Tanggal Pembaruan: 2026-11-07
 Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pembayaran Iuran/Kas
 
 ================================================================================
@@ -245,7 +245,79 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Portal Profil Mandiri Anggota (/anggota/profile): Anggota mahasiswa dapat memperbarui nama, nomor WhatsApp, serta mengganti kata sandi kapan saja secara mandiri.
 
 ================================================================================
-16. REKAPITULASI KREDENSIAL DEMO SISTEM SIAP UJI
+16. MODUL PENGATURAN METODE PEMBAYARAN ORMAWA (MULTI-CHANNEL CASH & CASHLESS) [STATUS: OK - SELESAI]
+================================================================================
+- Endpoint Pengurus: /pengurus/metode-pembayaran
+- Fleksibilitas Multi-Channel untuk Bendahara Ormawa:
+  * Pengaturan Pembayaran Tunai (Cash):
+    - Opsi toggle aktif/nonaktif penerimaan uang kas secara tunai langsung.
+    - Kustomisasi teks instruksi pembayaran tunai (misal: "Serahkan uang kas langsung ke Bendahara di Ruang Himpunan").
+  * Pengaturan Transfer Rekening Bank (Cashless Manual):
+    - Fitur tambah rekening bank ormawa (BCA, Mandiri, BRI, BNI, BSI, CIMB Niaga, dll).
+    - Kolom Nomor Rekening, Atas Nama Rekening, dan Catatan Tambahan.
+    - Tombol aksi hapus rekening dan toggle status aktif per rekening.
+  * Pengaturan QRIS Statis Ormawa:
+    - Fitur unggah file gambar QRIS resmi organisasi (JPG, PNG, WebP hingga 2MB).
+    - Menampilkan pratinjau gambar QRIS langsung di panel pengurus dan portal anggota.
+  * Kontrol Midtrans Payment Gateway (Cashless Otomatis):
+    - Toggle aktivasi integrasi Midtrans Sandbox untuk menerima pembayaran Virtual Account dan QRIS dinamis otomatis.
+
+================================================================================
+17. INTEGRASI PAYMENT GATEWAY CASHLESS OTOMATIS (MIDTRANS VA & QRIS) [STATUS: OK - SELESAI]
+================================================================================
+- Controller: App\Http\Controllers\Payment\MidtransController
+- Endpoint Pembayaran Anggota:
+  * POST /anggota/bills/{bill}/charge: Pembuatan tagihan Virtual Account (BCA, Mandiri, BRI, BNI, Permata) dan QRIS dinamis melalui integrasi Midtrans Core API.
+  * POST /anggota/bills/{bill}/check-status: Pengecekan status transaksi real-time langsung ke server Midtrans untuk sinkronisasi instan.
+  * POST /anggota/bills/{bill}/simulate-success: Fitur tombol simulasi pelunasan instan di lingkungan sandbox untuk kelancaran presentasi dan demo juri lomba tanpa kartu/uang sungguhan.
+- Webhook Handler Otomatis (Endpoint: POST /api/midtrans/webhook):
+  * Menerima notifikasi callback HTTP POST dari Midtrans secara real-time.
+  * Verifikasi keamanan signature key Midtrans untuk mencegah manipulasi data dari pihak luar.
+  * Otomatisasi Status Pembayaran: Saat transaksi berstatus settlement/capture:
+    - Status tagihan anggota (dues_bills) otomatis berubah menjadi lunas (paid).
+    - Mencatat waktu lunas aktual (paid_at).
+    - Mengevaluasi otomatis ketepatan waktu (is_on_time = true jika dibayar sebelum atau pada due_date).
+    - Mencatat transaksi kas masuk otomatis ke buku kas organisasi (transactions) dengan kategori Iuran Kas.
+
+================================================================================
+18. MANAJEMEN TAGIHAN IURAN KAS, VERIFIKASI & METRIK KEDISIPLINAN [STATUS: OK - SELESAI]
+================================================================================
+- Endpoint Pengurus: /pengurus/tagihan
+- Penerbitan Periode Iuran Kas Baru:
+  * Modal input: Judul Periode (contoh: Iuran Kas November 2026), Nominal Iuran (contoh: Rp 20.000), dan Tanggal Jatuh Tempo (due_date).
+  * Sistem otomatis menerbitkan tagihan (dues_bills) secara massal ke seluruh anggota aktif yang terdaftar di organisasi.
+- Pilihan Periode Kas Interaktif: Dropdown untuk beralih antar periode iuran yang aktif dan melihat riwayat periode sebelumnya.
+- Widget Ringkasan Telemetri Kedisiplinan:
+  * Total Anggota: Jumlah seluruh anggota yang memiliki kewajiban kas pada periode terkait.
+  * Kas Terkumpul: Nominal rupiah dana yang berhasil dihimpun beserta jumlah anggota yang telah lunas.
+  * Sisa Tunggakan: Total rupiah kas yang belum terbayar beserta jumlah anggota yang masih menunggak.
+  * Skor Disiplin (%): Rasio persentase anggota yang membayar tepat waktu sebelum jatuh tempo (metrik utama lomba).
+- Filter Tab Status Tagihan:
+  * Tab "Semua": Menampilkan seluruh anggota pada periode terpilih.
+  * Tab "Tepat Waktu": Anggota yang membayar sebelum atau pada tanggal jatuh tempo.
+  * Tab "Terlambat": Anggota yang membayar setelah melewati tanggal jatuh tempo.
+  * Tab "Belum Bayar": Anggota yang masih menunggak.
+- Tabel Data Tagihan & Aksi Bendahara:
+  * Menampilkan NIM/ID, Nama Anggota, Nominal, Status Pembayaran (badge Tepat Waktu, Terlambat, Belum Bayar), Metode Pembayaran & Waktu Bayar, serta Staf yang memverifikasi.
+  * Tombol Aksi Verifikasi: Bendahara dapat memverifikasi dan menyetujui pembayaran manual anggota secara instan.
+
+================================================================================
+19. REVITALISASI UI/UX NEUMORPHIC KONSISTEN (NAVBAR CAPSULE, SIDEBAR & PROFIL) [STATUS: OK - SELESAI]
+================================================================================
+- Floating Capsule Navbar pada Landing Page:
+  * Desain kapsul melayang (floating capsule) dengan nuansa Neumorphic Glassmorphism, backdrop-blur halus, dan micro-animations interaktif saat hover/scroll.
+- Sidebar Neumorphic Interaktif (Pengurus & Anggota):
+  * Permukaan bertingkat dengan efek bayangan soft raised yang nyaman di mata.
+  * Penanda menu aktif yang responsif dan konsisten.
+  * Kartu profil terpadu di bagian bawah sidebar menampilkan foto profil/avatar inisial resmi, nama pengguna, dan tombol Keluar Sesi.
+- Halaman Pengaturan Profil Pengurus (/pengurus/profile):
+  * Penyelarasan Tema Visual: Mengikuti palet warna bersih Jadwal Tagihan dengan permukaan putih lembut (bg-white/90), garis tepi ice-200, dan bayangan ganda halus.
+  * Menghilangkan gap samping yang berlebih (kontainer max-w-[1120px] mx-auto) agar rata dan sejajar dengan halaman dashboard.
+  * Desain Panel Avatar Baru: Rata dengan kartu utama tanpa kotak cekung (sunken box) yang tebal, dilengkapi cincin avatar neumorphic (.neu-avatar-ring) dan badge peran resmi (Admin Organisasi, Bendahara, Staff Ormawa).
+  * Penyesuaian Bentuk Kolom Input (rounded-[10px]): Sudut melengkung yang proporsional dengan garis lurus vertikal di sisi samping (menghilangkan bentuk bulat penuh kapsul), memberikan kesan rapi, tegas, dan modern.
+
+================================================================================
+20. REKAPITULASI KREDENSIAL DEMO SISTEM SIAP UJI
 ================================================================================
 1. Super Admin Kasly:
    - URL: /admin/login
@@ -271,4 +343,106 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
    - URL: /login (Kode Organisasi: HIMTECH)
    - Login: NIM 2026001 sampai 2026010 | Pass: sama dengan NIM
    - Hak: Portal transparansi kas dan status pelunasan tagihan pribadi.
+
+================================================================================
+BAGIAN B: ROADMAP FITUR YANG AKAN DIKEMBANGKAN SELANJUTNYA (UPCOMING FEATURES)
+================================================================================
+
+1. SISTEM PENGINGAT JATUH TEMPO OTOMATIS (DUES REMINDER & DUE DATE ALERT ENGINE)
+--------------------------------------------------------------------------------
+- Deskripsi: Mesin pengingat cerdas untuk menginformasikan kewajiban iuran kas kepada anggota sebelum dan sesudah tanggal jatuh tempo (due date).
+- Karakteristik & Alur Rencana:
+  * Notifikasi H-3 & H-1 Jatuh Tempo: Mengingatkan anggota bahwa batas akhir pembayaran kas mendekat, sehingga meminimalisir kelalaian bayar.
+  * Notifikasi H+1 Jatuh Tempo (Status Tunggakan): Mengingatkan anggota yang belum membayar bahwa status tagihannya telah masuk kategori terlambat.
+  * Perhitungan Efek Disiplin: Menyertakan pengingat bahwa keterlambatan pembayaran akan mempengaruhi Skor Kedisiplinan pribadi dan kelas/ormawa.
+  * Eksekusi Terjadwal: Menggunakan Laravel Task Scheduling (Cron Job) yang berjalan otomatis setiap pagi hari untuk mengecek tagihan berstatus 'unpaid'.
+
+2. KALENDER KAS & JADWAL IURAN (INTERACTIVE CASHFLOW & DUES CALENDAR)
+--------------------------------------------------------------------------------
+- Deskripsi: Antarmuka visual berbasis kalender interaktif bulanan untuk memetakan seluruh aktivitas finansial ormawa secara kronologis.
+- Karakteristik & Alur Rencana:
+  * Pemetaan Tanggal Jatuh Tempo: Setiap tanggal jatuh tempo periode kas ditandai dengan pin/badge khusus di tanggal terkait.
+  * Indikator Aliran Kas Masuk & Keluar: Tanggal transaksi mutasi kas diberi penanda visual (hijau untuk kas masuk, merah untuk pengeluaran kegiatan).
+  * Modal Rincian Harian: Saat tanggal tertentu pada kalender diklik, muncul modal popup yang merinci:
+    - Jadwal iuran kas yang jatuh tempo pada hari tersebut.
+    - Daftar transaksi kas masuk & keluar beserta kategori dan nominalnya.
+  * Tampilan Khusus Pengurus vs Anggota: Pengurus dapat melihat seluruh agenda tagihan dan cashflow, sedangkan anggota dapat melihat jadwal tagihannya sendiri dan agenda kegiatan ormawa.
+
+3. PENGIRIMAN PESAN WHATSAPP PENGINGAT (WHATSAPP BLAST & PERSONAL REMINDER VIA FONNTE)
+--------------------------------------------------------------------------------
+- Deskripsi: Fitur pengiriman pesan tagihan pengingat resmi langsung ke kontak WhatsApp anggota yang belum melunasi iuran kas.
+- Karakteristik & Alur Rencana:
+  * Tombol Aksi Cepat "Kirim Pengingat WA" (Personal Reminder):
+    - Tersedia di tabel tagihan pengurus pada baris anggota yang berstatus 'Belum Bayar'.
+    - Satu kali klik langsung mengirimkan pesan template WhatsApp resmi via Fonnte Gateway ke nomor WhatsApp anggota terkait.
+  * Fitur Broadcast Massal "Ingatkan Seluruh Penunggak" (WhatsApp Blast):
+    - Tombol di atas tabel tagihan untuk mengirimkan pesan pengingat sekaligus ke seluruh anggota yang belum membayar pada periode tersebut.
+    - Dilengkapi jeda pengiriman (rate throttling) otomatis agar pengiriman aman dan tidak terdeteksi spam.
+  * Template Pesan Rapi & Personal:
+    - Memuat salam ramah, Nama Anggota, Nama Ormawa, Nama Periode Kas, Nominal Tagihan (Rp), Batas Jatuh Tempo, Rekening Tujuan Pembayaran, serta Link Portal Anggota untuk bayar online via Virtual Account/QRIS.
+
+4. FITUR LUPA KATA SANDI (SECURE PASSWORD RESET VIA WHATSAPP / EMAIL)
+--------------------------------------------------------------------------------
+- Deskripsi: Alur pemulihan kata sandi mandiri bagi pengurus maupun anggota yang lupa kata sandi login akun.
+- Karakteristik & Alur Rencana:
+  * Tautan "Lupa Kata Sandi?" pada halaman login (/login dan /admin/login).
+  * Validasi Identitas Fleksibel:
+    - Pengguna memasukkan Kode Organisasi dan Username/NIM atau Email terdaftar.
+  * Pengiriman Kode Verifikasi / Link Reset:
+    - Opsi pengiriman link reset / kode OTP 6 digit berbatas waktu (15 menit) langsung ke nomor WhatsApp resmi pengguna via Fonnte atau via Email SMTP.
+  * Formulir Pembaruan Kata Sandi Baru:
+    - Halaman input kata sandi baru dengan konfirmasi kata sandi dan validasi kekuatan password (minimal 8 karakter).
+    - Otomatis mengenkripsi password dengan Hash::make (Bcrypt cost 12) dan mencatat rekam jejak ke ActivityLog.
+
+5. PUSAT NOTIFIKASI DALAM APLIKASI (IN-APP REAL-TIME NOTIFICATION CENTER)
+--------------------------------------------------------------------------------
+- Deskripsi: Sistem pemberitahuan instan di dalam aplikasi menggunakan ikon lonceng notifikasi (Notification Bell) di bar navigasi/header.
+- Karakteristik & Alur Rencana:
+  * Lonceng Notifikasi Interaktif: Menampilkan badge angka merah untuk notifikasi yang belum dibaca (unread count).
+  * Panel Dropdown Notifikasi:
+    - Menampilkan daftar pemberitahuan terbaru lengkap dengan ikon status, judul, waktu relatif (misal: "5 menit lalu"), dan tombol "Tandai Telah Dibaca".
+  * Jenis Notifikasi Anggota:
+    - "Periode Iuran Baru Diterbitkan": Saat bendahara membuka tagihan kas bulan baru.
+    - "Pembayaran Anda Berhasil Diverifikasi": Saat transfer manual disetujui atau VA/QRIS lunas.
+    - "Pengingat: 1 Hari Menuju Jatuh Tempo": Alert pengingat personal.
+  * Jenis Notifikasi Pengurus / Bendahara:
+    - "Pembayaran Baru Masuk": Notifikasi instan saat ada anggota yang melunasi via Midtrans atau mengunggah bukti bayar.
+    - "Pengajuan Ormawa Disetujui": Notifikasi saat status organisasi diaktifkan oleh admin.
+
+6. PENCATATAN PEMBAYARAN TUNAI MANDIRI OLEH BENDAHARA (DIRECT CASH PAYMENT ENTRY)
+--------------------------------------------------------------------------------
+- Deskripsi: Fitur cepat bagi bendahara untuk langsung mencatatkan dan mengesahkan pembayaran iuran anggota yang membayar secara tunai/cash tatap muka.
+- Karakteristik & Alur Rencana:
+  * Tombol Aksi "Input Bayar Tunai (Cash)" di halaman Tagihan Pengurus.
+  * Modal Formulir Pembayaran Tunai Cepat:
+    - Pencarian Anggota: Kolom autokomplit nama atau NIM anggota yang membayar di tempat.
+    - Pemilihan Periode Kas: Pilihan tagihan periode yang ingin dilunasi (bisa melunasi 1 periode atau beberapa periode sekaligus).
+    - Nominal Uang Diterima: Otomatis terisi sesuai tagihan dengan opsi pencatatan uang lebih/kembalian.
+    - Catatan / Keterangan: Catatan opsional (misal: "Diserahkan langsung saat rapat mingguan").
+  * Otomatisasi Sistem Seketika:
+    - Mengubah status tagihan anggota dari 'unpaid' menjadi 'paid'.
+    - Mengisi field payment_method = 'CASH' dan mencatat bendahara yang menerima uang fisik.
+    - Menghitung evaluasi ketepatan waktu pembayaran (is_on_time) secara akurat berdasarkan waktu pencatatan.
+    - Otomatis mencatat transaksi Kas Masuk ke Buku Kas (transactions) sehingga saldo kas fisik langsung bertambah tanpa perlu input mutasi dua kali.
+    - Tombol "Kirim Kuitansi WhatsApp": Opsi satu klik untuk langsung mengirimkan tanda terima pembayaran tunai digital ke WhatsApp anggota yang baru saja membayar.
+
+7. MODUL PEMBUKUAN KAS LENGKAP & PENCATATAN PEMASUKAN / PENGELUARAN (CASH LEDGER & MUTATION ENGINE)
+--------------------------------------------------------------------------------
+- Deskripsi: Modul pembukuan akuntansi kas mandiri untuk mencatat, mengelompokkan, dan memonitor seluruh arus kas masuk (pemasukan selain iuran) dan kas keluar (pengeluaran operasional & belanja kegiatan ormawa).
+- Karakteristik & Alur Rencana:
+  * Form Pencatatan Kas Masuk (Pemasukan Non-Iuran):
+    - Input nominal dana, tanggal penerimaan, kategori kas masuk (Donasi, Sponsor, Hibah Kampus, Usaha Dana, Kas Awal).
+    - Lampiran bukti transfer/kuitansi pemasukan dan deskripsi peruntukan dana.
+  * Form Pencatatan Kas Keluar (Pengeluaran Belanja Organisasi):
+    - Input nominal dana keluar, tanggal transaksi, kategori kas keluar (Konsumsi Rapat, ATK & Fotokopi, Sewa Tempat/Alat, Transportasi, Logistik Acara, dll).
+    - Wajib unggah foto nota fisik / struk belanja / invoice (JPG, PNG, PDF) sebagai bukti pertanggungjawaban otentik anti-fiktif.
+    - Kolom penanggung jawab belanja (nama PIC yang memegang dana).
+  * Prinsip Buku Kas Terkunci (Locked Ledger):
+    - Setiap transaksi tersimpan dengan flag is_locked = true dan tidak dapat dihapus sembarangan untuk mencegah penggelapan dana kas.
+    - Koreksi transaksi keliru wajib melalui mekanisme transaksi pembalik (reversal) yang saling meniadakan dan tercatat transparan di activity_logs.
+  * Filter & Rekapitulasi Pembukuan:
+    - Filter mutasi berdasarkan rentang tanggal, jenis (Masuk/Keluar), dan kategori.
+    - Rekapitulasi ringkasan: Total Pemasukan Periode Ini, Total Pengeluaran Periode Ini, dan Arus Kas Bersih (Net Cash Flow).
+  * Transparansi Terbuka ke Portal Anggota:
+    - Seluruh mutasi yang dicatat bendahara otomatis tampil di portal anggota (/anggota/dashboard) sehingga anggota dapat mengaudit bukti nota secara langsung tanpa perlu meminta laporan SPJ manual.
 

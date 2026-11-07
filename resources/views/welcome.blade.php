@@ -97,10 +97,10 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <span class="card-text-title font-display font-bold text-xl sm:text-2xl tracking-tight">
-                                        KASLY
+                                        Kasly
                                     </span>
-                                    <span id="hero-card-tag" class="card-tag text-[11px] font-semibold px-2.5 py-0.5 rounded-full tracking-wide">
-                                        Kas Utama
+                                    <span id="hero-card-tag" class="card-text-title font-display font-medium text-xl sm:text-2xl tracking-tight opacity-85">
+                                        Saldo
                                     </span>
                                 </div>
 
@@ -551,7 +551,7 @@
         const kasThemes = {
             kas: {
                 themeClass: 'theme--kas',
-                tag: 'Kas Utama',
+                tag: 'Saldo',
                 label: 'Total Saldo Kas Tersedia',
                 amount: 'Rp 14.850.000',
                 detail: '100% Kas Transparan • Terisolasi Multi-Tenant',
@@ -562,7 +562,7 @@
             },
             iuran: {
                 themeClass: 'theme--iuran',
-                tag: 'Pemasukan (Iuran)',
+                tag: 'Pemasukan',
                 label: 'Total Pemasukan Iuran',
                 amount: '+Rp 18.200.000',
                 detail: '142 Anggota Lunas (94%) • 8 Tagihan Berjalan',
@@ -573,7 +573,7 @@
             },
             cadangan: {
                 themeClass: 'theme--cadangan',
-                tag: 'Pengeluaran (Kas Cadangan)',
+                tag: 'Pengeluaran',
                 label: 'Total Pengeluaran Kas',
                 amount: '-Rp 3.350.000',
                 detail: '24 Transaksi Operasional • Dilengkapi Bukti Nota',

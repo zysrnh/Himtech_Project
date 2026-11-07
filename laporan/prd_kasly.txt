@@ -1,6 +1,6 @@
 ================================================================================
 PRODUCT REQUIREMENTS DOCUMENT (PRD) - SISTEM KASLY
-Platform Manajemen & Transparansi Iuran Kas Multi-Tenant untuk Organisasi Mahasiswa
+Platform Tata Kelola Keuangan & Transparansi Iuran Kas Ormawa Multi-Tenant
 Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pembayaran Iuran/Kas
 ================================================================================
 
@@ -9,115 +9,154 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Nama Produk               : Kasly (Smart Multi-Tenant Student Organization Cash & Dues Platform)
 - Penulis / Pemilik Produk  : Product Manager & Lead Developer Kasly (Tim Himtech)
 - Tanggal Dokumen           : 2026-11-07
-- Versi Dokumen             : v1.0-draft (Active Development Sprint)
-- Status Dokumen            : In Active Development (Living Document - Berjalan Seiring Pembuatan Fitur)
-- Target Waktu Peluncuran   : Sisa Sprint Hari Ini (Target Selesai & Demo Q4 2026)
-- Tumpukan Teknologi (Stack): Laravel 12 (PHP 8.3), Tailwind CSS v4 (Ice & Butter v2), MySQL / SQLite, Fonnte WhatsApp API Gateway, Laravel Mail SMTP.
+- Versi Dokumen             : v1.2 (Active Development & Extended Roadmap Sprint)
+- Status Dokumen            : Approved & In Active Implementation (Living Document)
+- Target Waktu Peluncuran   : Q4 2026 (Kompetisi / Hackathon & Production Deployment)
+- Tumpukan Teknologi (Stack):
+  * Backend Framework       : Laravel 12 / 13 (PHP 8.3+)
+  * Frontend & Styling      : Blade Templating Engine, Tailwind CSS v4 (Design System Ice & Butter v2 Neumorphism), Vite
+  * Database & Storage      : Relational Database (MySQL 8.0+ / SQLite) dengan partisi multi-tenant organization_id
+  * Payment Gateway         : Midtrans Sandbox (Core API & Snap: Virtual Account BCA, Mandiri, BRI, BNI, Permata, QRIS Dinamis)
+  * Integrasi Notifikasi    : Fonnte WhatsApp Gateway API (Instant Blast & Webhook Alert)
+  * Mail Transport          : Laravel Mail SMTP (SSL port 465)
 
 --------------------------------------------------------------------------------
 2. RINGKASAN EKSEKUTIF & LATAR BELAKANG (EXECUTIVE SUMMARY & BACKGROUND)
 --------------------------------------------------------------------------------
 A. Penjelasan Singkat Produk:
-   Kasly adalah platform web Software-as-a-Service (SaaS) Multi-Tenant yang dirancang khusus untuk memodernisasi tata kelola keuangan, siklus penagihan iuran rutin, dan transparansi mutasi kas pada organisasi kemahasiswaan (Himpunan Mahasiswa Jurusan, BEM, UKM, dan Komunitas Kampus).
+   Kasly adalah platform Software-as-a-Service (SaaS) multi-tenant yang dirancang khusus untuk memodernisasi tata kelola keuangan, siklus penagihan iuran berkala, pembukuan kas anti-manipulasi, dan transparansi mutasi kas pada organisasi kemahasiswaan (Himpunan Mahasiswa Jurusan, BEM, UKM, dan Komunitas Kampus).
 
 B. Masalah Utama Pengguna (Problem Statements):
-   1. Rendahnya Kedisiplinan Bayar Kas Tepat Waktu:
-      Anggota sering menunda pembayaran kas karena tidak ada batas waktu (due date) yang jelas, tidak ada sistem pengingat otomatis, dan ketiadaan indikator penilaian kepatuhan yang objektif.
-   2. Beban Mental & Operasional Bendahara (Tagih Manual):
-      Bendahara harus menagih satu per satu secara manual lewat chat WhatsApp, mencocokkan mutasi rekening pribadi secara manual, dan mencatat ulang di buku tulis atau spreadsheet yang rawan tercecer.
-   3. Krisis Kepercayaan & Ketiadaan Transparansi Kas:
-      Anggota sering curiga atau enggan membayar kas karena uang kas tidak diketahui dialokasikan ke mana, tidak ada bukti nota fisik yang dapat diakses publik, dan pencatatan kas rentan dimanipulasi/dihapus diam-diam oleh pengurus.
-   4. Kendala Aksesibilitas Multi-Organisasi:
-      Mahasiswa umumnya aktif di lebih dari satu organisasi (misal: Himpunan dan UKM). Sistem konvensional mengharuskan mereka mengingat banyak akun atau organisasi harus membuat aplikasi terpisah sendiri dengan biaya sewa server yang mahal.
+   1. Rendahnya Kedisiplinan Pembayaran Iuran Kas:
+      Anggota sering menunda pembayaran iuran kas bulanan karena ketiadaan tanggal jatuh tempo (due date) yang tegas, tidak adanya sistem pengingat otomatis, dan ketiadaan indikator penilaian kepatuhan yang objektif.
+   2. Beban Mental & Rekapitulasi Manual bagi Bendahara:
+      Bendahara harus menagih satu per satu secara manual lewat chat WhatsApp, memvalidasi bukti transfer manual, mencatat pembayaran tunai secara serabutan di buku tulis atau spreadsheet yang rawan hilang.
+   3. Krisis Transparansi & Keraguan Anggota:
+      Anggota yang rutin membayar iuran kas tidak memiliki sarana mandiri untuk memantau saldo kas terkini dan alokasi pengeluaran dana kegiatan secara terbuka, sehingga memicu kecurigaan dan keengganan membayar kas.
+   4. Pembukuan Kas yang Rawan Manipulasi & Tanpa Bukti Nota Fisik:
+      Buku kas konvensional sangat mudah diubah atau dihapus nominalnya tanpa menyertakan nota fisik/struk otentik atau rekam jejak audit (audit trail).
+   5. Isolasi Data Multi-Organisasi yang Lemah:
+      Organisasi di lingkungan kampus memerlukan sistem terpadu yang dapat digunakan oleh banyak himpunan sekaligus (multi-tenant) dengan pemisahan basis data yang ketat dan aman.
 
-C. Peluang Solusi (Solution & Value Proposition):
-   Kasly menghadirkan "1 Platform untuk Seluruh Ormawa" dengan basis data terpartisi (multi-tenant), gerbang login tunggal tanpa ribet pilih tab, penilaian kedisiplinan otomatis (Skor Disiplin % berdasarkan parameter is_on_time <= due_date), pembukuan kas terkunci (locked ledger anti-manipulasi), dan integrasi WhatsApp Gateway resmi untuk notifikasi penagihan serta penyampaian kredensial instan.
+C. Nilai Tambah & Solusi (Value Proposition):
+   Kasly menghadirkan "1 Platform untuk Seluruh Ormawa" dengan basis data terpartisi aman, portal login universal tanpa pilihan tab yang membingungkan, otomatisasi penilaian kedisiplinan (*On-Time Rate %*), kanal pembayaran multi-channel (Tunai, Rekening Transfer, dan Midtrans Virtual Account/QRIS otomatis), pembukuan kas terkunci (*locked ledger*), serta keterbukaan mutasi kas lengkap dengan bukti nota fisik yang dapat diaudit langsung oleh seluruh anggota.
 
 --------------------------------------------------------------------------------
 3. TUJUAN & METRIK KESUKSESAN (OBJECTIVES & SUCCESS METRICS/KPI)
 --------------------------------------------------------------------------------
 A. Tujuan Produk (Goals):
-   1. Mengotomatiskan 100% siklus penagihan dan pembukuan kas ormawa tanpa buku catatan fisik.
+   1. Mengotomatisasi 100% siklus penagihan dan pembukuan kas ormawa tanpa catatan fisik konvensional.
    2. Meningkatkan rasio pembayaran kas tepat waktu secara signifikan melalui metrik kedisiplinan objektif.
-   3. Mewujudkan transparansi penuh saldo dan aliran kas masuk/keluar yang dapat diakses oleh seluruh anggota mahasiswa secara real-time.
-   4. Memungkinkan ormawa baru mendaftar mandiri dari landing page dan langsung aktif dalam hitungan menit setelah di-ACC oleh admin penerima.
+   3. Menyediakan portal transparansi finansial real-time bagi anggota mahasiswa tanpa birokrasi manual.
+   4. Menyediakan metode pembayaran iuran yang fleksibel: Tunai langsung ke bendahara, Transfer Bank Manual, hingga Cashless instan via Midtrans (VA & QRIS).
+   5. Mengunci integritas pembukuan kas (*locked ledger*) agar data kas anti-manipulasi dan anti-fiktif.
 
 B. Metrik Kesuksesan (Key Performance Indicators / KPI):
-   1. Tingkat Kepatuhan Tepat Waktu (On-Time Payment Rate):
-      Target: Minimal 85% dari total iuran kas yang lunas dibayar sebelum atau tepat pada tanggal jatuh tempo (due_date).
-   2. Penurunan Waktu Rekonsiliasi Kas Bendahara:
-      Target: Pembuatan tagihan 1 angkatan (50-100 anggota) selesai dalam waktu < 1 menit (otomatisasi generate tagihan massal per periode).
-   3. Integritas Audit Kas (Zero Unaudited Modifications):
-      Target: 100% transaksi kas terkunci (is_locked = true), dengan 0% data transaksi yang bisa dihapus sembarangan. Koreksi wajib melalui reversal yang tercatat di audit trail.
-   4. Efisiensi Onboarding Organisasi Baru:
-      Target: Waktu proses pendaftaran dari landing page hingga akun ketua ormawa aktif dan menerima WhatsApp kredensial < 2 menit setelah di-ACC.
+   1. Tingkat Pembayaran Tepat Waktu (On-Time Payment Rate):
+      Target: Minimal 85% dari total iuran kas terbayar sebelum atau tepat pada tanggal jatuh tempo (due_date).
+   2. Efisiensi Waktu Rekonsiliasi Kas Bendahara:
+      Target: Memangkas waktu rekapitulasi bendahara sebesar >80% (dari 4 jam per minggu menjadi <30 menit).
+   3. Transparansi Kas Anggota (Audit Openness):
+      Target: 100% mutasi kas masuk dan kas keluar dapat dipantau langsung oleh anggota lengkap dengan lampiran nota.
+   4. Kecepatan Onboarding Organisasi:
+      Target: Ormawa baru aktif dan menerima WhatsApp/Email kredensial <2 menit setelah disetujui (ACC).
+   5. Keamanan Data (Zero Cross-Tenant Leakage):
+      Target: 0% insiden kebocoran data antar-organisasi yang berbeda.
 
 --------------------------------------------------------------------------------
 4. TARGET PENGGUNA (USER PERSONAS)
 --------------------------------------------------------------------------------
 1. Persona 1: Super Admin Kasly (Master Platform Owner)
-   - Karakteristik: Administrator infrastruktur sistem Kasly.
-   - Kebutuhan: Memantau telemetri seluruh organisasi di kampus, mengontrol keaktifan ormawa, mengelola administrator kasly lain, dan melakukan audit global.
-   - Batasan: Tidak mencampuri urusan belanja harian internal kas ormawa.
+   - Karakteristik: Administrator infrastruktur utama sistem Kasly.
+   - Wewenang: Memantau telemetri global, mengontrol status aktivasi organisasi, mengelola multi-admin platform Kasly, dan mengaudit log sistem.
 
 2. Persona 2: Admin Penerima Organisasi (Campus Coordinator / Ormawa Overseer)
-   - Karakteristik: Perwakilan BEM / Kemahasiswaan / Admin khusus pendaftaran.
-   - Kebutuhan: Menerima notifikasi WhatsApp saat ada pengajuan organisasi baru, memvalidasi identitas ormawa dan pemohon, serta menekan tombol "Setujui (ACC)" atau "Tolak".
-   - Batasan: Khusus menangani gerbang masuk pendaftaran. Tidak memiliki akses mengubah atau menghapus organisasi yang sudah berjalan.
+   - Karakteristik: Perwakilan BEM / Kemahasiswaan / Admin verifikator pendaftaran.
+   - Wewenang: Meninjau pengajuan ormawa baru dari landing page, melakukan persetujuan (ACC) atau penolakan, dengan pembatasan hak akses ketat (tidak dapat mengubah data operasional ormawa lain).
 
-3. Persona 3: Admin Organisasi / Ketua / PIC Ormawa
-   - Karakteristik: Ketua Himpunan / UKM yang disetujui pendaftarannya.
-   - Kebutuhan: Mengelola data ormawa miliknya, membuat akun staf dan bendahara internal, serta memantau kesehatan kas secara keseluruhan.
-   - Batasan: Hanya berkuasa di dalam batas organisasinya sendiri (terisolasi multi-tenant).
+3. Persona 3: Admin Organisasi / Ketua / PIC Ormawa (Tenant Admin)
+   - Karakteristik: Ketua Himpunan / UKM yang memegang kendali kepengurusan ormawa.
+   - Wewenang: Mengelola data ormawa, mendaftarkan dan membagi peran staf/bendahara internal, serta mengawasi kesehatan kas keseluruhan.
 
-4. Persona 4: Bendahara Ormawa (Financial Operator)
-   - Karakteristik: Mahasiswa yang diamanahi mengelola keuangan himpunan/komunitas.
-   - Kebutuhan: Membuat jadwal periode kas dengan tanggal jatuh tempo, memvalidasi bukti transfer anggota, mencatat pengeluaran kas dengan upload nota, dan melihat skor kedisiplinan iuran.
-   - Batasan: Terikat aturan pembukuan locked ledger (tidak bisa menghapus transaksi sembarangan).
+4. Persona 4: Bendahara Ormawa (Treasurer / Financial Operator)
+   - Karakteristik: Pengurus bidang keuangan yang mengoperasikan kas harian.
+   - Wewenang: Membuat periode tagihan kas dan tanggal jatuh tempo, mengonfigurasi metode pembayaran (Cash/Cashless/Midtrans), memvalidasi pembayaran transfer, menginput pembayaran tunai langsung di tempat, mencatat mutasi pengeluaran dengan upload nota fisik, dan mengirimkan pengingat penagihan.
 
-5. Persona 5: Anggota Mahasiswa (Member / Dues Payer)
-   - Karakteristik: Mahasiswa anggota ormawa yang memiliki kewajiban membayar iuran kas.
-   - Kebutuhan: Login mudah cukup dengan NIM/Nomor Anggota, melihat jumlah tagihan tertunggak, tanggal jatuh tempo, status pembayaran (tepat waktu vs terlambat), dan melihat transparansi saldo kas riil organisasi.
-   - Batasan: Hak akses read-only dan hanya dapat mengunggah bukti bayar untuk tagihannya sendiri.
+5. Persona 5: Anggota Mahasiswa (Student Member / Dues Payer)
+   - Karakteristik: Mahasiswa anggota ormawa yang berkewajiban membayar iuran kas.
+   - Kebutuhan: Login mudah cukup dengan NIM dan kode organisasi, melihat status tagihan (lunas, tepat waktu vs terlambat), membayar online via Midtrans VA/QRIS atau transfer/tunai, serta mengaudit laporan mutasi kas ormawa.
 
 --------------------------------------------------------------------------------
 5. RUANG LINGKUP & STATUS IMPLEMENTASI (SCOPE & STATUS)
 --------------------------------------------------------------------------------
-A. Status Milestone 1: SELESAI & SIAP UJI (Implemented & Live Demo):
+
+A. STATUS MILESTONE 1: TELAH SELESAI & SIAP UJI (IMPLEMENTED & LIVE DEMO):
    1. Arsitektur Multi-Tenant Terisolasi (partition key organization_id di seluruh tabel transaksi dan anggota).
-   2. Landing Page Lengkap berbasis Ice & Butter v2 dengan formulir pendaftaran ormawa mandiri (/ajukan-organisasi).
-   3. Panel Khusus Admin Penerima Organisasi untuk review dan ACC pendaftaran dengan otomatisasi pembuatan akun pengelola.
+   2. Landing Page Lengkap berbasis Ice & Butter v2 dengan Floating Capsule Navbar dan formulir pendaftaran ormawa mandiri (/ajukan-organisasi).
+   3. Panel Khusus Admin Penerima Organisasi untuk review dan ACC/Tolak pendaftaran ormawa dengan otomatisasi pembuatan akun pengelola.
    4. Otomasi Pengiriman Kredensial via WhatsApp Gateway (Fonnte API) dan Email Notifikasi resmi (SMTP).
-   5. Portal Login Tunggal Universal (/login) dengan deteksi otomatis peran (Pengurus vs Anggota) dan proteksi anti-brute force (Rate Limiting 5x/menit). [STATUS: OK - SELESAI]
-   6. Modul Autentikasi Khusus Super Admin & Admin Penerima (/admin/login) dengan isolasi wewenang ketat dan redirect cerdas. [STATUS: OK - SELESAI]
-   7. Sistem Registrasi Mandiri Anggota via QR Code & Tautan Berbatas Waktu & Kuota (/daftar-anggota) dengan auto-login akun default (NIM), direct download PNG, penyesuaian kuota aktif, dan modal edit data anggota. [STATUS: OK - SELESAI]
-   8. Dashboard Ringkasan Pengurus (/pengurus/dashboard) dengan Indikator Kedisiplinan Iuran (% skor tepat waktu) dan telemetri tunggakan real-time.
-   9. Manajemen Staf & Bendahara bertingkat oleh Admin Organisasi (/pengurus/staff). [STATUS: OK - SELESAI]
+   5. Portal Login Tunggal Universal (/login) dengan deteksi otomatis peran (Pengurus vs Anggota) dan proteksi anti-brute force (Rate Limiting 5x/menit).
+   6. Modul Autentikasi Khusus Super Admin & Admin Penerima (/admin/login) dengan isolasi wewenang ketat dan direct redirect.
+   7. Sistem Registrasi Mandiri Anggota via QR Code & Tautan Berbatas Waktu & Kuota (/daftar-anggota) dengan auto-login, direct download PNG, penyesuaian kuota aktif, dan modal edit data anggota.
+   8. Dashboard Analitik Pengurus (/pengurus/dashboard) dengan Indikator Kedisiplinan Iuran (% Skor Disiplin), telemetri tunggakan, dan mutasi terkini.
+   9. Manajemen Staf & Bendahara bertingkat oleh Admin Organisasi (/pengurus/staff).
    10. Portal Transparansi Anggota (/anggota/dashboard) dengan pelacakan status is_on_time dan buku kas terbuka.
-   11. Portal Profil Mandiri Pengurus (/pengurus/profile) dan Anggota (/anggota/profile) untuk pembaruan profil & kata sandi mandiri. [STATUS: OK - SELESAI]
+   11. Manajemen Profil Pengguna (/admin/profile, /pengurus/profile, /anggota/profile): Unggah avatar resmi, penyesuaian NIM mandiri, nomor WhatsApp, dan kata sandi.
    12. Sistem Pembukuan Locked Ledger dengan mekanisme pembalik (reversal) dan audit trail permanen (activity_logs).
-   13. Desain Responsif & Flat Design (Ice & Butter v2: Tanpa gradien, tipografi Outfit + Plus Jakarta Sans).
+   13. Modul Pengaturan Metode Pembayaran Ormawa (/pengurus/metode-pembayaran):
+       - Konfigurasi pembayaran Tunai (Cash) dengan instruksi serah terima.
+       - Penambahan multi-rekening bank transfer manual (BCA, Mandiri, BRI, BNI, dll).
+       - Unggah dan pratinjau gambar QRIS statis ormawa.
+       - Sakelar toggle aktivasi Midtrans Sandbox Payment Gateway.
+   14. Integrasi Payment Gateway Cashless Otomatis (Midtrans VA & QRIS):
+       - Endpoint pembuatan tagihan Virtual Account (BCA, Mandiri, BRI, BNI, Permata) & QRIS.
+       - Tombol simulasi bayar instan sandbox di portal anggota untuk demo lomba.
+       - Webhook callback handler (/api/midtrans/webhook) untuk otomatisasi pelunasan tagihan, evaluasi is_on_time, dan pencatatan kas masuk.
+   15. Modul Manajemen Tagihan Iuran Kas & Verifikasi Pembayaran (/pengurus/tagihan):
+       - Pembuatan periode kas baru dengan tanggal jatuh tempo (due_date) dan generate tagihan massal ke seluruh anggota aktif.
+       - Filter tab status: Semua, Tepat Waktu, Terlambat, Belum Bayar.
+       - Verifikasi pembayaran manual oleh bendahara.
+   16. Revitalisasi Desain UI/UX Neumorphic Konsisten:
+       - Floating Capsule Navbar pada landing page.
+       - Sidebar Neumorphic interaktif dengan state active raised dan kartu profil terpadu di bagian bawah.
+       - Form profil pengurus yang selaras dengan tema Jadwal Tagihan, container max-w-[1120px], serta kolom input rounded rectangle (rounded-[10px]) dengan garis lurus di sisi samping.
 
-B. Status Milestone 2: SEDANG BERJALAN (In Active Sprint - Pengerjaan Berjalan):
-   1. Modul Manajemen Tagihan Iuran (/pengurus/tagihan):
-      - Pembuatan periode tagihan kas baru (judul, nominal, batas tanggal jatuh tempo).
-      - Otomatisasi generate tagihan serentak ke seluruh anggota aktif ormawa.
-      - Fitur konfirmasi pembayaran kas (verifikasi bukti bayar anggota & ubah status jadi lunas).
-   2. Modul Buku Kas Mutasi Mandiri (/pengurus/buku-kas):
-      - Form pencatatan kas masuk dan kas keluar dengan upload bukti nota/struk belanja fisik.
-      - Rekapitulasi mutasi dan filter berdasarkan kategori kas.
-   3. Modul Buku Induk Anggota Ormawa (/pengurus/anggota): SELESAI
-      - Pendaftaran mandiri via QR Code dan form manual.
-      - Edit data anggota (NIM, Nama, No. WA) dengan sinkronisasi login.
-      - Kontrol status aktivasi/nonaktif dan hapus anggota.
+B. STATUS MILESTONE 2: ROADMAP PENGEMBANGAN FITUR SELANJUTNYA (UPCOMING SPRINT):
+   1. Sistem Pengingat Jatuh Tempo Otomatis (Dues Reminder & Due Date Alert Engine):
+      - Alert berkala otomatis H-3 dan H-1 sebelum jatuh tempo.
+      - Peringatan H+1 status tunggakan terlambat bagi anggota yang belum melunasi.
+      - Otomatisasi scheduler Laravel (Cron Job).
+   2. Kalender Kas & Jadwal Iuran Interaktif (Interactive Cashflow & Dues Calendar):
+      - Tampilan visual kalender bulanan interaktif.
+      - Pin penanda tanggal jatuh tempo iuran kas dan tanggal kegiatan ormawa.
+      - Indikator warna mutasi kas masuk (hijau) dan kas keluar (merah) per hari dengan modal rincian transaksi harian saat tanggal diklik.
+   3. Pengiriman Pesan WhatsApp Pengingat (WhatsApp Blast & Personal Reminder via Fonnte):
+      - Tombol aksi cepat "Kirim Pengingat WA" personal di tabel tagihan pengurus.
+      - Tombol broadcast massal "Ingatkan Seluruh Penunggak" dengan perlindungan anti-spam rate throttling.
+      - Template pesan sopan memuat rincian nominal, batas jatuh tempo, dan link bayar online.
+   4. Fitur Lupa Kata Sandi (Secure Password Reset via WhatsApp / Email):
+      - Tautan "Lupa Kata Sandi?" pada portal login.
+      - Pengiriman link reset atau OTP 6 digit via WhatsApp Fonnte atau Email SMTP.
+      - Form pembaruan kata sandi baru dengan enkripsi Bcrypt.
+   5. Pusat Notifikasi Real-time Dalam Aplikasi (In-App Notification Center):
+      - Ikon lonceng notifikasi (Notification Bell) dengan badge angka unread di navbar dashboard.
+      - Notifikasi pembukaan periode baru, status verifikasi bayar berhasil, dan alert mendekati jatuh tempo.
+   6. Pencatatan Pembayaran Tunai Mandiri oleh Bendahara (Direct Cash Payment Entry):
+      - Tombol "Input Bayar Tunai (Cash)" cepat bagi bendahara di halaman tagihan.
+      - Modal pencarian anggota, nominal diterima, dan periode kas yang dilunasi.
+      - Otomatisasi pelunasan tagihan (status paid, metode CASH), evaluasi ketepatan waktu, pencatatan otomatis kas masuk ke buku kas, dan opsi kirim tanda terima digital via WhatsApp.
+   7. Modul Pembukuan Kas Lengkap & Pencatatan Pemasukan / Pengeluaran (Cash Ledger & Expense Manager):
+      - Form pencatatan kas masuk selain iuran (Donasi, Sponsor, Hibah Kampus, Usaha Dana).
+      - Form pencatatan kas keluar untuk belanja operasional ormawa dengan kewajiban unggah foto nota fisik / struk belanja / invoice (anti-fiktif).
+      - Sistem pembukuan terkunci (locked ledger) dengan kontrol reversal dan pencatatan audit trail permanen.
+      - Filter mutasi berdasarkan rentang tanggal, kategori, dan jenis arus kas.
+      - Transparansi terbuka mutasi pengeluaran ke portal anggota lengkap dengan pratinjau nota fisik.
 
-C. Status Milestone 3: OUT-OF-SCOPE (Sengaja Ditunda untuk Rilis Masa Depan):
-   1. Integrasi Payment Gateway Pihak Ketiga (Midtrans/Xendit/QRIS Otomatis):
-      Alasan: Sengaja ditunda agar organisasi mahasiswa tidak dibebankan biaya transaksi (MDR) yang memberatkan untuk nominal iuran kas kecil (misal: Rp 5.000 - Rp 20.000). Sistem saat ini mengandalkan upload bukti transfer yang diverifikasi bendahara dengan sekali klik.
-   2. Aplikasi Mobile Native (Flutter/React Native):
-      Alasan: Web-first responsive PWA jauh lebih ringan, tidak memerlukan instalasi lewat Google Play Store, dan dapat diakses langsung oleh seluruh mahasiswa dari browser ponsel masing-masing.
-   3. Export Laporan Keuangan ke PDF & Excel Cetak Resmi:
-      Alasan: Format digital real-time di portal anggota sudah memenuhi prinsip transparansi tanpa kertas. Fitur export formal disiapkan untuk rilis v2 pasca lomba.
+C. STATUS MILESTONE 3: OUT-OF-SCOPE (Sengaja Ditunda untuk Rilis Pasca-Lomba):
+   1. Aplikasi Mobile Native (Flutter/React Native):
+      Alasan: Responsive Web App (PWA) saat ini jauh lebih inklusif, ringan, dan tidak membebani memori ponsel mahasiswa.
+   2. Ekspor Laporan Finansial Resmi ke PDF Berkepala Surat (Kop Surat Ormawa) & Excel Terenkripsi:
+      Alasan: Transparansi digital real-time sudah memadai untuk kebutuhan lomba; fitur ekspor formal disiapkan untuk pembaruan versi v2.0.
 
 --------------------------------------------------------------------------------
 6. KEBUTUHAN FITUR (REQUIREMENTS & USER STORIES)
@@ -125,110 +164,132 @@ C. Status Milestone 3: OUT-OF-SCOPE (Sengaja Ditunda untuk Rilis Masa Depan):
 
 US-01: Pendaftaran Mandiri Organisasi
 - Format: Sebagai calon pengelola ormawa, saya ingin mendaftarkan organisasi saya melalui formulir publik landing page sehingga organisasi saya memiliki ruang kerja kas digital tanpa instalasi teknis rumit.
-- Kriteria Selesai (Acceptance Criteria):
-  * Pengguna dapat mengisi nama ormawa, usulan kode unik, nama PIC, email, username, dan nomor WhatsApp.
-  * Sistem memvalidasi keunikan kode ormawa dan format nomor WhatsApp.
-  * Pengajuan berstatus 'pending' dan otomatis memicu WhatsApp alert ke nomor Admin Penerima & Super Admin Kasly.
-  * Halaman sukses (/ajukan-organisasi/sukses) menampilkan rangkuman dan instruksi langkah berikutnya.
+- Kriteria Penerimaan: Form /ajukan-organisasi memvalidasi keunikan kode ormawa, menyimpan status pending, dan memicu notifikasi alert WhatsApp ke admin penerima.
 
 US-02: Persetujuan (ACC) Pendaftaran oleh Admin Penerima
-- Format: Sebagai Admin Penerima Organisasi, saya ingin meninjau daftar permohonan ormawa yang masuk dan menyetujuinya (ACC) dengan satu tombol sehingga organisasi tersebut langsung aktif beroperasi.
-- Kriteria Selesai (Acceptance Criteria):
-  * Admin Penerima login di /admin/login dan langsung diarahkan ke tabel pengajuan masuk.
-  * Admin dapat melihat detail profil pemohon, email, dan WhatsApp.
-  * Tombol "Setujui (ACC)" otomatis: membuat organisasi aktif, membuat akun pengelola dengan password acak kuat 10 karakter, membuat 7 kategori kas default, dan menembak pesan WhatsApp serta Email berisi kredensial ke pemohon.
-  * Tombol "Tolak" otomatis mengarsipkan pengajuan dengan input alasan penolakan.
+- Format: Sebagai Admin Penerima Organisasi, saya ingin meninjau daftar pengajuan ormawa dan menyetujuinya (ACC) dengan satu tombol sehingga organisasi tersebut langsung aktif beroperasi.
+- Kriteria Penerimaan: Tombol ACC otomatis membuat tenant aktif, membuat akun user pengelola dengan password acak kuat 10 karakter, menginisiasi 7 kategori kas default, serta mengirimkan kredensial via WhatsApp Fonnte dan Email SMTP.
 
 US-03: Login Tunggal Universal Multi-Tenant
 - Format: Sebagai pengguna sistem (pengurus maupun anggota), saya ingin login dari satu pintu formulir yang sama tanpa harus memilih tab pengurus atau anggota sehingga pengalaman masuk menjadi cepat dan intuitif.
-- Kriteria Selesai (Acceptance Criteria):
-  * Form login universal di /login meminta Kode Organisasi, Username/NIM, dan Password.
-  * Sistem otomatis mendeteksi peran: jika username terdaftar di pengurus -> redirect ke /pengurus/dashboard; jika identitas cocok dengan NIM anggota -> redirect ke /anggota/dashboard.
-  * Dilengkapi proteksi rate limiter (maksimal 5 kesalahan per menit dengan cooldown 60 detik).
-  * Pemblokiran otomatis jika organisasi yang bersangkutan berstatus nonaktif.
+- Kriteria Penerimaan: Form /login meminta Kode Organisasi, Username/NIM, dan Password. Sistem otomatis mendeteksi peran dan mengarahkan ke dashboard yang tepat dengan proteksi rate limiting 5x/menit.
 
 US-04: Penilaian Kedisiplinan Iuran Tepat Waktu (Tema Lomba)
 - Format: Sebagai bendahara, saya ingin sistem mengevaluasi ketepatan waktu pembayaran kas secara otomatis berdasarkan tanggal jatuh tempo sehingga ormawa memiliki data kedisiplinan yang transparan dan objektif.
-- Kriteria Selesai (Acceptance Criteria):
-  * Saat membuat periode tagihan kas (dues_periods), bendahara menetapkan batas tanggal jatuh tempo (due_date).
-  * Saat pembayaran anggota disetujui, sistem membandingkan timestamp pembayaran (paid_at) dengan due_date:
-    - Jika paid_at <= due_date -> is_on_time = TRUE (Dibayar Tepat Waktu).
-    - Jika paid_at > due_date -> is_on_time = FALSE (Terlambat).
-  * Dashboard pengurus menampilkan widget Skor Disiplin (%) = (Tagihan Tepat Waktu / Total Tagihan Lunas) * 100%.
+- Kriteria Penerimaan: Sistem membandingkan paid_at dengan due_date (paid_at <= due_date -> is_on_time = TRUE). Dashboard pengurus menampilkan widget Skor Disiplin (%) secara real-time.
 
-US-05: Transparansi Mutasi Kas Anti-Manipulasi (Locked Ledger)
-- Format: Sebagai anggota ormawa, saya ingin melihat seluruh riwayat kas masuk dan keluar secara terbuka lengkap dengan bukti nota fisik sehingga saya percaya pada tata kelola pengurus.
-- Kriteria Selesai (Acceptance Criteria):
-  * Setiap transaksi kas terkunci secara permanen (is_locked = true) dan tidak ada tombol hapus langsung.
-  * Pengurus wajib menyertakan deskripsi dan dapat melampirkan berkas bukti nota fisik/struk.
-  * Anggota dapat melihat buku mutasi kas dan sisa saldo kas aktif di /anggota/dashboard.
-  * Pembatalan transaksi salah hanya dapat dilakukan melalui mekanisme transaksi pembalik (reversal) yang saling meniadakan dan tercatat di audit trail.
+US-05: Pengaturan Metode Pembayaran Ormawa Multi-Channel
+- Format: Sebagai bendahara, saya ingin mengonfigurasi opsi pembayaran tunai, transfer rekening bank, QRIS statis, dan payment gateway online sehingga anggota memiliki kebebasan memilih cara bayar.
+- Kriteria Penerimaan: Halaman /pengurus/metode-pembayaran memungkinkan penambahan rekening bank, instruksi tunai, upload file QRIS, dan toggle aktivasi Midtrans Sandbox.
 
-US-06: Manajemen Staf & Delegasi Bendahara
-- Format: Sebagai Admin Organisasi, saya ingin dapat mendaftarkan akun staf kepengurusan baru sehingga tugas penagihan kas dapat didelegasikan secara terstruktur.
-- Kriteria Selesai (Acceptance Criteria):
-  * Tersedia halaman /pengurus/staff untuk mengelola akun staf ormawa.
-  * Admin Organisasi dapat membuat akun baru dengan pilihan peran 'bendahara' atau 'staff'.
-  * Sistem otomatis membagikan kredensial login staf baru via WhatsApp Gateway Fonnte dan Email.
-  * Admin Organisasi dapat menonaktifkan atau menghapus akun staf jika masa jabatan berakhir.
+US-06: Pembayaran Cashless Otomatis via Midtrans (VA & QRIS Dinamis)
+- Format: Sebagai anggota ormawa, saya ingin membayar iuran kas secara instan menggunakan Virtual Account atau QRIS sehingga pembayaran terverifikasi otomatis tanpa menunggu konfirmasi manual bendahara.
+- Kriteria Penerimaan: Anggota dapat generate VA/QRIS Midtrans. Tersedia tombol simulator bayar sandbox. Webhook callback otomatis menandai tagihan lunas, mencatat paid_at, mengevaluasi is_on_time, dan mencatat mutasi kas masuk.
 
 US-07: Registrasi Mandiri Anggota via QR Code Berbatas Waktu & Kuota
-- Format: Sebagai calon anggota ormawa, saya ingin mendaftar ke organisasi secara mandiri dengan memindai QR Code dari grup WhatsApp tanpa mengisi form panjang dan dengan konfirmasi organisasi terlebih dahulu.
-- Kriteria Selesai (Acceptance Criteria):
-  * Pengurus dapat mengunduh gambar QR Code resmi (.png) secara direct download dari /pengurus/anggota atau membagikan tautan unik ke grup WhatsApp.
-  * Mahasiswa membuka /daftar-anggota dengan token unik, memindai QR lewat kamera perangkat atau mengunggah gambar QR dari galeri.
-  * Sistem memvalidasi kuota dan masa berlaku token, lalu menampilkan layar konfirmasi nama dan kode organisasi agar tidak salah bergabung.
-  * Mahasiswa menekan tombol konfirmasi -> sistem otomatis membuat akun dengan ID default (misal: HIMTECH-0011) dan auto-login langsung ke /anggota/dashboard.
-  * Mahasiswa dapat menyesuaikan ID default ke NIM kampus asli dan melengkapi nama di menu /anggota/profile.
-  * Pengurus dapat mengubah batas kuota maksimal dan memperpanjang masa berlaku QR yang sedang aktif tanpa mengubah gambar barcode atau link yang sudah dibagikan di WhatsApp.
-  * Pengurus dapat mengoreksi data anggota (NIM, Nama, No. WA) via modal edit di tabel anggota yang otomatis menyinkronkan data login.
+- Format: Sebagai calon anggota, saya ingin mendaftar ke ormawa dengan memindai QR Code dari grup WhatsApp tanpa mengisi formulir panjang.
+- Kriteria Penerimaan: Scan QR / buka tautan dengan token valid -> layar konfirmasi ormawa -> klik konfirmasi -> auto-create akun default (NIM) dan auto-login langsung ke dashboard anggota. Pengurus dapat mengubah kuota dan memperpanjang masa aktif QR kapan saja.
+
+US-08: Manajemen Profil Pengguna & Avatar
+- Format: Sebagai pengguna (Admin, Pengurus, Anggota), saya ingin mengunggah foto profil resmi dan mengatur identitas akun saya.
+- Kriteria Penerimaan: Unggah avatar JPG/PNG/WebP maks 2MB, crop bulat, cincin avatar neumorphic, opsi hapus avatar kembali ke inisial, penyesuaian nama, nomor WhatsApp, dan kata sandi.
+
+US-09: Modul Pembukuan Kas Lengkap & Pencatatan Pemasukan / Pengeluaran (Buku Kas Mutasi)
+- Format: Sebagai bendahara, saya ingin mencatat seluruh mutasi kas masuk (non-iuran) dan kas keluar dengan bukti nota fisik sehingga pembukuan ormawa rapi, akuntabel, dan anti-fiktif.
+- Kriteria Penerimaan:
+  * Form input kas masuk (nominal, tanggal, kategori, sumber dana, bukti transfer).
+  * Form input kas keluar (nominal, tanggal, kategori belanja, PIC belanja, wajib unggah foto nota/struk belanja).
+  * Seluruh transaksi terkunci (is_locked = true), pembatalan transaksi wajib melalui mekanisme reversal.
+  * Mutasi otomatis tampil transparan di portal anggota lengkap dengan pratinjau nota fisik.
+
+US-10: Sistem Pengingat Jatuh Tempo & Kirim Pesan WhatsApp Penagihan
+- Format: Sebagai bendahara, saya ingin mengirimkan pesan pengingat tagihan ke WhatsApp anggota yang belum melunasi iuran kas dengan sekali klik agar kepatuhan bayar meningkat.
+- Kriteria Penerimaan:
+  * Tombol kirim pesan pengingat personal per baris anggota di tabel tagihan.
+  * Tombol broadcast massal WhatsApp Blast ke seluruh penunggak pada periode kas aktif.
+  * Scheduler notifikasi otomatis H-3, H-1, dan H+1 jatuh tempo.
+
+US-11: Kalender Kas & Jadwal Iuran Interaktif
+- Format: Sebagai pengurus dan anggota, saya ingin melihat agenda iuran dan mutasi kas dalam tampilan kalender bulanan interaktif sehingga mudah memantau alur kas secara kronologis.
+- Kriteria Penerimaan: Kalender visual interaktif dengan pin tanggal jatuh tempo, indikator transaksi masuk (hijau) dan keluar (merah), serta modal detail mutasi saat tanggal diklik.
+
+US-12: Fitur Lupa Kata Sandi Mandiri
+- Format: Sebagai pengguna yang lupa kata sandi, saya ingin memulihkan akses akun saya secara mandiri melalui nomor WhatsApp atau Email terdaftar.
+- Kriteria Penerimaan: Tautan lupa password meminta Kode Organisasi dan Username/NIM, mengirimkan link reset atau OTP 6 digit via WhatsApp/Email, dan form ganti password baru yang terenkripsi Bcrypt.
+
+US-13: Pusat Notifikasi Dalam Aplikasi (In-App Notification Center)
+- Format: Sebagai pengguna, saya ingin menerima notifikasi real-time di dalam aplikasi saat ada aktivitas kas penting.
+- Kriteria Penerimaan: Ikon lonceng notifikasi di navbar dengan unread counter badge dan dropdown daftar notifikasi terbaru (periode baru diterbitkan, verifikasi pembayaran berhasil, alert H-1 jatuh tempo).
+
+US-14: Pencatatan Pembayaran Tunai Mandiri oleh Bendahara (Direct Cash Payment Entry)
+- Format: Sebagai bendahara, saya ingin langsung mencatatkan pembayaran anggota yang menyerahkan uang kas secara tunai (cash tatap muka) sehingga statusnya langsung lunas tanpa menunggu transfer.
+- Kriteria Penerimaan: Modal cepat pilih anggota, pilih periode, input nominal diterima, klik simpan -> tagihan otomatis berstatus paid (metode CASH), mengevaluasi is_on_time, kas fisik masuk otomatis ke saldo kas, dan opsi kirim kuitansi digital via WhatsApp.
 
 --------------------------------------------------------------------------------
 7. DESAIN & PENGALAMAN PENGGUNA (UI/UX & USER FLOW)
 --------------------------------------------------------------------------------
-A. Bahasa Desain (Design System - Ice & Butter v2):
-   - Filosofi: Flat, minimalis, tegas, tanpa gradien, tanpa dekorasi hampa, dan berfokus pada kejelasan data finansial.
+A. Bahasa Desain (Design System - Ice & Butter v2 Neumorphism):
+   - Filosofi: Soft Neumorphism berpadu dengan Modern Clean UI: bayangan ganda halus (*dual shadow*), permukaan putih bersih (*bg-white/90*), border sejuk (*ice-200*), dan sudut melengkung proporsional (*rounded-[10px]* dengan garis lurus di tepi).
    - Palet Warna Resmi:
      * Deep Navy (#2F4862): Identitas primer, tipografi judul, tombol aksi utama.
-     * Soft Ice (#DDEBFC - #B5CCEB): Latar belakang permukaan, border pembatas, dan field input sejuk.
+     * Soft Ice (#DDEBFC - #B5CCEB): Latar belakang permukaan, garis tepi, dan field input.
      * Butter Yellow (#FFF7CD): Penanda status positif, badge lunas, dan skor disiplin tinggi.
      * Coral Danger (#C0524A): Peringatan tunggakan, status terlambat, dan konfirmasi destruktif.
-   - Tipografi: Outfit untuk display/angka saldo finansial (tegas & modern) dan Plus Jakarta Sans untuk keterbacaan teks body yang nyaman.
+   - Tipografi: Outfit untuk angka saldo dan heading display (tegas, modern) serta Plus Jakarta Sans untuk teks body data tabular.
 
-B. Diagram Alur Pengguna (User Flows):
+B. Diagram Alur Pengguna Utama (User Flows):
 
    ALUR 1: Onboarding Ormawa Baru
-   [Landing Page] -> Klik "Ajukan Organisasi" -> Isi Form Pendaftaran (/ajukan-organisasi)
-   -> Sistem Simpan Pengajuan (Pending) -> WhatsApp Alert ke Admin Penerima
-   -> Admin Penerima Login ke /admin/organizations?tab=requests
-   -> Klik "Setujui (ACC)"
-   -> Sistem Auto-Create: Organisasi Aktif + Akun PIC + 7 Kategori Kas + Password Kuat
-   -> WhatsApp Gateway Fonnte & Email SMTP kirimkan kredensial ke Pemohon
-   -> PIC Login di /login dan siap mengelola kas ormawa.
+   [Landing Page] -> Klik "Ajukan Organisasi" -> Isi Form (/ajukan-organisasi)
+   -> Sistem Simpan Pengajuan (Pending) -> Alert WhatsApp ke Admin Penerima
+   -> Admin Penerima Login ke /admin/organizations?tab=requests -> Klik "Setujui (ACC)"
+   -> Sistem Otomatis: Buat Ormawa Aktif + Buat Akun PIC + 7 Kategori Kas + Password Kuat
+   -> Kredensial Terkirim Otomatis via WhatsApp Fonnte & Email SMTP ke Pemohon
+   -> PIC Login di /login dan ormawa siap beroperasi.
 
-   ALUR 2: Siklus Tagihan Iuran & Penilaian Kedisiplinan
-   [Bendahara] -> Buat Periode Kas Baru (Judul, Nominal, Tanggal Jatuh Tempo/due_date)
+   ALUR 2: Penerbitan Tagihan Kas & Penilaian Kedisiplinan
+   [Bendahara] -> Buat Periode Kas Baru (Judul, Nominal, Batas Jatuh Tempo/due_date)
    -> Sistem Generate Tagihan Massal ke Seluruh Anggota Aktif (Status: Unpaid)
-   -> [Anggota] Login ke /anggota/dashboard -> Lihat Nominal Tagihan & Jatuh Tempo
-   -> Anggota Transfer & Unggah Bukti Bayar -> Status Tagihan: Pending
-   -> [Bendahara] Verifikasi Bukti Pembayaran -> Klik "Konfirmasi Lunas"
-   -> Sistem Evaluasi Otomatis:
-        * Jika bayar sebelum/pada due_date -> is_on_time = TRUE
-        * Jika bayar setelah due_date     -> is_on_time = FALSE
-   -> Saldo Kas Organisasi Bertambah Otomatis & Skor Kedisiplinan Terupdate Real-Time.
+   -> [Anggota] Login ke /anggota/dashboard -> Memilih Kanal Bayar (Tunai, Transfer, atau Midtrans)
+   -> OPSI A (Cashless Midtrans): Bayar via VA/QRIS -> Webhook otomatis set status Paid (On-Time / Terlambat)
+   -> OPSI B (Tunai / Cash Langsung): Serahkan uang ke Bendahara -> Bendahara klik "Input Bayar Tunai"
+   -> OPSI C (Transfer Bank Manual): Transfer ke rekening ormawa -> Bendahara klik "Verifikasi Pembayaran"
+   -> Evaluasi Otomatis is_on_time -> Saldo Kas Bertambah & Skor Disiplin Terupdate Real-Time.
 
-   ALUR 3: Pengeluaran Kas & Transparansi
-   [Bendahara/Staff] -> Catat Transaksi Pengeluaran Kas (Nominal, Kategori, Bukti Nota)
-   -> Transaksi Terkunci di Database (is_locked = true, created_by tercatat)
-   -> Saldo Kas Berkurang Otomatis
-   -> [Seluruh Anggota] Membuka /anggota/dashboard -> Melihat mutasi terbaru dan saldo akhir ormawa.
+   ALUR 3: Pembukuan Kas (Pencatatan Pemasukan & Pengeluaran)
+   [Bendahara] -> Buka Menu Buku Kas Mutasi
+   -> Form Pengeluaran: Masukkan Nominal, Kategori (Konsumsi/ATK/Logistik), PIC, & Unggah Foto Nota Fisik
+   -> Transaksi Terkunci Permanen (is_locked = true, created_by tercatat)
+   -> Saldo Kas Organisasi Berkurang Otomatis
+   -> [Seluruh Anggota] Membuka /anggota/dashboard -> Mengaudit rincian mutasi kas dan melihat nota asli.
 
    ALUR 4: Registrasi Mandiri Anggota via QR Code
-   [Pengurus] -> Klik "Download Gambar QR (PNG)" atau "Bagikan ke Grup WhatsApp" dari /pengurus/anggota
-   -> [Mahasiswa di Grup WA] -> Klik link pendaftaran atau scan QR Code via kamera / unggah foto QR di /daftar-anggota
-   -> Sistem validasi kuota & waktu -> Tampilkan layar konfirmasi organisasi (Nama & Kode Ormawa)
-   -> Mahasiswa klik "Konfirmasi & Masuk sebagai Anggota"
-   -> Sistem auto-create data anggota dengan ID default (contoh: HIMTECH-0011)
-   -> Auto-login langsung ke /anggota/dashboard (Mahasiswa langsung dapat melihat saldo kas ormawa & tagihannya)
-   -> Mahasiswa dapat melengkapi nama asli & NIM kampus di /anggota/profile kapan saja.
+   [Pengurus] -> Unduh QR Code (PNG) atau Bagikan Link ke WhatsApp Group dari /pengurus/anggota
+   -> [Calon Anggota] Buka link / scan QR Code -> Muncul Konfirmasi Organisasi
+   -> Klik "Konfirmasi & Masuk sebagai Anggota" -> Akun otomatis terbuat dengan ID default (NIM)
+   -> Auto-login langsung ke /anggota/dashboard -> Anggota melengkapi nama dan profil di /anggota/profile.
+
+--------------------------------------------------------------------------------
+8. KEBUTUHAN TEKNIS, ARSITEKTUR & KEAMANAN
+--------------------------------------------------------------------------------
+1. Isolasi Data Multi-Tenant:
+   - Setiap query data transaksi, tagihan, periode kas, kategori, dan anggota wajib di-scope dengan organization_id.
+   - Middleware EnsureOrganizationStaff dan EnsureOrganizationMember memblokir akses silang antar-tenant.
+2. Integritas Keuangan Anti-Manipulasi:
+   - Seluruh mutasi kas berstatus locked (is_locked = true) dan tidak dapat dihapus melalui antarmuka web.
+   - Pembatalan transaksi wajib melalui mekanisme pencatatan transaksi pembalik (reversal) yang saling meniadakan.
+3. Keamanan Autentikasi:
+   - Rate limiting 5x percobaan gagal per menit di seluruh endpoint login.
+   - Enkripsi kata sandi menggunakan Bcrypt (cost factor 12).
+   - Regenerasi ID sesi dinamis untuk mencegah Session Fixation dan proteksi token CSRF pada seluruh form HTTP POST/PUT/DELETE.
+
+--------------------------------------------------------------------------------
+9. ASUMSI, KETERGANTUNGAN & MITIGASI RISIKO
+--------------------------------------------------------------------------------
+1. Ketergantungan WhatsApp Gateway:
+   - Pengiriman alert WhatsApp bergantung pada ketersediaan Fonnte API. Sistem dilengkapi mekanisme graceful fallback (mencatat pesan ke log file jika token offline sehingga sistem tidak crash).
+2. Ketergantungan Payment Gateway:
+   - Pembayaran online menggunakan Midtrans Sandbox API dengan webhook handler aman (verifikasi SHA512 signature key). Jika payment gateway offline, anggota tetap dapat membayar via Transfer Manual atau Tunai Langsung.
+3. Integritas Audit Kas:
+   - Audit trail activity_logs mencatat setiap aksi persetujuan, verifikasi pembayaran, pencatatan mutasi, dan pengubahan anggota secara permanen.
 ================================================================================

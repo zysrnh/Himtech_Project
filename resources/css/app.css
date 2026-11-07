@@ -496,7 +496,6 @@ body {
 }
 .card-main-body.theme--kas .card-text-muted { color: var(--ice-200); }
 .card-main-body.theme--kas .card-text-title { color: #FFFFFF; }
-.card-main-body.theme--kas .card-tag { background: rgba(255,255,255,0.15); color: var(--ice-100); }
 .card-main-body.theme--kas .card-border-line { border-color: rgba(255,255,255,0.15); }
 .card-main-body.theme--kas .emv-chip {
     background: linear-gradient(135deg, #FFE885 0%, #D4AF37 50%, #FFF3A8 100%);
@@ -510,7 +509,6 @@ body {
 }
 .card-main-body.theme--iuran .card-text-muted { color: var(--navy-500); }
 .card-main-body.theme--iuran .card-text-title { color: var(--navy-900); }
-.card-main-body.theme--iuran .card-tag { background: rgba(47, 72, 98, 0.1); color: var(--navy-900); }
 .card-main-body.theme--iuran .card-border-line { border-color: rgba(47, 72, 98, 0.12); }
 .card-main-body.theme--iuran .emv-chip {
     background: linear-gradient(135deg, #4A6583 0%, #2F4862 100%);
@@ -530,7 +528,6 @@ body {
 }
 .card-main-body.theme--cadangan .card-text-muted { color: var(--ice-200); }
 .card-main-body.theme--cadangan .card-text-title { color: #FFFFFF; }
-.card-main-body.theme--cadangan .card-tag { background: rgba(255,255,255,0.12); color: var(--ice-100); }
 .card-main-body.theme--cadangan .card-border-line { border-color: rgba(255,255,255,0.12); }
 .card-main-body.theme--cadangan .emv-chip {
     background: linear-gradient(135deg, #FFE885 0%, #D4AF37 50%, #FFF3A8 100%);

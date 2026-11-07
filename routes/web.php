@@ -54,7 +54,9 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     // Manajemen Anggota & QR Code Registrasi Berbatas Waktu & Kuota
     Route::get('/anggota', [MemberController::class, 'index'])->name('anggota.index');
     Route::post('/anggota', [MemberController::class, 'store'])->name('anggota.store');
+    Route::put('/anggota/{member}', [MemberController::class, 'update'])->name('anggota.update');
     Route::post('/anggota/renew-qr', [MemberController::class, 'renewToken'])->name('anggota.renew-qr');
+    Route::put('/anggota/token/{token}', [MemberController::class, 'updateToken'])->name('anggota.token.update');
     Route::patch('/anggota/{member}/toggle-status', [MemberController::class, 'toggleStatus'])->name('anggota.toggle-status');
     Route::delete('/anggota/{member}', [MemberController::class, 'destroy'])->name('anggota.destroy');
 });

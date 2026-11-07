@@ -63,7 +63,61 @@ class MemberController extends Controller
     }
 
     /**
-     * Buat QR Code & Token Pendaftaran Baru dengan perpanjangan waktu dan reset kuota.
+     * Ubah kuota maksimal & perpanjang masa berlaku QR Code yang sedang aktif tanpa mengubah barcode/link.
+     */
+    public function updateToken(Request $request, MemberRegistrationToken $token): RedirectResponse
+    {
+        /** @var Organization $organization */
+        $organization = $request->attributes->get('current_organization');
+
+        if ($token->organization_id !== $organization->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'max_uses' => ['required', 'integer', 'min:'.max(1, $token->used_count), 'max:2000'],
+            'extend_hours' => ['required', 'integer', 'min:0', 'max:720'],
+            'is_active' => ['nullable', 'boolean'],
+        ], [
+            'max_uses.required' => 'Batas kuota maksimal wajib diisi.',
+            'max_uses.min' => "Kuota tidak boleh lebih kecil dari jumlah anggota yang sudah mendaftar ({$token->used_count} orang).",
+            'max_uses.max' => 'Kuota maksimal 2000 anggota.',
+            'extend_hours.required' => 'Waktu perpanjangan wajib ditentukan.',
+        ]);
+
+        $newExpiresAt = $token->expires_at;
+        if ((int) $validated['extend_hours'] > 0) {
+            $baseTime = $token->isExpired() ? now() : $token->expires_at;
+            $newExpiresAt = $baseTime->addHours((int) $validated['extend_hours']);
+        }
+
+        $isActive = $request->boolean('is_active', true);
+
+        $token->update([
+            'max_uses' => (int) $validated['max_uses'],
+            'expires_at' => $newExpiresAt,
+            'is_active' => $isActive,
+        ]);
+
+        ActivityLog::create([
+            'organization_id' => $organization->id,
+            'user_id' => Auth::id(),
+            'action' => 'update_registration_qr',
+            'subject_type' => MemberRegistrationToken::class,
+            'subject_id' => $token->id,
+            'payload' => [
+                'max_uses' => $token->max_uses,
+                'expires_at' => $token->expires_at->toIso8601String(),
+                'is_active' => $token->is_active,
+            ],
+        ]);
+
+        return redirect()->route('pengurus.anggota.index')
+            ->with('success', "Pengaturan QR Code aktif berhasil diperbarui! Kuota diubah menjadi {$token->max_uses} anggota dan berlaku hingga {$token->expires_at->format('d M Y H:i')}. Barcode QR dan tautan yang sudah dibagikan di WhatsApp tetap berlaku.");
+    }
+
+    /**
+     * Buat QR Code & Token Pendaftaran Baru (menggantikan barcode lama).
      */
     public function renewToken(Request $request): RedirectResponse
     {
@@ -179,6 +233,76 @@ class MemberController extends Controller
 
         return redirect()->route('pengurus.anggota.index')
             ->with('success', "Anggota baru {$validated['name']} ({$nim}) berhasil didaftarkan.");
+    }
+
+    /**
+     * Perbarui data anggota (koreksi nama, NIM, atau nomor WhatsApp).
+     */
+    public function update(Request $request, Member $member): RedirectResponse
+    {
+        /** @var Organization $organization */
+        $organization = $request->attributes->get('current_organization');
+
+        if ($member->organization_id !== $organization->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'member_number' => ['required', 'string', 'max:50', 'alpha_num'],
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:25'],
+        ], [
+            'member_number.required' => 'Nomor Anggota / NIM wajib diisi.',
+            'name.required' => 'Nama lengkap anggota wajib diisi.',
+        ]);
+
+        $nim = trim($validated['member_number']);
+
+        $exists = $organization->members()
+            ->where('member_number', $nim)
+            ->where('id', '!=', $member->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors(['member_number' => "NIM/Nomor Anggota {$nim} sudah digunakan oleh anggota lain di organisasi ini."])->withInput();
+        }
+
+        DB::transaction(function () use ($member, $validated, $nim, $organization) {
+            $oldNim = $member->member_number;
+            $oldName = $member->name;
+
+            $member->update([
+                'member_number' => $nim,
+                'name' => $validated['name'],
+                'phone' => $validated['phone'] ?? null,
+            ]);
+
+            // Jika anggota memiliki akun user login, update username dan nama
+            if ($member->user) {
+                $member->user->update([
+                    'name' => $validated['name'],
+                    'username' => Str::lower($nim),
+                    'phone' => $validated['phone'] ?? $member->user->phone,
+                ]);
+            }
+
+            ActivityLog::create([
+                'organization_id' => $organization->id,
+                'user_id' => Auth::id(),
+                'action' => 'update_member_data',
+                'subject_type' => Member::class,
+                'subject_id' => $member->id,
+                'payload' => [
+                    'old_nim' => $oldNim,
+                    'new_nim' => $nim,
+                    'old_name' => $oldName,
+                    'new_name' => $validated['name'],
+                ],
+            ]);
+        });
+
+        return redirect()->route('pengurus.anggota.index')
+            ->with('success', "Data anggota {$validated['name']} ({$nim}) berhasil diperbarui.");
     }
 
     /**

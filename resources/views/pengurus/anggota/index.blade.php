@@ -183,13 +183,20 @@
                             Bagikan QR Code ini ke grup WhatsApp. Mahasiswa cukup scan/upload foto QR untuk langsung terdaftar sebagai anggota.
                         </p>
                     </div>
-                    <div>
+                    <div class="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onclick="toggleUpdateModal()"
+                            class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-navy-900 text-white text-xs font-semibold hover:bg-navy-700 transition-colors cursor-pointer shadow-sm"
+                        >
+                            Ubah Pengaturan QR Aktif
+                        </button>
                         <button
                             type="button"
                             onclick="toggleRenewModal()"
                             class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-ice-200 bg-ice-100 text-navy-900 text-xs font-semibold hover:bg-ice-200 transition-colors cursor-pointer"
                         >
-                            Refresh / Buat QR Baru
+                            Reset / Buat QR Baru
                         </button>
                     </div>
                 </div>
@@ -292,6 +299,85 @@
                     </div>
                 </div>
 
+                <!-- Form Modal: Ubah Pengaturan QR Code Aktif (Tanpa Ganti QR Barcode/Link) -->
+                <div id="update-qr-modal" class="hidden p-5 rounded-md bg-butter-50/70 border border-butter-200 mt-4 space-y-4">
+                    <div class="flex items-center justify-between border-b border-butter-200/80 pb-2">
+                        <div>
+                            <h3 class="text-sm font-semibold text-navy-900">
+                                Ubah Pengaturan QR Code Aktif
+                            </h3>
+                            <p class="text-[11px] text-navy-500 mt-0.5">
+                                Perbarui kuota atau perpanjang masa berlaku tanpa mengubah gambar barcode QR atau tautan yang sudah beredar di WhatsApp.
+                            </p>
+                        </div>
+                        <button type="button" onclick="toggleUpdateModal()" class="text-xs text-navy-500 hover:text-navy-900 font-medium">
+                            Tutup
+                        </button>
+                    </div>
+                    <form action="{{ route('pengurus.anggota.token.update', $activeToken) }}" method="POST" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+                        @csrf
+                        @method('PUT')
+                        <div>
+                            <label for="update_max_uses" class="block text-xs font-medium text-navy-700 mb-1">
+                                Batas Kuota Maksimal *
+                            </label>
+                            <input
+                                type="number"
+                                id="update_max_uses"
+                                name="max_uses"
+                                value="{{ $activeToken->max_uses }}"
+                                min="{{ max(1, $activeToken->used_count) }}"
+                                max="2000"
+                                required
+                                class="w-full h-10 px-3 rounded bg-white border border-ice-200 text-xs font-mono text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-900"
+                            >
+                            <span class="text-[10px] text-navy-500 mt-0.5 block">Minimal {{ $activeToken->used_count }} (sudah terpakai)</span>
+                        </div>
+                        <div>
+                            <label for="update_extend_hours" class="block text-xs font-medium text-navy-700 mb-1">
+                                Perpanjang Waktu *
+                            </label>
+                            <select
+                                id="update_extend_hours"
+                                name="extend_hours"
+                                required
+                                class="w-full h-10 px-3 rounded bg-white border border-ice-200 text-xs text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-900"
+                            >
+                                <option value="0" selected>+0 Jam (Waktu Tetap)</option>
+                                <option value="12">+12 Jam</option>
+                                <option value="24">+24 Jam (1 Hari)</option>
+                                <option value="48">+48 Jam (2 Hari)</option>
+                                <option value="72">+72 Jam (3 Hari)</option>
+                                <option value="168">+168 Jam (7 Hari)</option>
+                                <option value="720">+720 Jam (30 Hari)</option>
+                            </select>
+                            <span class="text-[10px] text-navy-500 mt-0.5 block">Ditambahkan ke waktu kedaluwarsa</span>
+                        </div>
+                        <div>
+                            <label for="update_is_active" class="block text-xs font-medium text-navy-700 mb-1">
+                                Status Penerimaan *
+                            </label>
+                            <select
+                                id="update_is_active"
+                                name="is_active"
+                                class="w-full h-10 px-3 rounded bg-white border border-ice-200 text-xs text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-900"
+                            >
+                                <option value="1" {{ $activeToken->is_active ? 'selected' : '' }}>Aktif (Bisa Mendaftar)</option>
+                                <option value="0" {{ ! $activeToken->is_active ? 'selected' : '' }}>Nonaktifkan Sementara</option>
+                            </select>
+                            <span class="text-[10px] text-navy-500 mt-0.5 block">Pause pendaftaran kapan saja</span>
+                        </div>
+                        <div>
+                            <button
+                                type="submit"
+                                class="w-full h-10 px-4 rounded-md bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors cursor-pointer shadow-sm"
+                            >
+                                Simpan Perubahan QR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <!-- Form Modal Tersembunyi: Refresh / Buat QR Baru -->
                 <div id="renew-qr-modal" class="hidden p-5 rounded-md bg-ice-100/60 border border-ice-200 mt-4 space-y-4">
                     <div class="flex items-center justify-between border-b border-ice-200 pb-2">
@@ -388,7 +474,7 @@
                                 @foreach ($members as $m)
                                     <tr class="hover:bg-ice-100/50 transition-colors">
                                         <td class="py-4 px-6 font-semibold text-navy-900 font-display">
-                                            <span class="inline-block px-2.5 py-1 rounded bg-ice-100 text-navy-900 text-xs tracking-wider font-mono">
+                                             <span class="inline-block px-2.5 py-1 rounded bg-ice-100 text-navy-900 text-xs tracking-wider font-mono">
                                                 {{ $m->member_number }}
                                             </span>
                                         </td>
@@ -421,6 +507,15 @@
                                         </td>
                                         <td class="py-4 px-6 text-right whitespace-nowrap">
                                             <div class="inline-flex items-center gap-2">
+                                                <!-- Edit Anggota -->
+                                                <button
+                                                    type="button"
+                                                    onclick="openEditMemberModal('{{ $m->id }}', '{{ addslashes($m->member_number) }}', '{{ addslashes($m->name) }}', '{{ addslashes($m->phone ?? '') }}')"
+                                                    class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-ice-200 text-navy-900 bg-white hover:bg-ice-100 text-xs font-medium transition-colors cursor-pointer"
+                                                >
+                                                    Edit
+                                                </button>
+
                                                 <!-- Toggle Aktif/Nonaktif -->
                                                 <form action="{{ route('pengurus.anggota.toggle-status', $m) }}" method="POST" class="inline-block">
                                                     @csrf
@@ -532,10 +627,105 @@
         </div>
     </main>
 
+    <!-- Modal Edit Data Anggota -->
+    <div id="edit-member-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-navy-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 shadow-xl border border-ice-200 space-y-5" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b border-ice-200 pb-3">
+                <h3 class="font-display font-semibold text-base text-navy-900">
+                    Edit Data Anggota
+                </h3>
+                <button type="button" onclick="closeEditMemberModal()" class="text-navy-400 hover:text-navy-900 text-lg font-semibold leading-none">
+                    &times;
+                </button>
+            </div>
+
+            <form id="edit-member-form" method="POST" action="" class="space-y-4">
+                @csrf
+                @method('PUT')
+
+                <div>
+                    <label for="edit_member_number" class="block text-xs font-medium text-navy-700 mb-1">
+                        NIM / Nomor Anggota *
+                    </label>
+                    <input
+                        type="text"
+                        id="edit_member_number"
+                        name="member_number"
+                        required
+                        class="w-full h-10 px-3 rounded bg-ice-100 text-xs font-mono text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-900"
+                    >
+                    <span class="text-[10px] text-navy-500 mt-0.5 block">Jika diubah, username login anggota akan otomatis disinkronkan.</span>
+                </div>
+
+                <div>
+                    <label for="edit_member_name" class="block text-xs font-medium text-navy-700 mb-1">
+                        Nama Lengkap *
+                    </label>
+                    <input
+                        type="text"
+                        id="edit_member_name"
+                        name="name"
+                        required
+                        class="w-full h-10 px-3 rounded bg-ice-100 text-xs text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-900"
+                    >
+                </div>
+
+                <div>
+                    <label for="edit_member_phone" class="block text-xs font-medium text-navy-700 mb-1">
+                        Nomor WhatsApp
+                    </label>
+                    <input
+                        type="text"
+                        id="edit_member_phone"
+                        name="phone"
+                        placeholder="08xxxxxxxxxx"
+                        class="w-full h-10 px-3 rounded bg-ice-100 text-xs font-mono text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-900"
+                    >
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-2">
+                    <button
+                        type="button"
+                        onclick="closeEditMemberModal()"
+                        class="h-10 px-4 rounded-md border border-ice-200 text-navy-900 hover:bg-ice-100 text-xs font-medium transition-colors cursor-pointer"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        type="submit"
+                        class="h-10 px-5 rounded-md bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shadow-sm cursor-pointer"
+                    >
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        function toggleUpdateModal() {
+            const modal = document.getElementById('update-qr-modal');
+            modal.classList.toggle('hidden');
+        }
+
         function toggleRenewModal() {
             const modal = document.getElementById('renew-qr-modal');
             modal.classList.toggle('hidden');
+        }
+
+        function openEditMemberModal(id, memberNumber, name, phone) {
+            const modal = document.getElementById('edit-member-modal');
+            const form = document.getElementById('edit-member-form');
+            form.action = `/pengurus/anggota/${id}`;
+            document.getElementById('edit_member_number').value = memberNumber;
+            document.getElementById('edit_member_name').value = name;
+            document.getElementById('edit_member_phone').value = phone || '';
+            modal.classList.remove('hidden');
+        }
+
+        function closeEditMemberModal() {
+            const modal = document.getElementById('edit-member-modal');
+            modal.classList.add('hidden');
         }
 
         function copyRegistrationUrl() {

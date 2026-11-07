@@ -39,4 +39,10 @@ return [
         'token' => env('FONNTE_TOKEN'),
     ],
 
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY', 'SB-Mid-server-DemoKaslySandbox123'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-DemoKaslySandbox123'),
+        'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+    ],
+
 ];

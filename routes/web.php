@@ -8,7 +8,9 @@ use App\Http\Controllers\Anggota\DashboardController as AnggotaDashboardControll
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MemberRegistrationController;
 use App\Http\Controllers\OrganizationRequestController;
+use App\Http\Controllers\Payment\MidtransController;
 use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
+use App\Http\Controllers\Pengurus\DuesBillController;
 use App\Http\Controllers\Pengurus\MemberController;
 use App\Http\Controllers\Pengurus\StaffController;
 use App\Http\Controllers\ProfileController;
@@ -60,6 +62,15 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     Route::get('/anggota/token/{token}/download-qr', [MemberController::class, 'downloadQr'])->name('anggota.token.download-qr');
     Route::patch('/anggota/{member}/toggle-status', [MemberController::class, 'toggleStatus'])->name('anggota.toggle-status');
     Route::delete('/anggota/{member}', [MemberController::class, 'destroy'])->name('anggota.destroy');
+
+    // Manajemen Tagihan Iuran & Metode Pembayaran Ormawa
+    Route::get('/tagihan', [DuesBillController::class, 'index'])->name('tagihan.index');
+    Route::post('/tagihan/period', [DuesBillController::class, 'storePeriod'])->name('tagihan.period.store');
+    Route::post('/tagihan/bills/{bill}/verify', [DuesBillController::class, 'verifyPayment'])->name('tagihan.bills.verify');
+    Route::post('/tagihan/bills/{bill}/remind', [DuesBillController::class, 'sendReminder'])->name('tagihan.bills.remind');
+    Route::post('/tagihan/payment-methods', [DuesBillController::class, 'storePaymentMethod'])->name('tagihan.payment-methods.store');
+    Route::delete('/tagihan/payment-methods/{paymentMethod}', [DuesBillController::class, 'destroyPaymentMethod'])->name('tagihan.payment-methods.destroy');
+    Route::post('/tagihan/toggle-midtrans', [DuesBillController::class, 'toggleMidtrans'])->name('tagihan.toggle-midtrans');
 });
 
 // Portal Transparansi Anggota
@@ -67,7 +78,14 @@ Route::middleware(['auth', 'anggota'])->prefix('anggota')->name('anggota.')->gro
     Route::get('/dashboard', [AnggotaDashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'showAnggotaProfile'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'updateAnggotaProfile'])->name('profile.update');
+
+    // Pembayaran Tagihan Kas Anggota (Midtrans & Simulasi Sandbox)
+    Route::post('/bills/{bill}/snap-token', [MidtransController::class, 'getSnapToken'])->name('bills.snap-token');
+    Route::post('/bills/{bill}/simulate-success', [MidtransController::class, 'simulateSuccess'])->name('bills.simulate-success');
 });
+
+// Webhook Midtrans HTTP Notification Callback (Tanpa CSRF)
+Route::post('/api/midtrans/webhook', [MidtransController::class, 'handleWebhook'])->name('midtrans.webhook');
 
 // Autentikasi Khusus Super Admin & Admin Penerima
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');

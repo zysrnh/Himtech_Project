@@ -307,6 +307,14 @@
                             >
                                 Terlambat ({{ $metrics['late_count'] }})
                             </a>
+                            @if ($metrics['pending_count'] > 0)
+                                <a
+                                    href="{{ route('pengurus.tagihan.index', ['period_id' => $selectedPeriod->id, 'status' => 'pending']) }}"
+                                    class="px-3 py-1.5 rounded-lg font-semibold transition-all {{ $statusFilter === 'pending' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-100 text-amber-900 hover:bg-amber-200' }}"
+                                >
+                                    Menunggu ACC ({{ $metrics['pending_count'] }})
+                                </a>
+                            @endif
                             <a
                                 href="{{ route('pengurus.tagihan.index', ['period_id' => $selectedPeriod->id, 'status' => 'unpaid']) }}"
                                 class="px-3 py-1.5 rounded-lg font-semibold transition-all {{ $statusFilter === 'unpaid' ? 'bg-navy-900 text-white shadow-xs' : 'bg-ice-100 text-navy-700 hover:bg-ice-200/60' }}"
@@ -360,6 +368,11 @@
                                                             Terlambat
                                                         </span>
                                                     @endif
+                                                @elseif ($bill->status === 'pending')
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] shadow-xs border border-amber-300">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                                                        Klaim Tunai (Menunggu ACC)
+                                                    </span>
                                                 @else
                                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-100 text-danger font-bold text-[10px]">
                                                         <span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
@@ -373,6 +386,9 @@
                                                         {{ strtoupper(str_replace('_', ' ', $bill->payment_channel ?? $bill->payment_method)) }}
                                                     </p>
                                                     <p class="text-[10px] text-navy-500">{{ $bill->paid_at?->format('d/m/Y H:i') ?? '-' }}</p>
+                                                @elseif ($bill->status === 'pending')
+                                                    <p class="font-medium text-amber-900">TUNAI (CASH)</p>
+                                                    <p class="text-[10px] text-amber-700">Menunggu Uang Fisik</p>
                                                 @else
                                                     <span class="text-navy-500">-</span>
                                                 @endif
@@ -382,6 +398,32 @@
                                                     <span class="text-[11px] text-navy-500 italic">
                                                         {{ $bill->payment_method === 'midtrans' ? 'Auto Midtrans' : ($bill->verifier ? 'acc by '.$bill->verifier->name : 'Lunas') }}
                                                     </span>
+                                                @elseif ($bill->status === 'pending')
+                                                    <div class="flex items-center justify-end gap-1.5">
+                                                        <!-- Tombol Cepat ACC Tunai -->
+                                                        <form action="{{ route('pengurus.tagihan.bills.verify', $bill->id) }}" method="POST" class="inline-block">
+                                                            @csrf
+                                                            <input type="hidden" name="payment_method" value="cash">
+                                                            <button
+                                                                type="submit"
+                                                                onclick="return confirm('ACC pembayaran kas tunai Rp {{ number_format($bill->amount, 0, ',', '.') }} dari {{ $bill->member->name }}?')"
+                                                                class="h-7 px-2.5 rounded-lg bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer flex items-center gap-1"
+                                                                title="ACC Tunai Sekarang"
+                                                            >
+                                                                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                                <span>ACC Tunai</span>
+                                                            </button>
+                                                        </form>
+
+                                                        <button
+                                                            type="button"
+                                                            onclick="openVerifyModal('{{ $bill->id }}', '{{ $bill->member->name }}', '{{ $bill->amount }}')"
+                                                            class="h-7 px-2 rounded-lg bg-ice-100 text-navy-700 font-semibold text-[11px] hover:bg-ice-200 transition-colors cursor-pointer"
+                                                            title="Opsi Verifikasi Lain"
+                                                        >
+                                                            Ubah
+                                                        </button>
+                                                    </div>
                                                 @else
                                                     <div class="flex items-center justify-end gap-1.5">
                                                         <!-- Tombol Verifikasi Manual -->

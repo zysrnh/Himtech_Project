@@ -19,10 +19,35 @@
     $isOrmawaActive = in_array($active, ['anggota', 'staff']);
 @endphp
 
+<!-- Mobile Top Header (Tampil Hanya di Layar HP < 768px) -->
+<header class="md:hidden sticky top-0 z-30 w-full px-4 py-2.5 bg-ice-100/90 backdrop-blur-md border-b border-ice-200/70 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2.5 min-w-0">
+        <a href="{{ route('pengurus.dashboard') }}" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-white/90 shadow-[2px_2px_6px_rgba(122,163,214,0.35),-2px_-2px_6px_rgba(255,255,255,0.9)] shrink-0">
+            <img src="{{ asset('logo/icon-kasly.svg') }}" onerror="this.onerror=null; this.src='{{ asset('favicon.ico') }}';" alt="{{ config('app.name', 'Kasly') }}" class="w-4 h-4 object-contain">
+        </a>
+        <div class="min-w-0">
+            <p class="text-xs font-bold text-navy-900 truncate">
+                {{ $org->name ?? 'Kasly Ormawa' }}
+            </p>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-navy-500">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                {{ $roleName }}
+            </span>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+        <a href="{{ route('pengurus.profile') }}" class="w-8 h-8 rounded-full overflow-hidden border border-ice-200/80 shadow-xs" title="Profil">
+            <img src="{{ $user ? $user->avatarUrl() : asset('logo/logo-light.svg') }}" alt="{{ $user->name ?? 'User' }}" class="w-full h-full object-cover">
+        </a>
+    </div>
+</header>
+
+<!-- Desktop Sidebar Neumorphic (Hanya Tampil di Layar Desktop/Tablet >= 768px) -->
 <aside
     id="sidebar-pengurus"
     data-app-sidebar
-    class="w-[260px] neu-sidebar flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-40 select-none transition-all duration-300 ease-in-out"
+    class="w-[260px] neu-sidebar hidden md:flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-40 select-none transition-all duration-300 ease-in-out"
 >
     <div class="flex flex-col min-h-0 flex-1">
         <!-- Brand Header (Logo Kasly & Tombol Collapse/Expand) -->
@@ -239,6 +264,49 @@
         </form>
     </div>
 </aside>
+
+<!-- Mobile Floating Bottom Toolbar (Neumorphic Capsule di HP < 768px: NEUMORPHISM.md) -->
+<nav class="neu-bottomnav md:hidden" aria-label="Toolbar Pengurus Mobile">
+    <!-- 1. Overview Kas -->
+    <a href="{{ route('pengurus.dashboard') }}" class="neu-bottomnav__item {{ $active === 'dashboard' ? 'is-active' : '' }}" aria-label="Overview">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="text-[10px] font-semibold">Overview</span>
+    </a>
+
+    <!-- 2. Tagihan -->
+    <a href="{{ route('pengurus.tagihan.index') }}" class="neu-bottomnav__item {{ $active === 'tagihan' ? 'is-active' : '' }}" aria-label="Tagihan">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <span class="text-[10px] font-semibold">Tagihan</span>
+    </a>
+
+    <!-- 3. Buku Kas Mutasi (Center Pill Highlight) -->
+    <a href="{{ route('pengurus.buku-kas.index') }}" class="neu-bottomnav__item {{ $active === 'buku-kas' ? 'is-active' : '' }}" aria-label="Buku Kas">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        <span class="text-[10px] font-semibold">Buku Kas</span>
+    </a>
+
+    <!-- 4. Metode & ACC Pembayaran -->
+    <a href="{{ route('pengurus.pembayaran.index') }}" class="neu-bottomnav__item {{ $active === 'pembayaran' ? 'is-active' : '' }}" aria-label="Pembayaran">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+        </svg>
+        <span class="text-[10px] font-semibold">Bayar</span>
+    </a>
+
+    <!-- 5. Profil / Akun -->
+    <a href="{{ route('pengurus.profile') }}" class="neu-bottomnav__item {{ $active === 'profile' ? 'is-active' : '' }}" aria-label="Profil">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <span class="text-[10px] font-semibold">Profil</span>
+    </a>
+</nav>
 
 <script>
     window.toggleAppSidebar = function() {

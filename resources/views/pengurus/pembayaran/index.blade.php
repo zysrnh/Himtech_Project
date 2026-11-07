@@ -12,13 +12,13 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex selection:bg-ice-200 selection:text-navy-900">
+<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
 
     <!-- Sidebar Pengurus Universal -->
     <x-sidebar-pengurus active="pembayaran" />
 
     <!-- Area Konten Utama -->
-    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto custom-scrollbar">
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen md:h-screen overflow-y-auto custom-scrollbar pb-28 md:pb-0">
 
         <!-- Topbar Sederhana & Notifikasi -->
         <header class="h-16 px-6 lg:px-8 border-b border-ice-200/70 flex items-center justify-between shrink-0 bg-white/40 backdrop-blur-xs sticky top-0 z-20">

@@ -40,7 +40,7 @@ class OrganizationController extends Controller
     }
 
     /**
-     * Simpan organisasi baru beserta akun bendahara awalnya.
+     * Simpan organisasi baru beserta akun staff awalnya.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -52,13 +52,13 @@ class OrganizationController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:20', 'alpha_dash', 'unique:organizations,code'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'treasurer_name' => ['required', 'string', 'max:255'],
-            'treasurer_email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'treasurer_password' => ['nullable', 'string', 'min:6'],
+            'staff_name' => ['required', 'string', 'max:255'],
+            'staff_email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'staff_password' => ['nullable', 'string', 'min:6'],
         ]);
 
         $code = Str::upper($validated['code']);
-        $password = $validated['treasurer_password'] ?: 'password';
+        $password = $validated['staff_password'] ?: 'password';
 
         DB::transaction(function () use ($validated, $code, $password) {
             // 1. Simpan Organisasi
@@ -69,17 +69,17 @@ class OrganizationController extends Controller
                 'status' => 'active',
             ]);
 
-            // 2. Buat Akun Pengurus / Bendahara Awal
-            $treasurer = User::create([
-                'name' => $validated['treasurer_name'],
-                'email' => $validated['treasurer_email'],
+            // 2. Buat Akun Pengurus / Staff Awal
+            $staff = User::create([
+                'name' => $validated['staff_name'],
+                'email' => $validated['staff_email'],
                 'password' => Hash::make($password),
                 'is_super_admin' => false,
             ]);
 
-            // 3. Hubungkan di tabel pivot organization_user
-            $organization->users()->attach($treasurer->id, [
-                'role' => 'bendahara',
+            // 3. Hubungkan di tabel pivot organization_user dengan role staff
+            $organization->users()->attach($staff->id, [
+                'role' => 'staff',
                 'is_active' => true,
             ]);
 
@@ -112,11 +112,11 @@ class OrganizationController extends Controller
                 'payload' => [
                     'organization_name' => $organization->name,
                     'organization_code' => $organization->code,
-                    'treasurer_email' => $treasurer->email,
+                    'staff_email' => $staff->email,
                 ],
             ]);
         });
 
-        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) dan akun bendahara berhasil didaftarkan.");
+        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) dan akun staff berhasil didaftarkan.");
     }
 }

@@ -54,7 +54,7 @@ Keunggulan Pola Perancangan Ini:
      * id: BIGINT (Primary Key, Auto Increment)
      * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
      * user_id: BIGINT (Foreign Key -> users.id, Cascade Delete)
-     * role: VARCHAR(50) - Peran dalam organisasi: 'bendahara', 'staff', 'anggota'
+     * role: VARCHAR(50) - Peran dalam organisasi: 'staff', 'bendahara', 'anggota'
      * member_id: BIGINT (Nullable, Foreign Key -> members.id, Null on Delete)
      * is_active: BOOLEAN (Default: true) - Status keaktifan pengurus/pengguna
      * created_at, updated_at: TIMESTAMP

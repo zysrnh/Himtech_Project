@@ -174,14 +174,14 @@
                 @endif
             </div>
 
-            <!-- Bagian Form Tambah Organisasi Baru -->
+            <!-- Bagian Form Tambah Organisasi Baru (Akun Staff Awal) -->
             <div id="form-tambah-organisasi" class="bg-white rounded-lg p-8 shadow-card">
                 <div>
                     <h2 class="font-display font-medium text-xl text-navy-900">
                         Tambah Organisasi Baru
                     </h2>
                     <p class="text-sm text-navy-500 mt-1">
-                        Daftarkan entitas ormawa baru sekaligus buatkan akun Bendahara pertamanya.
+                        Daftarkan entitas ormawa baru sekaligus buatkan akun Staff pertamanya.
                     </p>
                 </div>
 
@@ -244,56 +244,56 @@
                             </div>
                         </div>
 
-                        <!-- Kolom Kanan: Data Akun Bendahara Awal -->
+                        <!-- Kolom Kanan: Data Akun Staff Awal -->
                         <div class="space-y-4">
                             <div>
-                                <label for="treasurer_name" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Nama Lengkap Bendahara Awal
+                                <label for="staff_name" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Nama Lengkap Staff Awal
                                 </label>
                                 <input
                                     type="text"
-                                    id="treasurer_name"
-                                    name="treasurer_name"
-                                    value="{{ old('treasurer_name') }}"
+                                    id="staff_name"
+                                    name="staff_name"
+                                    value="{{ old('staff_name') }}"
                                     required
                                     placeholder="Contoh: Zaki Yusron"
                                     class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
                                 >
-                                @error('treasurer_name')
+                                @error('staff_name')
                                     <p class="mt-1 text-xs text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div>
-                                <label for="treasurer_email" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Email Bendahara (Untuk Login Pengurus)
+                                <label for="staff_email" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Email Staff (Untuk Login Pengurus)
                                 </label>
                                 <input
                                     type="email"
-                                    id="treasurer_email"
-                                    name="treasurer_email"
-                                    value="{{ old('treasurer_email') }}"
+                                    id="staff_email"
+                                    name="staff_email"
+                                    value="{{ old('staff_email') }}"
                                     required
-                                    placeholder="Contoh: bendahara@himtech.id"
+                                    placeholder="Contoh: staff@himtech.id"
                                     class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
                                 >
-                                @error('treasurer_email')
+                                @error('staff_email')
                                     <p class="mt-1 text-xs text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div>
-                                <label for="treasurer_password" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                <label for="staff_password" class="block text-[13px] text-navy-500 font-normal mb-2">
                                     Password Awal (Kosongkan jika default: password)
                                 </label>
                                 <input
                                     type="password"
-                                    id="treasurer_password"
-                                    name="treasurer_password"
+                                    id="staff_password"
+                                    name="staff_password"
                                     placeholder="Minimal 6 karakter"
                                     class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
                                 >
-                                @error('treasurer_password')
+                                @error('staff_password')
                                     <p class="mt-1 text-xs text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -306,7 +306,7 @@
                             type="submit"
                             class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer"
                         >
-                            Daftarkan Organisasi & Akun Bendahara
+                            Daftarkan Organisasi & Akun Staff
                         </button>
                     </div>
                 </form>

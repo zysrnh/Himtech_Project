@@ -1,9 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
+
+    --color-navy-900: #2F4862;
+    --color-navy-700: #243A50;
+    --color-navy-500: #4A6583;
+
+    --color-ice-400: #7AA3D6;
+    --color-ice-200: #B5CCEB;
+    --color-ice-100: #DDEBFC;
+
+    --color-butter-100: #FFF7CD;
+
+    --color-surface: #FFFFFF;
+    --color-danger: #C0524A;
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-blob: 28px 28px 28px 8px;
+
+    --shadow-card: 0 4px 16px rgba(47, 72, 98, 0.08);
+    --shadow-float: 0 12px 32px rgba(47, 72, 98, 0.12);
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--color-navy-900);
+    background-color: var(--color-ice-100);
 }

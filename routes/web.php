@@ -14,6 +14,7 @@ use App\Http\Controllers\Pengurus\DuesBillController;
 use App\Http\Controllers\Pengurus\MemberController;
 use App\Http\Controllers\Pengurus\PaymentSettingController;
 use App\Http\Controllers\Pengurus\StaffController;
+use App\Http\Controllers\Pengurus\TransactionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +90,11 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     Route::post('/metode-pembayaran/cashless', [PaymentSettingController::class, 'storeCashless'])->name('pembayaran.store-cashless');
     Route::post('/metode-pembayaran/qris', [PaymentSettingController::class, 'updateQris'])->name('pembayaran.update-qris');
     Route::delete('/metode-pembayaran/{paymentMethod}', [PaymentSettingController::class, 'destroy'])->name('pembayaran.destroy');
+
+    // Buku Kas Mutasi (Pemasukan & Pengeluaran Ormawa)
+    Route::get('/buku-kas', [TransactionController::class, 'index'])->name('buku-kas.index');
+    Route::post('/buku-kas', [TransactionController::class, 'store'])->name('buku-kas.store');
+    Route::delete('/buku-kas/{transaction}', [TransactionController::class, 'destroy'])->name('buku-kas.destroy');
 });
 
 // Portal Transparansi Anggota

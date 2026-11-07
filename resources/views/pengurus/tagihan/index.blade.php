@@ -43,26 +43,13 @@
 
             <!-- Top Header & Aksi Cepat -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onclick="toggleAppSidebar()"
-                        class="h-10 px-3.5 rounded-xl bg-white border border-ice-200/80 text-navy-900 font-semibold text-xs shadow-xs hover:bg-ice-100 cursor-pointer transition-all flex items-center gap-2 shrink-0"
-                        title="Buka / Tutup Sidebar"
-                    >
-                        <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                        <span>Menu</span>
-                    </button>
-                    <div>
-                        <h1 class="font-display font-semibold text-2xl lg:text-[28px] text-navy-900 leading-tight">
-                            Tagihan Iuran Kas
-                        </h1>
-                        <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
-                            Kelola periode kas, verifikasi pelunasan anggota, dan pengaturan metode pembayaran.
-                        </p>
-                    </div>
+                <div>
+                    <h1 class="font-display font-semibold text-2xl lg:text-[28px] text-navy-900 leading-tight">
+                        Tagihan Iuran Kas
+                    </h1>
+                    <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                        Kelola periode kas, verifikasi pelunasan anggota, dan pengaturan metode pembayaran.
+                    </p>
                 </div>
 
                 <div class="flex items-center gap-2.5 shrink-0">

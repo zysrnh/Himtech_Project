@@ -658,6 +658,56 @@ body {
     background: var(--neu-surface);
     border-right: 1.5px solid rgba(181, 204, 235, 0.6);
     box-shadow: 4px 0 20px rgba(122, 163, 214, 0.18);
+    transition: width 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar Mini / Collapsed Mode (Hanya Ikon Saja) */
+.neu-sidebar.is-collapsed {
+    width: 76px !important;
+    min-width: 76px !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-text,
+.neu-sidebar.is-collapsed [data-sidebar-icon],
+.neu-sidebar.is-collapsed .sidebar-brand-full,
+.neu-sidebar.is-collapsed .sidebar-org-text,
+.neu-sidebar.is-collapsed .sidebar-user-text,
+.neu-sidebar.is-collapsed .sidebar-btn-text,
+.neu-sidebar.is-collapsed .sidebar-brand-mini {
+    display: none !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-header-box {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-toggle-btn {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid rgba(181, 204, 235, 0.8) !important;
+    box-shadow: 2px 2px 6px rgba(122, 163, 214, 0.2), -2px -2px 6px rgba(255, 255, 255, 0.9) !important;
+}
+
+.neu-sidebar.is-collapsed .neu-nav-item,
+.neu-sidebar.is-collapsed .neu-nav-subitem {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    gap: 0 !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-org-box,
+.neu-sidebar.is-collapsed .sidebar-user-box {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 .neu-nav-item {

@@ -25,26 +25,13 @@
 
             <!-- Top Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onclick="toggleAppSidebar()"
-                        class="h-10 px-3.5 rounded-xl bg-white border border-ice-200 text-navy-900 font-semibold text-xs hover:bg-ice-100 transition-colors shadow-xs flex items-center gap-2 cursor-pointer shrink-0"
-                        title="Buka / Tutup Sidebar"
-                    >
-                        <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                        <span>Menu</span>
-                    </button>
-                    <div>
-                        <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
-                            Profil & Keamanan Akun
-                        </h1>
-                        <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
-                            Sesuaikan foto profil, nama asli, NIM kampus Anda, kontak WhatsApp, atau ubah kata sandi akun.
-                        </p>
-                    </div>
+                <div>
+                    <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
+                        Profil & Keamanan Akun
+                    </h1>
+                    <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                        Sesuaikan foto profil, nama asli, NIM kampus Anda, kontak WhatsApp, atau ubah kata sandi akun.
+                    </p>
                 </div>
                 <a
                     href="{{ route('anggota.dashboard') }}"

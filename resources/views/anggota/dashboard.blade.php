@@ -56,26 +56,13 @@
 
             <!-- Welcome Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onclick="toggleAppSidebar()"
-                        class="h-10 px-3.5 rounded-xl bg-white border border-ice-200 text-navy-900 font-semibold text-xs hover:bg-ice-100 transition-colors shadow-xs flex items-center gap-2 cursor-pointer shrink-0"
-                        title="Buka / Tutup Sidebar"
-                    >
-                        <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                        <span>Menu</span>
-                    </button>
-                    <div>
-                        <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
-                            Halo, {{ $member->name }}
-                        </h1>
-                        <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
-                            Pantau status iuran kas pribadi dan keterbukaan saldo keuangan {{ $organization->name }}.
-                        </p>
-                    </div>
+                <div>
+                    <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
+                        Halo, {{ $member->name }}
+                    </h1>
+                    <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                        Pantau status iuran kas pribadi dan keterbukaan saldo keuangan {{ $organization->name }}.
+                    </p>
                 </div>
                 <div class="flex items-center gap-2">
                     <a
@@ -356,47 +343,103 @@
                 @endif
             </div>
 
-            <!-- Bagian 2: Tabel Mutasi Kas Terbuka Organisasi (Transparansi) -->
-            <div id="buku-kas" class="bg-white rounded-lg p-6 sm:p-8 shadow-card border border-ice-200 space-y-4">
-                <div class="flex items-center justify-between pb-3 border-b border-ice-200">
+            <!-- Bagian 2: Tabel Mutasi Kas Terbuka Organisasi (Transparansi Finansial) -->
+            <div id="buku-kas" class="bg-white rounded-2xl p-6 sm:p-8 shadow-[3px_3px_12px_rgba(122,163,214,0.18),-3px_-3px_12px_rgba(255,255,255,0.9)] border border-ice-200/80 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-ice-200/70">
                     <div>
-                        <h2 class="font-display font-semibold text-lg text-navy-900">
-                            Buku Kas Mutasi Terbuka Organisasi
-                        </h2>
-                        <p class="text-xs text-navy-500 mt-0.5">
-                            Transparansi mutasi pengeluaran dan pemasukan kas ormawa {{ $organization->name }}.
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <h2 class="font-display font-semibold text-lg sm:text-xl text-navy-900">
+                                Buku Kas Mutasi Terbuka Organisasi
+                            </h2>
+                        </div>
+                        <p class="text-xs text-navy-500 mt-1">
+                            Transparansi mutasi pengeluaran dan pemasukan kas {{ $organization->name }} yang dapat diaudit seluruh anggota.
                         </p>
+                    </div>
+
+                    <!-- Filter Tabs: Semua, Pemasukan, Pengeluaran -->
+                    <div class="flex items-center p-1 rounded-xl bg-ice-100/80 border border-ice-200/70 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.2)] shrink-0 self-start md:self-auto">
+                        <a
+                            href="?tx_type=all#buku-kas"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all {{ ($txType ?? 'all') === 'all' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                        >
+                            Semua
+                        </a>
+                        <a
+                            href="?tx_type=in#buku-kas"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all {{ ($txType ?? 'all') === 'in' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                        >
+                            Pemasukan (+)
+                        </a>
+                        <a
+                            href="?tx_type=out#buku-kas"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all {{ ($txType ?? 'all') === 'out' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                        >
+                            Pengeluaran (-)
+                        </a>
                     </div>
                 </div>
 
                 @if ($publicTransactions->isEmpty())
-                    <div class="py-12 text-center text-sm text-navy-500">
-                        Belum ada riwayat transaksi kas yang dibukukan.
+                    <div class="py-12 text-center text-sm text-navy-500 bg-ice-100/30 rounded-xl border border-ice-200/60">
+                        Belum ada riwayat transaksi kas yang dibukukan untuk filter ini.
                     </div>
                 @else
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto rounded-xl border border-ice-200/70 shadow-xs">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead>
-                                <tr class="border-b border-ice-200 text-xs text-navy-500 bg-ice-100/40">
-                                    <th class="py-3 px-4 font-medium">Tanggal</th>
-                                    <th class="py-3 px-4 font-medium">Kategori</th>
-                                    <th class="py-3 px-4 font-medium">Keterangan</th>
-                                    <th class="py-3 px-4 font-medium text-right">Nominal</th>
+                                <tr class="border-b border-ice-200/80 text-xs text-navy-500 bg-ice-100/60">
+                                    <th class="py-3.5 px-4 font-semibold">Tanggal</th>
+                                    <th class="py-3.5 px-4 font-semibold">Tipe & Kategori</th>
+                                    <th class="py-3.5 px-4 font-semibold">Keperluan / Keterangan</th>
+                                    <th class="py-3.5 px-4 font-semibold text-center">Bukti / Nota</th>
+                                    <th class="py-3.5 px-4 font-semibold text-right">Nominal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-ice-100 text-sm">
+                            <tbody class="divide-y divide-ice-100 text-sm bg-white">
                                 @foreach ($publicTransactions as $tx)
                                     <tr class="hover:bg-ice-100/30 transition-colors">
-                                        <td class="py-3 px-4 text-xs text-navy-500 tabular-nums">
-                                            {{ $tx->transaction_date?->format('d/m/Y') ?? '-' }}
+                                        <td class="py-3.5 px-4 text-xs text-navy-500 tabular-nums whitespace-nowrap">
+                                            {{ $tx->transaction_date?->format('d M Y') ?? '-' }}
                                         </td>
-                                        <td class="py-3 px-4 text-xs font-semibold text-navy-900">
-                                            {{ $tx->category->name ?? 'Kas Umum' }}
+                                        <td class="py-3.5 px-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-2">
+                                                @if ($tx->type === 'in')
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                        Masuk
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-50 text-danger border border-red-200">
+                                                        Keluar
+                                                    </span>
+                                                @endif
+                                                <span class="text-xs font-semibold text-navy-900">
+                                                    {{ $tx->category->name ?? 'Kas Umum' }}
+                                                </span>
+                                            </div>
                                         </td>
-                                        <td class="py-3 px-4 text-xs text-navy-700">
+                                        <td class="py-3.5 px-4 text-xs text-navy-700 max-w-xs">
                                             {{ $tx->description }}
                                         </td>
-                                        <td class="py-3 px-4 text-sm font-semibold tabular-nums text-right {{ $tx->type === 'in' ? 'text-navy-900' : 'text-danger' }}">
+                                        <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                            @if ($tx->proof_path)
+                                                <button
+                                                    type="button"
+                                                    onclick="openProofPreview('{{ asset('storage/' . $tx->proof_path) }}', '{{ addslashes($tx->description) }}', '{{ $tx->transaction_date?->format('d M Y') }}', 'Rp {{ number_format($tx->amount, 0, ',', '.') }}')"
+                                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-ice-100/90 hover:bg-ice-200/80 text-navy-900 text-xs font-semibold border border-ice-200/80 shadow-xs cursor-pointer transition-all"
+                                                >
+                                                    <svg class="w-3.5 h-3.5 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    <span>Lihat Nota</span>
+                                                </button>
+                                            @else
+                                                <span class="text-[11px] text-navy-400 italic">Tanpa nota</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3.5 px-4 text-sm font-bold tabular-nums text-right whitespace-nowrap {{ $tx->type === 'in' ? 'text-emerald-600' : 'text-danger' }}">
                                             {{ $tx->type === 'in' ? '+' : '-' }} Rp {{ number_format($tx->amount, 0, ',', '.') }}
                                         </td>
                                     </tr>
@@ -1224,7 +1267,69 @@
                 alert('Kendala koneksi: ' + e.message);
             }
         }
+
+        // Preview Nota / Bukti Transaksi Anggota
+        function openProofPreview(url, title, date, amount) {
+            const modal = document.getElementById('modal-preview-proof-anggota');
+            const img = document.getElementById('preview-proof-img');
+            const titleEl = document.getElementById('preview-proof-title');
+            const infoEl = document.getElementById('preview-proof-info');
+            const linkEl = document.getElementById('preview-proof-download');
+
+            if (!modal || !img) return;
+
+            img.src = url;
+            if (titleEl) titleEl.textContent = title || 'Bukti Transaksi Kas';
+            if (infoEl) infoEl.textContent = (date ? date + ' • ' : '') + (amount || '');
+            if (linkEl) linkEl.href = url;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeProofPreview() {
+            const modal = document.getElementById('modal-preview-proof-anggota');
+            if (modal) modal.classList.add('hidden');
+        }
     </script>
+
+    <!-- Modal Preview Foto Nota / Bukti Kas (Transparansi Anggota) -->
+    <div id="modal-preview-proof-anggota" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/50 backdrop-blur-xs hidden">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-5 shadow-2xl border border-ice-200/80 space-y-4 max-h-[90vh] flex flex-col animate-scale-up">
+            <div class="flex items-center justify-between pb-3 border-b border-ice-200/70 shrink-0">
+                <div class="min-w-0 pr-2">
+                    <h3 id="preview-proof-title" class="font-display font-semibold text-base text-navy-900 truncate">Bukti Nota Transaksi</h3>
+                    <p id="preview-proof-info" class="text-xs text-navy-500 mt-0.5">Nota fisik yang diunggah Bendahara</p>
+                </div>
+                <button type="button" onclick="closeProofPreview()" class="text-navy-500 hover:text-navy-900 font-bold text-xl cursor-pointer shrink-0">&times;</button>
+            </div>
+
+            <div class="flex-1 overflow-auto bg-ice-100/40 rounded-xl p-2 flex items-center justify-center border border-ice-200/60 min-h-[220px]">
+                <img id="preview-proof-img" src="" alt="Bukti Nota" class="max-h-[60vh] max-w-full object-contain rounded-lg shadow-sm" />
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-ice-200/70 shrink-0">
+                <a
+                    id="preview-proof-download"
+                    href="#"
+                    target="_blank"
+                    download
+                    class="h-9 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-semibold text-xs border border-ice-200/70 hover:bg-ice-200/70 flex items-center gap-1.5 transition-all"
+                >
+                    <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Unduh / Buka Asli</span>
+                </a>
+                <button
+                    type="button"
+                    onclick="closeProofPreview()"
+                    class="h-9 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-all cursor-pointer"
+                >
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

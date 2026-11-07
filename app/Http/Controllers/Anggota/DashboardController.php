@@ -79,12 +79,18 @@ class DashboardController extends Controller
             ];
         }
 
-        // 5 Mutasi Kas Organisasi Terbaru (Transparansi untuk Anggota)
-        $publicTransactions = $organization->transactions()
-            ->with(['category', 'creator'])
-            ->latest('transaction_date')
+        // Mutasi Kas Organisasi (Transparansi Terbuka untuk Seluruh Anggota)
+        $txType = $request->query('tx_type', 'all');
+        $txQuery = $organization->transactions()
+            ->with(['category', 'creator']);
+
+        if ($txType === 'in' || $txType === 'out') {
+            $txQuery->where('type', $txType);
+        }
+
+        $publicTransactions = $txQuery->latest('transaction_date')
             ->latest('id')
-            ->take(5)
+            ->take(25)
             ->get();
 
         // Metode Pembayaran Ormawa Aktif (Rekening Bank, E-Wallet, QRIS)
@@ -100,6 +106,7 @@ class DashboardController extends Controller
             'unpaidBills',
             'totalUnpaidAmount',
             'publicTransactions',
+            'txType',
             'paymentMethods',
             'calendarDate',
             'billsByDate'

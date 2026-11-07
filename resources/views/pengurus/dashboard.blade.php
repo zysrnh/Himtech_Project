@@ -53,12 +53,14 @@
                 >
                     Overview Kas
                 </a>
-                <a
-                    href="{{ route('pengurus.staff.index') }}"
-                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
-                >
-                    Kelola Staff
-                </a>
+                @if (session('active_role') === 'admin_organisasi' || Auth::user()->isSuperAdmin())
+                    <a
+                        href="{{ route('pengurus.staff.index') }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Kelola Staff
+                    </a>
+                @endif
                 <a
                     href="#anggota"
                     class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
@@ -135,12 +137,14 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a
-                        href="{{ route('pengurus.staff.index') }}"
-                        class="inline-flex items-center justify-center h-10 px-4 rounded-md bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shadow-sm"
-                    >
-                        Kelola Staff & Bendahara
-                    </a>
+                    @if (session('active_role') === 'admin_organisasi' || Auth::user()->isSuperAdmin())
+                        <a
+                            href="{{ route('pengurus.staff.index') }}"
+                            class="inline-flex items-center justify-center h-10 px-4 rounded-md bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shadow-sm"
+                        >
+                            Kelola Staff & Bendahara
+                        </a>
+                    @endif
                     <span class="inline-flex items-center px-3 py-2 rounded-md bg-white border border-ice-200 text-xs font-medium text-navy-900">
                         Status: Organisasi Aktif
                     </span>

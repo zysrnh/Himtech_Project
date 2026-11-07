@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -21,12 +20,18 @@ use Illuminate\View\View;
 class StaffController extends Controller
 {
     /**
-     * Tampilkan daftar seluruh staff dan bendahara ormawa aktif.
+     * Tampilkan daftar seluruh staff & bendahara pada organisasi aktif.
+     * Khusus hanya dapat diakses oleh Admin Organisasi (Ketua).
      */
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         /** @var Organization $organization */
         $organization = $request->attributes->get('current_organization');
+
+        if (session('active_role') !== 'admin_organisasi' && ! Auth::user()->isSuperAdmin()) {
+            return redirect()->route('pengurus.dashboard')
+                ->withErrors(['error' => 'Akses ditolak: Hanya Admin Organisasi (Ketua) yang berwenang mengelola akun staf dan bendahara.']);
+        }
 
         $staffMembers = $organization->users()
             ->wherePivotIn('role', ['admin_organisasi', 'bendahara', 'staff'])
@@ -47,12 +52,16 @@ class StaffController extends Controller
         /** @var Organization $organization */
         $organization = $request->attributes->get('current_organization');
 
+        if (session('active_role') !== 'admin_organisasi' && ! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Akses ditolak: Hanya Admin Organisasi (Ketua) yang berwenang menambahkan staf baru.');
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users,username'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:25'],
-            'role' => ['required', 'string', 'in:bendahara,staff,admin_organisasi'],
+            'role' => ['required', 'string', 'in:bendahara,staff'],
             'password' => ['nullable', 'string', 'min:8'],
         ], [
             'name.required' => 'Nama lengkap staff/bendahara wajib diisi.',
@@ -100,72 +109,84 @@ class StaffController extends Controller
             ]);
         });
 
-        // Blast Kredensial via WhatsApp (Fonnte API)
-        if ($newStaff && ! empty($newStaff->phone)) {
-            FonnteService::sendStaffAccountCreated(
-                phone: $newStaff->phone,
-                staffName: $newStaff->name,
-                orgName: $organization->name,
-                orgCode: $organization->code,
-                email: $newStaff->email,
-                password: $password,
-                username: $newStaff->username
-            );
+        $roleLabel = $validated['role'] === 'bendahara' ? 'Bendahara Ormawa' : 'Staff Operasional Kas';
+
+        // 1. Dispatch Kredensial Otomatis via WhatsApp (Fonnte API)
+        if (! empty($validated['phone'])) {
+            $waMessage = "Halo {$validated['name']},\n\n"
+                ."Anda telah didaftarkan sebagai *{$roleLabel}* untuk *{$organization->name}* di sistem Kasly.\n\n"
+                ."Berikut adalah rincian kredensial login Anda:\n"
+                ."• Kode Organisasi: *{$organization->code}*\n"
+                ."• Username: *{$validated['username']}*\n"
+                ."• Email: {$validated['email']}\n"
+                ."• Kata Sandi: *{$password}*\n\n"
+                ."Silakan masuk ke panel kerja Anda melalui tautan berikut:\n"
+                .url('/login')."\n\n"
+                ."Salam,\nTim Pengurus {$organization->name}";
+
+            FonnteService::send($validated['phone'], $waMessage);
         }
 
-        // Blast Kredensial via Email (SMTP)
-        if ($newStaff && ! empty($newStaff->email)) {
-            try {
-                Mail::to($newStaff->email)->send(new StaffAccountCreatedMail(
-                    staffName: $newStaff->name,
-                    orgName: $organization->name,
-                    orgCode: $organization->code,
-                    email: $newStaff->email,
-                    password: $password,
-                    loginUrl: url('/login'),
-                    username: $newStaff->username
-                ));
-            } catch (\Throwable $e) {
-                Log::warning("Gagal mengirim email kredensial staf ke [{$newStaff->email}]: ".$e->getMessage());
-            }
+        // 2. Dispatch Kredensial Cadangan via Email (SMTP)
+        try {
+            Mail::to($validated['email'])->send(new StaffAccountCreatedMail(
+                organization: $organization,
+                staffName: $validated['name'],
+                staffEmail: $validated['email'],
+                staffUsername: $validated['username'],
+                staffPassword: $password,
+                role: $validated['role']
+            ));
+        } catch (\Throwable $e) {
+            // Log warning jika SMTP gagal, pendaftaran tetap berhasil
+            report($e);
         }
-
-        $roleLabel = match ($validated['role']) {
-            'bendahara' => 'Bendahara',
-            'admin_organisasi' => 'Admin Organisasi',
-            default => 'Staff',
-        };
 
         return redirect()->route('pengurus.staff.index')
-            ->with('success', "Akun {$roleLabel} baru atas nama {$validated['name']} ({$validated['username']}) berhasil dibuat dan kredensial login telah dikirimkan via WhatsApp dan Email.");
+            ->with('success', "Akun {$roleLabel} baru atas nama {$validated['name']} (@{$validated['username']}) berhasil ditambahkan dan kredensial telah dikirim via WhatsApp.");
     }
 
     /**
-     * Ubah status aktif / nonaktif staf dalam organisasi.
+     * Ubah status aktif/nonaktif staff dalam organisasi.
      */
     public function toggleStatus(Request $request, User $user): RedirectResponse
     {
         /** @var Organization $organization */
         $organization = $request->attributes->get('current_organization');
 
+        if (session('active_role') !== 'admin_organisasi' && ! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Akses ditolak: Hanya Admin Organisasi (Ketua) yang berwenang mengubah status staf.');
+        }
+
         if ($user->id === Auth::id()) {
-            return back()->withErrors(['error' => 'Anda tidak dapat menonaktifkan akun Anda sendiri saat sedang login.']);
+            return back()->withErrors(['error' => 'Anda tidak dapat menonaktifkan akun Anda sendiri.']);
         }
 
-        $currentPivot = $organization->users()->where('users.id', $user->id)->first()?->pivot;
-        if (! $currentPivot) {
-            abort(404);
+        $pivot = $organization->users()->where('users.id', $user->id)->first();
+        if (! $pivot) {
+            return back()->withErrors(['error' => 'User tidak terdaftar dalam kepengurusan organisasi ini.']);
         }
 
-        $newStatus = ! $currentPivot->is_active;
+        $currentStatus = (bool) $pivot->pivot->is_active;
+        $newStatus = ! $currentStatus;
+
         $organization->users()->updateExistingPivot($user->id, [
             'is_active' => $newStatus,
         ]);
 
         $statusText = $newStatus ? 'diaktifkan kembali' : 'dinonaktifkan';
 
+        ActivityLog::create([
+            'organization_id' => $organization->id,
+            'user_id' => Auth::id(),
+            'action' => 'toggle_staff_status',
+            'subject_type' => User::class,
+            'subject_id' => $user->id,
+            'payload' => ['new_status' => $newStatus],
+        ]);
+
         return redirect()->route('pengurus.staff.index')
-            ->with('success', "Akun staf {$user->name} berhasil {$statusText}.");
+            ->with('success', "Status akun staf {$user->name} berhasil {$statusText}.");
     }
 
     /**
@@ -176,8 +197,12 @@ class StaffController extends Controller
         /** @var Organization $organization */
         $organization = $request->attributes->get('current_organization');
 
+        if (session('active_role') !== 'admin_organisasi' && ! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Akses ditolak: Hanya Admin Organisasi (Ketua) yang berwenang menghapus staf.');
+        }
+
         if ($user->id === Auth::id()) {
-            return back()->withErrors(['error' => 'Anda tidak dapat menghapus akun Anda sendiri saat sedang login.']);
+            return back()->withErrors(['error' => 'Anda tidak dapat menghapus akun Anda sendiri dari kepengurusan.']);
         }
 
         $userName = $user->name;
@@ -185,11 +210,20 @@ class StaffController extends Controller
         DB::transaction(function () use ($organization, $user) {
             $organization->users()->detach($user->id);
 
-            // Bersihkan jika user tidak terafiliasi dengan organisasi lain dan bukan super admin
+            // Jika user tidak terhubung ke organisasi lain dan bukan admin pusat, bersihkan akun
             if ($user->organizations()->count() === 0 && ! $user->is_super_admin) {
                 $user->delete();
             }
         });
+
+        ActivityLog::create([
+            'organization_id' => $organization->id,
+            'user_id' => Auth::id(),
+            'action' => 'delete_staff',
+            'subject_type' => User::class,
+            'subject_id' => $user->id,
+            'payload' => ['deleted_user_name' => $userName],
+        ]);
 
         return redirect()->route('pengurus.staff.index')
             ->with('success', "Akun staf {$userName} berhasil dihapus dari kepengurusan {$organization->name}.");

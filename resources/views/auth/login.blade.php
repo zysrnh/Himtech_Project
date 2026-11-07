@@ -82,6 +82,25 @@
             >
                 @csrf
 
+                <!-- Input Kode Organisasi Pengurus -->
+                <div>
+                    <label for="pengurus_organization_code" class="block text-[13px] text-navy-500 font-normal mb-2">
+                        Kode Organisasi
+                    </label>
+                    <input
+                        type="text"
+                        id="pengurus_organization_code"
+                        name="organization_code"
+                        value="{{ $initialTab === 'pengurus' ? old('organization_code') : '' }}"
+                        required
+                        placeholder="Contoh: HIMTECH"
+                        class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                    >
+                    <p class="text-[11px] text-navy-500 mt-1">
+                        Masukkan kode ormawa tempat Anda bertugas sebagai pengurus.
+                    </p>
+                </div>
+
                 <!-- Input Email -->
                 <div>
                     <label for="pengurus_email" class="block text-[13px] text-navy-500 font-normal mb-2">
@@ -262,4 +281,3 @@
 
 </body>
 </html>
-

@@ -133,7 +133,7 @@
                             Daftar Seluruh Organisasi
                         </h2>
                         <p class="text-sm text-navy-500 mt-0.5">
-                            Menampilkan data tenant ormawa terdaftar beserta status keaktifan sistem.
+                            Menampilkan data tenant ormawa terdaftar beserta status keaktifan dan kontrol akses.
                         </p>
                     </div>
                 </div>
@@ -177,7 +177,7 @@
                                         <td class="py-4 px-6 text-navy-900 font-medium">
                                             {{ $org->name }}
                                         </td>
-                                        <td class="py-4 px-6 text-navy-500 text-xs max-w-[240px] truncate">
+                                        <td class="py-4 px-6 text-navy-500 text-xs max-w-[200px] truncate">
                                             {{ $org->description ?: '-' }}
                                         </td>
                                         <td class="py-4 px-6">
@@ -194,33 +194,54 @@
                                         <td class="py-4 px-6 text-navy-500 tabular-nums text-xs">
                                             {{ $org->created_at->format('d M Y') }}
                                         </td>
-                                        <td class="py-4 px-6 text-right">
-                                            <form
-                                                action="{{ route('admin.organizations.toggle-status', $org) }}"
-                                                method="POST"
-                                                class="inline-block"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin {{ $org->status === 'active' ? 'menonaktifkan' : 'mengaktifkan kembali' }} organisasi {{ $org->name }} ({{ $org->code }})? {{ $org->status === 'active' ? 'Staff dan anggota tidak akan dapat login selama dinonaktifkan.' : 'Akses login staff dan anggota akan dipulihkan.' }}');"
-                                            >
-                                                @csrf
-                                                @method('PATCH')
-                                                @if ($org->status === 'active')
+                                        <td class="py-4 px-6 text-right whitespace-nowrap">
+                                            <div class="inline-flex items-center gap-2">
+                                                <!-- Tombol Toggle Aktif / Nonaktif -->
+                                                <form
+                                                    action="{{ route('admin.organizations.toggle-status', $org) }}"
+                                                    method="POST"
+                                                    class="inline-block"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin {{ $org->status === 'active' ? 'menonaktifkan' : 'mengaktifkan kembali' }} organisasi {{ $org->name }} ({{ $org->code }})? {{ $org->status === 'active' ? 'Staff dan anggota tidak akan dapat login selama dinonaktifkan.' : 'Akses login staff dan anggota akan dipulihkan.' }}');"
+                                                >
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    @if ($org->status === 'active')
+                                                        <button
+                                                            type="submit"
+                                                            class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-ice-200 text-navy-900 bg-white hover:bg-ice-100 text-xs font-medium transition-colors cursor-pointer"
+                                                            title="Nonaktifkan akses organisasi"
+                                                        >
+                                                            Nonaktifkan
+                                                        </button>
+                                                    @else
+                                                        <button
+                                                            type="submit"
+                                                            class="inline-flex items-center justify-center h-8 px-3 rounded-md bg-navy-900 text-white hover:bg-navy-700 text-xs font-medium transition-colors cursor-pointer"
+                                                            title="Aktifkan kembali akses organisasi"
+                                                        >
+                                                            Aktifkan
+                                                        </button>
+                                                    @endif
+                                                </form>
+
+                                                <!-- Tombol Hapus Permanen -->
+                                                <form
+                                                    action="{{ route('admin.organizations.destroy', $org) }}"
+                                                    method="POST"
+                                                    class="inline-block"
+                                                    onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin MENGHAPUS PERMANEN organisasi {{ $org->name }} ({{ $org->code }})?\n\nSeluruh data anggota, transaksi kas, dan tagihan akan terhapus selamanya.');"
+                                                >
+                                                    @csrf
+                                                    @method('DELETE')
                                                     <button
                                                         type="submit"
                                                         class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-danger/30 text-danger bg-white hover:bg-danger/10 text-xs font-medium transition-colors cursor-pointer"
-                                                        title="Nonaktifkan akses organisasi"
+                                                        title="Hapus permanen organisasi dan seluruh datanya"
                                                     >
-                                                        Nonaktifkan
+                                                        Hapus
                                                     </button>
-                                                @else
-                                                    <button
-                                                        type="submit"
-                                                        class="inline-flex items-center justify-center h-8 px-3 rounded-md bg-navy-900 text-white hover:bg-navy-700 text-xs font-medium transition-colors cursor-pointer"
-                                                        title="Aktifkan kembali akses organisasi"
-                                                    >
-                                                        Aktifkan
-                                                    </button>
-                                                @endif
-                                            </form>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

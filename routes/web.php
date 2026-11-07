@@ -45,3 +45,4 @@ Route::get('/admin/organizations', [AdminOrganizationController::class, 'index']
 Route::get('/admin/organizations/create', [AdminOrganizationController::class, 'create'])->name('admin.organizations.create');
 Route::post('/admin/organizations', [AdminOrganizationController::class, 'store'])->name('admin.organizations.store');
 Route::patch('/admin/organizations/{organization}/toggle-status', [AdminOrganizationController::class, 'toggleStatus'])->name('admin.organizations.toggle-status');
+Route::delete('/admin/organizations/{organization}', [AdminOrganizationController::class, 'destroy'])->name('admin.organizations.destroy');

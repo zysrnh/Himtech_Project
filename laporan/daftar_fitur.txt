@@ -57,6 +57,7 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Fokus menampilkan ringkasan statistik (Total Organisasi, Organisasi Aktif, Organisasi Nonaktif).
   * Tabel Data Lengkap Organisasi: Menampilkan seluruh ormawa terdaftar, kode unik, nama, deskripsi, status badge aktif/nonaktif, tanggal pembuatan (dengan paginasi), dan kolom Aksi.
   * Fitur Kontrol Status Organisasi (Toggle Aktif / Nonaktif): Super Admin dapat menonaktifkan atau mengaktifkan kembali organisasi dengan konfirmasi aman dan rekam jejak audit trail (ActivityLog).
+  * Fitur Hapus Organisasi Permanen (Delete Cascade): Super Admin dapat menghapus organisasi beserta seluruh data turunannya (anggota, iuran kas, mutasi kas, kategori, dan pembersihan akun orphan) dengan konfirmasi pengaman ganda.
   * Proteksi Login Ketat: Pengurus atau anggota dari organisasi yang berstatus nonaktif akan otomatis diblokir saat login dengan pesan informatif.
   * Tombol navigasi "+ Tambah Organisasi Baru" yang mengarahkan ke halaman formulir terpisah.
 - Halaman 3 - Form Pendaftaran Organisasi Baru (/admin/organizations/create):

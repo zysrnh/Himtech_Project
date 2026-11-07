@@ -220,4 +220,51 @@ class OrganizationController extends Controller
 
         return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$organization->name} ({$organization->code}) berhasil {$statusLabel}.");
     }
+
+    /**
+     * Hapus permanen organisasi beserta seluruh data terkait (anggota, iuran, kas).
+     */
+    public function destroy(Organization $organization): RedirectResponse
+    {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $orgName = $organization->name;
+        $orgCode = $organization->code;
+
+        DB::transaction(function () use ($organization, $orgName, $orgCode) {
+            // Ambil daftar user id yang terhubung ke organisasi ini (bukan super admin)
+            $affiliatedUserIds = $organization->users()
+                ->where('is_super_admin', false)
+                ->pluck('users.id')
+                ->all();
+
+            // Catat log penghapusan sebelum organisasi dihapus
+            ActivityLog::create([
+                'organization_id' => null,
+                'user_id' => Auth::id(),
+                'action' => 'delete_organization',
+                'subject_type' => Organization::class,
+                'subject_id' => $organization->id,
+                'payload' => [
+                    'organization_name' => $orgName,
+                    'organization_code' => $orgCode,
+                ],
+            ]);
+
+            // Hapus organisasi (foreign keys cascadeOnDelete otomatis menghapus members, organization_user, transactions, dues_periods, dues_bills, cash_categories)
+            $organization->delete();
+
+            // Bersihkan akun user yang tidak punya organisasi lain dan bukan super admin
+            foreach ($affiliatedUserIds as $userId) {
+                $user = User::find($userId);
+                if ($user && $user->organizations()->count() === 0 && ! $user->is_super_admin) {
+                    $user->delete();
+                }
+            }
+        });
+
+        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$orgName} ({$orgCode}) beserta seluruh data transaksi dan anggotanya berhasil dihapus permanen.");
+    }
 }

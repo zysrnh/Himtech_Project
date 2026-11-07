@@ -71,3 +71,4 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * danger (#C0524A): Penanda status negatif dan peringatan.
 - Tipografi resmi: Outfit (Headings & Saldo) dan Plus Jakarta Sans (Body Text).
 - Desain berprinsip data-first: Menghilangkan elemen dekoratif hampa seperti label uppercase berjarak lebar dan penomoran 01/02.
+

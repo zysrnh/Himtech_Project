@@ -40,10 +40,10 @@ class DuesBillController extends Controller
 
         // Query tagihan anggota pada periode terpilih
         $billsQuery = DuesBill::query()
-            ->where('organization_id', $organization->id);
+            ->where('dues_bills.organization_id', $organization->id);
 
         if ($selectedPeriod) {
-            $billsQuery->where('dues_period_id', $selectedPeriod->id);
+            $billsQuery->where('dues_bills.dues_period_id', $selectedPeriod->id);
         } else {
             $billsQuery->whereRaw('1 = 0');
         }
@@ -51,11 +51,11 @@ class DuesBillController extends Controller
         // Filter status tagihan
         $statusFilter = $request->query('status', 'all');
         if ($statusFilter === 'paid_ontime') {
-            $billsQuery->where('status', 'paid')->where('is_on_time', true);
+            $billsQuery->where('dues_bills.status', 'paid')->where('dues_bills.is_on_time', true);
         } elseif ($statusFilter === 'paid_late') {
-            $billsQuery->where('status', 'paid')->where('is_on_time', false);
+            $billsQuery->where('dues_bills.status', 'paid')->where('dues_bills.is_on_time', false);
         } elseif ($statusFilter === 'unpaid') {
-            $billsQuery->where('status', 'unpaid');
+            $billsQuery->where('dues_bills.status', 'unpaid');
         }
 
         $bills = $billsQuery->with(['member.user', 'verifier'])

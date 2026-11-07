@@ -14,15 +14,38 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
+<body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
 
     <!-- Sidebar Super Admin Neumorphic Interaktif -->
     <x-sidebar-admin active="admins" :pending-requests-count="$pendingRequestsCount ?? null" />
 
     <!-- Main Content Area: Kelola Administrator Kasly -->
-    <div class="flex-1 flex flex-col min-w-0 min-h-screen md:h-screen overflow-y-auto custom-scrollbar pb-28 md:pb-8">
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8">
+        <div class="max-w-7xl mx-auto space-y-6">
 
-        <main class="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+            <!-- Top Header & Aksi Cepat -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-display font-bold text-2xl lg:text-3xl text-navy-900 tracking-tight">
+                        Kelola Administrator Kasly
+                    </h1>
+                    <p class="text-xs sm:text-sm text-navy-500 mt-1">
+                        Daftar seluruh akun Administrator platform pusat dan penambahan pengelola sistem multi-tenant.
+                    </p>
+                </div>
+                <div class="shrink-0">
+                    <button
+                        type="button"
+                        onclick="document.getElementById('form-tambah-admin').scrollIntoView({ behavior: 'smooth' })"
+                        class="h-11 px-5 rounded-xl bg-navy-900 text-white font-semibold text-xs shadow-[3px_4px_12px_rgba(47,72,98,0.25)] hover:bg-navy-700 active:scale-[0.99] transition-all cursor-pointer flex items-center gap-2"
+                    >
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        <span>Tambah Admin Baru</span>
+                    </button>
+                </div>
+            </div>
 
             <!-- Alerts Notifikasi Sukses / Error -->
             @if (session('success'))
@@ -45,105 +68,177 @@
                 </div>
             @endif
 
-            <!-- Top Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-display font-bold text-2xl lg:text-3xl text-navy-900 tracking-tight">
-                        Kelola Administrator Kasly
-                    </h1>
-                    <p class="text-xs sm:text-sm text-navy-500 mt-1">
-                        Daftar seluruh akun Administrator platform dan penambahan pengelola pusat baru.
+            <!-- 3 KARTU METRIK ADMINISTRATOR NEUMORPHIC (SELARAS OVERVIEW & BUKU KAS) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- 1. Total Administrator Kasly (Dark Navy Hero Card) -->
+                <div class="bg-gradient-to-br from-navy-900 via-navy-700 to-navy-900 text-white rounded-[28px] p-6 sm:p-7 shadow-[6px_6px_20px_rgba(47,72,98,0.28),-4px_-4px_16px_rgba(255,255,255,0.7)] flex flex-col justify-between relative overflow-hidden border border-navy-700/60">
+                    <div class="relative z-10">
+                        <span class="text-xs text-white/70 font-medium">Total Administrator Kasly</span>
+                        <p class="font-display font-bold text-3xl sm:text-4xl tabular-nums mt-3 tracking-tight text-white">
+                            {{ $totalAdmins ?? $admins->total() }} <span class="text-base font-normal text-white/70">Akun</span>
+                        </p>
+                    </div>
+                    <p class="text-[11px] text-white/60 mt-5 pt-3 border-t border-white/10 relative z-10 leading-relaxed">
+                        Akun pengelola pusat dengan akses verifikasi & manajemen platform.
+                    </p>
+                </div>
+
+                <!-- 2. Hak Akses Global Multi-Tenant -->
+                <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-navy-500">Tingkat Otorisasi Platform</span>
+                        <p class="font-display font-bold text-2xl sm:text-3xl text-navy-900 mt-3 tracking-tight flex items-center">
+                            Global
+                            <span class="text-xs font-normal text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full font-bold ml-2">Akses Penuh</span>
+                        </p>
+                    </div>
+                    <p class="text-[11px] text-navy-500 mt-5 pt-3 border-t border-ice-200/60 leading-relaxed">
+                        Dapat meng-ACC permohonan ormawa dan mengatur seluruh tenant.
+                    </p>
+                </div>
+
+                <!-- 3. Permohonan Menunggu Verifikasi -->
+                <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-navy-500">Antrean Verifikasi Ormawa</span>
+                        <p class="font-display font-bold text-2xl sm:text-3xl tabular-nums text-navy-900 mt-3 tracking-tight flex items-center">
+                            {{ $pendingRequestsCount }}
+                            <span class="text-xs font-normal text-amber-800 bg-butter-100 px-2.5 py-0.5 rounded-full font-bold ml-2">Menunggu ACC</span>
+                        </p>
+                    </div>
+                    <p class="text-[11px] text-navy-500 mt-5 pt-3 border-t border-ice-200/60 leading-relaxed">
+                        Pengajuan ormawa baru yang butuh verifikasi Administrator.
                     </p>
                 </div>
             </div>
 
-            <!-- Tabel Administrator Kasly Neumorphic -->
-            <div class="bg-white/90 rounded-[28px] p-5 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3.5 border-b border-ice-200/70">
+            <!-- KARTU 1: TABEL ADMINISTRATOR KASLY (DENGAN TOOLBAR CARI NEUMORPHIC) -->
+            <div class="bg-white/90 rounded-[28px] p-5 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-ice-200/70">
                     <div>
-                        <h2 class="font-display font-bold text-base text-navy-900">
+                        <h2 class="font-display font-bold text-lg text-navy-900">
                             Daftar Administrator Kasly
                         </h2>
-                        <p class="text-xs text-navy-500 mt-0.5">
-                            Setiap Administrator memiliki hak penuh mengelola organisasi, meng-ACC permohonan, dan menerima notifikasi sistem.
+                        <p class="text-xs text-navy-500 mt-1">
+                            Setiap Administrator memiliki hak penuh mengelola organisasi, meng-ACC permohonan, dan menerima notifikasi sistem. Total: <strong class="text-navy-900">{{ $totalAdmins ?? $admins->total() }}</strong> admin.
                         </p>
                     </div>
-                    <span class="neu-badge-ice text-[10px] py-1 px-3 font-mono shrink-0 self-start sm:self-auto">{{ $admins->total() }} ADMIN AKTIF</span>
+
+                    <!-- Form Pencarian Admin -->
+                    <form method="GET" action="{{ route('admin.admins.index') }}" class="flex flex-wrap items-center gap-2">
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ $search ?? '' }}"
+                            placeholder="Cari nama, username, email..."
+                            class="h-10 px-4 rounded-xl bg-ice-100/70 text-navy-900 font-medium text-xs border border-ice-200/80 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.2),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] focus:outline-none focus:ring-1.5 focus:ring-navy-900 w-48 sm:w-64"
+                        >
+                        <button
+                            type="submit"
+                            class="h-10 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer"
+                        >
+                            Cari
+                        </button>
+                        @if ($search)
+                            <a
+                                href="{{ route('admin.admins.index') }}"
+                                class="h-10 px-3 rounded-xl bg-ice-100 text-navy-500 hover:text-navy-900 font-semibold text-xs transition-colors flex items-center justify-center cursor-pointer border border-ice-200/70"
+                                title="Reset Pencarian"
+                            >
+                                &times;
+                            </a>
+                        @endif
+                    </form>
                 </div>
 
-                <div class="overflow-x-auto neu-scroll rounded-2xl border border-ice-200/80 shadow-xs">
-                    <table class="w-full text-left text-xs min-w-[760px]">
-                        <thead>
-                            <tr class="bg-ice-100/70 border-b border-ice-200/80 text-navy-600 font-bold uppercase tracking-wider text-[11px]">
-                                <th class="py-3.5 px-4">Nama Admin</th>
-                                <th class="py-3.5 px-4">Username</th>
-                                <th class="py-3.5 px-4">Email</th>
-                                <th class="py-3.5 px-4">WhatsApp Notifikasi</th>
-                                <th class="py-3.5 px-4">Terdaftar Sejak</th>
-                                <th class="py-3.5 px-4 text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-ice-100/80 bg-white/60">
-                            @foreach ($admins as $admin)
-                                <tr class="hover:bg-ice-100/50 transition-colors">
-                                    <td class="py-3.5 px-4 font-semibold text-navy-900 whitespace-nowrap">
-                                        <div class="flex items-center gap-2">
-                                            <span class="font-bold text-navy-900 text-xs sm:text-sm">{{ $admin->name }}</span>
-                                            @if ($admin->id === Auth::id())
-                                                <span class="neu-badge-pill text-[9px] py-0.2 px-2 bg-butter-100 font-bold">
-                                                    Anda
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="py-3.5 px-4 font-mono text-xs text-navy-900 whitespace-nowrap">
-                                        {{ '@' . ($admin->username ?: '-') }}
-                                    </td>
-                                    <td class="py-3.5 px-4 text-navy-500 text-xs whitespace-nowrap">
-                                        {{ $admin->email }}
-                                    </td>
-                                    <td class="py-3.5 px-4 font-mono text-xs text-navy-900 whitespace-nowrap font-semibold">
-                                        {{ $admin->phone ?: '-' }}
-                                    </td>
-                                    <td class="py-3.5 px-4 text-navy-500 tabular-nums whitespace-nowrap font-mono text-[11px]">
-                                        {{ $admin->created_at->format('d/m/Y') }}
-                                    </td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        @if ($admin->id !== Auth::id())
-                                            <form
-                                                action="{{ route('admin.admins.destroy', $admin) }}"
-                                                method="POST"
-                                                class="inline-block"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun Administrator {{ $admin->name }}?');"
-                                            >
-                                                @csrf
-                                                @method('DELETE')
-                                                <button
-                                                    type="submit"
-                                                    class="h-8 px-3 rounded-lg border border-danger/30 text-danger bg-white hover:bg-danger/10 text-xs font-medium shadow-xs transition-colors cursor-pointer"
-                                                >
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        @else
-                                            <span class="text-[11px] text-navy-400 italic">Sesi Aktif</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                @if ($admins->hasPages())
-                    <div class="pt-3 border-t border-ice-200/70">
-                        {{ $admins->links() }}
+                @if ($admins->isEmpty())
+                    <div class="py-16 text-center text-sm text-navy-500">
+                        <div class="w-12 h-12 rounded-2xl bg-ice-100 mx-auto mb-3 flex items-center justify-center text-navy-400 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.2),inset_-2px_-2px_4px_rgba(255,255,255,0.9)]">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <p class="font-bold text-navy-900">Tidak Ada Administrator Ditemukan</p>
+                        <p class="text-xs text-navy-500 mt-1">Coba gunakan kata kunci pencarian yang lain.</p>
                     </div>
+                @else
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs min-w-[760px]">
+                            <thead>
+                                <tr class="border-b border-ice-200/70 text-navy-500 font-bold text-xs uppercase tracking-wider">
+                                    <th class="py-3.5 px-4">Nama Admin</th>
+                                    <th class="py-3.5 px-4">Username</th>
+                                    <th class="py-3.5 px-4">Email</th>
+                                    <th class="py-3.5 px-4">WhatsApp Notifikasi</th>
+                                    <th class="py-3.5 px-4">Terdaftar Sejak</th>
+                                    <th class="py-3.5 px-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-ice-100">
+                                @foreach ($admins as $admin)
+                                    <tr class="hover:bg-ice-100/50 transition-colors">
+                                        <td class="py-3.5 px-4 font-semibold text-navy-900 whitespace-nowrap">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-bold text-navy-900 text-xs sm:text-sm">{{ $admin->name }}</span>
+                                                @if ($admin->id === Auth::id())
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-butter-100 text-navy-900 font-bold text-[10px] shadow-xs">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                                        Anda (Sesi Ini)
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="py-3.5 px-4 font-mono text-xs text-navy-900 whitespace-nowrap">
+                                            <span class="px-2.5 py-1 rounded-lg bg-ice-100 text-navy-800 font-bold">
+                                                {{ '@' . ($admin->username ?: '-') }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3.5 px-4 text-navy-500 text-xs whitespace-nowrap">
+                                            {{ $admin->email }}
+                                        </td>
+                                        <td class="py-3.5 px-4 font-mono text-xs text-navy-900 whitespace-nowrap font-semibold">
+                                            {{ $admin->phone ?: '-' }}
+                                        </td>
+                                        <td class="py-3.5 px-4 text-navy-500 tabular-nums whitespace-nowrap font-mono text-[11px]">
+                                            {{ $admin->created_at->format('d/m/Y') }}
+                                        </td>
+                                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                            @if ($admin->id !== Auth::id())
+                                                <form
+                                                    action="{{ route('admin.admins.destroy', $admin) }}"
+                                                    method="POST"
+                                                    class="inline-block"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun Administrator {{ $admin->name }}?');"
+                                                >
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button
+                                                        type="submit"
+                                                        class="h-8 px-3 rounded-xl bg-red-50 text-danger hover:bg-red-100 border border-red-200/80 font-semibold text-xs shadow-[1px_1px_4px_rgba(192,82,74,0.12)] active:scale-[0.98] transition-all cursor-pointer"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="text-[11px] text-navy-400 italic font-medium">Sesi Aktif</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if ($admins->hasPages())
+                        <div class="pt-3 border-t border-ice-200/70">
+                            {{ $admins->links() }}
+                        </div>
+                    @endif
                 @endif
             </div>
 
-            <!-- Form Tambah Administrator Baru Neumorphic -->
-            <div class="bg-white/90 rounded-[28px] p-6 sm:p-8 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-6">
+            <!-- KARTU 2: FORM TAMBAH ADMINISTRATOR BARU NEUMORPHIC -->
+            <div id="form-tambah-admin" class="bg-white/90 rounded-[28px] p-6 sm:p-8 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-6">
                 <div class="pb-3.5 border-b border-ice-200/70">
                     <h2 class="font-display font-bold text-lg text-navy-900">
                         Tambah Administrator Kasly Baru
@@ -260,8 +355,8 @@
                 </form>
             </div>
 
-        </main>
-    </div>
+        </div>
+    </main>
 
 </body>
 </html>

@@ -17,18 +17,33 @@ class AdminManagementController extends Controller
     /**
      * Tampilkan daftar seluruh akun Administrator Kasly.
      */
-    public function index(): View|RedirectResponse
+    public function index(Request $request): View|RedirectResponse
     {
         if (! Auth::check() || ! Auth::user()->isSuperAdmin()) {
             return redirect()->route('admin.organizations.index', ['tab' => 'requests'])
                 ->withErrors(['error' => 'Hanya Super Admin Kasly yang memiliki hak akses kelola administrator.']);
         }
 
-        $admins = User::where('is_super_admin', true)->latest()->paginate(10);
+        $search = $request->query('search');
+        $query = User::where('is_super_admin', true);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $admins = $query->latest()->paginate(10)->withQueryString();
+        $totalAdmins = User::where('is_super_admin', true)->count();
         $pendingRequestsCount = OrganizationRequest::where('status', 'pending')->count();
 
         return view('admin.admins.index', [
             'admins' => $admins,
+            'totalAdmins' => $totalAdmins,
+            'search' => $search,
             'pendingRequestsCount' => $pendingRequestsCount,
         ]);
     }

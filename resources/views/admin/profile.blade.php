@@ -14,15 +14,14 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
+<body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
 
     <!-- Sidebar Super Admin Neumorphic Interaktif -->
     <x-sidebar-admin active="profile" :pending-requests-count="$pendingRequestsCount ?? null" />
 
     <!-- Main Content Area: Profil Admin -->
-    <div class="flex-1 flex flex-col min-w-0 min-h-screen md:h-screen overflow-y-auto custom-scrollbar pb-28 md:pb-8">
-
-        <main class="p-4 sm:p-6 lg:p-8 max-w-4xl w-full mx-auto space-y-6">
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8">
+        <div class="max-w-4xl mx-auto space-y-6">
 
             <!-- Alerts Notifikasi Sukses / Error -->
             @if (session('success'))
@@ -234,8 +233,8 @@
                 </form>
             </div>
 
-        </main>
-    </div>
+        </div>
+    </main>
 
     <script>
         function previewAvatar(input) {

@@ -138,9 +138,82 @@ body {
     }
 }
 
-/* ---- Access Cards (Pilih Akses) ---- */
-.landing-neu .neu-card--access, .access-neu .neu-card--access {
-    border-top: 3px solid var(--ice-200);
+/* ---- Access Cards (Pilih Akses - Cutout Notch Referensi image copy 3.png) ---- */
+.cutout-card {
+    position: relative;
+    background: #FFFFFF;
+    border-radius: 28px;
+    box-shadow: 0 10px 24px rgba(47, 72, 98, 0.08);
+    padding: 26px 26px 36px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 290px;
+    box-sizing: border-box;
+    border: 1px solid rgba(181, 204, 235, 0.45);
+    transition: transform 250ms var(--ease), box-shadow 250ms var(--ease);
+}
+
+@media (hover: hover) {
+    .cutout-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px rgba(47, 72, 98, 0.12);
+    }
+}
+
+/* Cutout Nest at Bottom Right */
+.cutout-nest {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    background: var(--ice-100);
+    border-top-left-radius: 24px;
+    padding: 8px 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+/* Fillet on the top of the cutout */
+.cutout-fillet-top {
+    position: absolute;
+    top: -16px;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* Fillet on the left of the cutout */
+.cutout-fillet-left {
+    position: absolute;
+    bottom: 0;
+    left: -16px;
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* The Pill Button nestled in the cutout */
+.cutout-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--navy-900);
+    color: #FFFFFF !important;
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(47, 72, 98, 0.18);
+    transition: background 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.cutout-pill-btn:hover {
+    background: var(--navy-700);
+    transform: scale(1.02);
 }
 
 /* Icon containers for access cards */
@@ -290,6 +363,232 @@ body {
     box-shadow: var(--inset-sm);
     border-radius: var(--radius-md);
     padding: 16px 20px;
+}
+
+/* ---- Kasly Digital Card Showcase (Interactive 3-Card Wallet) ---- */
+.tabbed-wallet-card {
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+    filter: drop-shadow(0 18px 36px rgba(47, 72, 98, 0.22)) drop-shadow(0 4px 12px rgba(47, 72, 98, 0.1));
+    transition: transform 250ms var(--ease);
+}
+
+@media (hover: hover) {
+    .tabbed-wallet-card:hover {
+        transform: translateY(-3px);
+    }
+}
+
+/* 3-Tab Bar across the top: Natural Compact Sizes */
+.wallet-tabs-bar {
+    display: flex;
+    align-items: flex-end;
+    height: 38px;
+    position: relative;
+    margin-bottom: -1px;
+    z-index: 2;
+}
+
+/* Each Tab Button */
+.wallet-tab-btn {
+    appearance: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 0 16px;
+    position: relative;
+    transition: all 200ms var(--ease);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+/* Tab 1: Kas Cadangan (Left - Deep Midnight) */
+.tab-btn--cadangan {
+    height: 38px;
+    background: #182635;
+    color: rgba(255, 255, 255, 0.7);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 16px;
+    z-index: 1;
+}
+.tab-btn--cadangan.is-active {
+    color: #FFFFFF;
+    z-index: 4;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Tab 2: Iuran Wajib (Middle - Butter) */
+.tab-btn--iuran {
+    height: 34px;
+    background: var(--butter-100);
+    color: var(--navy-900);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    margin-left: -4px;
+    z-index: 2;
+    opacity: 0.85;
+}
+.tab-btn--iuran.is-active {
+    opacity: 1;
+    z-index: 4;
+    box-shadow: 0 -2px 10px rgba(47, 72, 98, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Tab 3: Kas Utama (Right - S-curve Fillet) */
+.tab-btn--kas-wrapper {
+    margin-left: auto;
+    display: flex;
+    align-items: flex-end;
+    height: 38px;
+    z-index: 3;
+}
+
+.tab-fillet-svg {
+    width: 20px;
+    height: 28px;
+    display: block;
+    transition: fill 250ms var(--ease);
+}
+
+.tab-btn--kas {
+    height: 28px;
+    background: #34506E;
+    color: var(--ice-200);
+    border-top-right-radius: 24px;
+    padding: 0 14px;
+    transition: all 250ms var(--ease);
+}
+.tab-btn--kas.is-active {
+    color: #FFFFFF;
+    z-index: 4;
+}
+
+/* Active Indicator Dot */
+.active-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ADE80;
+    box-shadow: 0 0 6px #4ADE80;
+}
+
+@media (max-width: 420px) {
+    .wallet-tab-btn {
+        padding: 0 10px;
+        font-size: 10.5px;
+        gap: 4px;
+    }
+}
+
+/* Main Card Body with Dynamic Color Themes */
+.card-main-body {
+    border-radius: 20px 0 28px 28px;
+    padding: clamp(22px, 4vw, 28px);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: background 300ms var(--ease), color 300ms var(--ease), opacity 150ms var(--ease);
+}
+
+/* 1. Theme: Kas Utama (Deep Navy) */
+.card-main-body.theme--kas {
+    background: linear-gradient(145deg, #34506E 0%, #20354B 100%);
+    color: #FFFFFF;
+}
+.card-main-body.theme--kas .card-text-muted { color: var(--ice-200); }
+.card-main-body.theme--kas .card-text-title { color: #FFFFFF; }
+.card-main-body.theme--kas .card-tag { background: rgba(255,255,255,0.15); color: var(--ice-100); }
+.card-main-body.theme--kas .card-border-line { border-color: rgba(255,255,255,0.15); }
+.card-main-body.theme--kas .emv-chip {
+    background: linear-gradient(135deg, #FFE885 0%, #D4AF37 50%, #FFF3A8 100%);
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.7), 0 2px 4px rgba(0,0,0,0.25);
+}
+
+/* 2. Theme: Iuran Wajib (Warm Butter Card) */
+.card-main-body.theme--iuran {
+    background: linear-gradient(145deg, #FFF9D9 0%, #FFF1A8 100%);
+    color: var(--navy-900);
+}
+.card-main-body.theme--iuran .card-text-muted { color: var(--navy-500); }
+.card-main-body.theme--iuran .card-text-title { color: var(--navy-900); }
+.card-main-body.theme--iuran .card-tag { background: rgba(47, 72, 98, 0.1); color: var(--navy-900); }
+.card-main-body.theme--iuran .card-border-line { border-color: rgba(47, 72, 98, 0.12); }
+.card-main-body.theme--iuran .emv-chip {
+    background: linear-gradient(135deg, #4A6583 0%, #2F4862 100%);
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(47,72,98,0.2);
+}
+.card-main-body.theme--iuran .emv-chip::after {
+    background: rgba(255, 255, 255, 0.35);
+}
+.card-main-body.theme--iuran .emv-chip::before {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* 3. Theme: Kas Cadangan (Midnight Black/Navy) */
+.card-main-body.theme--cadangan {
+    background: linear-gradient(145deg, #182635 0%, #0F1A24 100%);
+    color: #FFFFFF;
+}
+.card-main-body.theme--cadangan .card-text-muted { color: var(--ice-200); }
+.card-main-body.theme--cadangan .card-text-title { color: #FFFFFF; }
+.card-main-body.theme--cadangan .card-tag { background: rgba(255,255,255,0.12); color: var(--ice-100); }
+.card-main-body.theme--cadangan .card-border-line { border-color: rgba(255,255,255,0.12); }
+.card-main-body.theme--cadangan .emv-chip {
+    background: linear-gradient(135deg, #FFE885 0%, #D4AF37 50%, #FFF3A8 100%);
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.7), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card-main-body::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(122, 163, 214, 0.22) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* EMV Chip */
+.emv-chip {
+    width: 42px;
+    height: 32px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #FFE885 0%, #D4AF37 50%, #FFF3A8 100%);
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.7), 0 2px 4px rgba(0,0,0,0.25);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.emv-chip::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: rgba(0,0,0,0.25);
+    top: 50%;
+}
+
+.emv-chip::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 3px;
 }
 
 /* 5. Tombol Neumorphism */

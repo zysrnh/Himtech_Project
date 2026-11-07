@@ -62,43 +62,122 @@
                     </div>
                 </div>
 
-                <!-- Kolom Kanan: Pratinjau Kas Neumorphic (Mengisi penuh kolom) -->
+                <!-- Kolom Kanan: Pratinjau Kas Digital Model Stacked Card Interaktif -->
                 <div class="w-full">
-                    <div class="neu-card neu-card--preview">
-                        <div class="pb-4 border-b border-ice-200/60">
-                            <span class="text-xs font-semibold text-navy-500 uppercase tracking-wider block">Ormawa Terverifikasi</span>
-                            <h4 class="font-display font-semibold text-base sm:text-lg text-navy-900">BEM Fasilkom 2026/2027</h4>
+                    <div class="tabbed-wallet-card">
+                        <!-- The 3-Tab Bar across the top -->
+                        <div class="wallet-tabs-bar" role="tablist">
+                            <!-- Tab 1: Kas Cadangan (Left - Deep Midnight) -->
+                            <button type="button" class="wallet-tab-btn tab-btn--cadangan" id="tab-cadangan" onclick="switchKasCard('cadangan')" role="tab" aria-selected="false">
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                <span>Kas Cadangan</span>
+                            </button>
+
+                            <!-- Tab 2: Iuran Wajib (Middle - Butter) -->
+                            <button type="button" class="wallet-tab-btn tab-btn--iuran" id="tab-iuran" onclick="switchKasCard('iuran')" role="tab" aria-selected="false">
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <span>Iuran Wajib</span>
+                            </button>
+
+                            <!-- Tab 3: Kas Utama (Right with S-curve fillet) -->
+                            <div class="tab-btn--kas-wrapper">
+                                <svg class="tab-fillet-svg" id="tab-fillet" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M0 28 C12 28 20 16 20 0 V28 H0 Z" fill="#34506E"/>
+                                </svg>
+                                <button type="button" class="wallet-tab-btn tab-btn--kas is-active" id="tab-kas" onclick="switchKasCard('kas')" role="tab" aria-selected="true">
+                                    <span id="tab-kas-text">AKTIF</span>
+                                    <span class="active-dot" id="active-dot"></span>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Ringkasan Saldo Besar Tabular -->
-                        <div class="mt-6">
-                            <span class="text-xs sm:text-sm font-medium text-navy-500">Total Saldo Kas Tersedia</span>
-                            <div class="font-display font-semibold text-3xl sm:text-4xl lg:text-[44px] text-navy-900 mt-1 tabular-nums tracking-tight">
-                                Rp 14.850.000
+                        <!-- Main Card Body with Dynamic Content -->
+                        <div class="card-main-body theme--kas" id="hero-card-body">
+                            <!-- Top row: Brand & Contactless -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="card-text-title font-display font-bold text-xl sm:text-2xl tracking-tight">
+                                        KASLY
+                                    </span>
+                                    <span id="hero-card-tag" class="card-tag text-[11px] font-semibold px-2.5 py-0.5 rounded-full tracking-wide">
+                                        Kas Utama
+                                    </span>
+                                </div>
+
+                                <!-- Contactless WiFi waves -->
+                                <svg class="w-5 h-5 card-text-muted rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                </svg>
+                            </div>
+
+                            <!-- Saldo & EMV Chip -->
+                            <div class="mt-5 flex items-end justify-between gap-3">
+                                <div>
+                                    <span id="hero-card-label" class="card-text-muted text-xs font-medium block">Total Saldo Kas Tersedia</span>
+                                    <div id="hero-card-amount" class="card-text-title font-display font-bold text-2xl sm:text-3xl md:text-[34px] mt-1 tabular-nums tracking-tight leading-tight">
+                                        Rp 14.850.000
+                                    </div>
+                                </div>
+                                <div class="emv-chip" aria-hidden="true"></div>
+                            </div>
+
+                            <!-- Detail Note -->
+                            <div id="hero-card-detail" class="card-text-muted text-xs mt-2 font-medium">
+                                100% Kas Transparan &bull; Terisolasi Multi-Tenant
+                            </div>
+
+                            <!-- Card Number (Masked) -->
+                            <div class="card-text-muted font-mono text-sm sm:text-base tracking-[0.18em] mt-4 select-none opacity-90">
+                                •••• &nbsp;•••• &nbsp;•••• &nbsp;2026
+                            </div>
+
+                            <!-- Bottom row: Holder & Period -->
+                            <div class="card-border-line mt-4 pt-3.5 border-t flex items-center justify-between">
+                                <div>
+                                    <span class="card-text-muted text-[10px] font-semibold uppercase tracking-wider block">Pengelola Kas</span>
+                                    <span class="card-text-title font-display font-semibold text-sm mt-0.5 block">BEM Fasilkom</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="card-text-muted text-[10px] font-semibold uppercase tracking-wider block">Periode</span>
+                                    <span class="card-text-title font-display font-semibold text-sm mt-0.5 block tabular-nums">2026/2027</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Panel Inset (Cekung) Aliran Kas -->
-                        <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-                            <div class="neu-inset-panel">
-                                <span class="text-xs text-navy-500 block">Total Pemasukan</span>
-                                <span class="font-display font-semibold text-sm sm:text-lg text-navy-900 mt-0.5 block tabular-nums">+Rp 18.200.000</span>
+                    <!-- Activity Cards underneath (Pemasukan & Pengeluaran) -->
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('iuran')">
+                            <div class="w-9 h-9 rounded-full bg-butter-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+                                ↑
                             </div>
-                            <div class="neu-inset-panel">
-                                <span class="text-xs text-navy-500 block">Total Pengeluaran</span>
-                                <span class="font-display font-semibold text-sm sm:text-lg text-navy-900 mt-0.5 block tabular-nums">-Rp 3.350.000</span>
+                            <div class="min-w-0">
+                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pemasukan</span>
+                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">+Rp 18.200.000</span>
                             </div>
                         </div>
+                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('cadangan')">
+                            <div class="w-9 h-9 rounded-full bg-ice-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-inner">
+                                ↓
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pengeluaran</span>
+                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">-Rp 3.350.000</span>
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Status Kepatuhan & Progress Bar Inset -->
-                        <div class="mt-6 pt-4 border-t border-ice-200/60">
-                            <div class="flex items-center justify-between text-xs font-medium text-navy-500 mb-2">
-                                <span>Kepatuhan Iuran Bulanan</span>
-                                <span class="text-navy-900 font-semibold">94% Lunas (142/150)</span>
-                            </div>
-                            <div class="w-full h-3 rounded-full bg-ice-100 shadow-[inset_2px_2px_5px_rgba(122,163,214,0.55),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] overflow-hidden p-0.5">
-                                <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500" style="width: 94%;"></div>
-                            </div>
+                    <!-- Status Kepatuhan Iuran Bulanan -->
+                    <div class="neu-card !p-4 mt-3">
+                        <div class="flex items-center justify-between text-xs font-medium text-navy-500 mb-2">
+                            <span>Kepatuhan Iuran Bulanan</span>
+                            <span class="text-navy-900 font-semibold tabular-nums">94% Lunas (142/150)</span>
+                        </div>
+                        <div class="w-full h-2.5 rounded-full bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.55),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] overflow-hidden p-0.5">
+                            <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500 transition-all duration-500" style="width: 94%;"></div>
                         </div>
                     </div>
                 </div>
@@ -115,71 +194,140 @@
             </div>
 
             <div class="access-neu grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
-                <!-- Card 1: Anggota -->
-                <div id="login-anggota" class="neu-card neu-card--access flex flex-col justify-between group">
+                <!-- Card 1: Anggota (Cutout Notch Referensi image copy 3.png) -->
+                <div id="login-anggota" class="cutout-card group">
                     <div>
-                        <div class="mb-5">
+                        <!-- Top Row: Icon & Masked ID -->
+                        <div class="flex items-center justify-between">
                             <div class="neu-card--access-icon neu-card--access-icon--butter">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             </div>
+                            <span class="font-mono text-xs font-semibold text-navy-500 tracking-[0.1em]">
+                                •••• &nbsp;01
+                            </span>
                         </div>
-                        <h3 class="font-display font-semibold text-xl text-navy-900">
-                            Portal Anggota
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Cukup gunakan <strong>Kode Organisasi</strong> dan <strong>NIM</strong>. Pantau saldo kas, riwayat pembayaran, serta status tagihan pribadi secara mandiri.
-                        </p>
+
+                        <!-- Title & Description -->
+                        <div class="mt-5">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-navy-500 block">Peran Akses</span>
+                            <h3 class="font-display font-bold text-xl sm:text-[22px] text-navy-900 mt-0.5">
+                                Portal Anggota
+                            </h3>
+                            <p class="mt-2.5 text-sm text-navy-500 leading-relaxed">
+                                Cukup gunakan <strong>Kode Organisasi</strong> dan <strong>NIM</strong>. Pantau saldo kas, riwayat pembayaran, serta status tagihan pribadi secara mandiri.
+                            </p>
+                        </div>
                     </div>
-                    <div class="mt-8 pt-4 border-t border-ice-200/60">
-                        <a href="{{ route('login') }}" class="neu-btn w-full font-semibold text-navy-900 flex items-center justify-center gap-2">
-                            <span>Masuk sebagai Anggota</span>
-                            <svg class="w-4 h-4 text-navy-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+
+                    <!-- Bottom Info & Cutout Nest -->
+                    <div class="mt-6 max-w-[55%]">
+                        <span class="text-[10px] font-semibold uppercase tracking-wider text-navy-500 block">Metode</span>
+                        <span class="text-xs font-bold text-navy-900 block">NIM & Kode Ormawa</span>
+                    </div>
+
+                    <!-- Cutout Notch Nest at Bottom Right -->
+                    <div class="cutout-nest">
+                        <svg class="cutout-fillet-top" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M16 0 C16 8.83656 8.83656 16 0 16 H16 V0 Z" fill="#DDEBFC"/>
+                        </svg>
+                        <svg class="cutout-fillet-left" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M0 16 C8.83656 16 16 8.83656 16 0 V16 H0 Z" fill="#DDEBFC"/>
+                        </svg>
+                        <a href="{{ route('login') }}" class="cutout-pill-btn group-hover:scale-105">
+                            <span>Masuk</span>
+                            <svg class="w-4 h-4 text-white transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Card 2: Pengurus -->
-                <div id="login-pengurus" class="neu-card neu-card--access flex flex-col justify-between group">
+                <!-- Card 2: Pengurus (Cutout Notch Referensi image copy 3.png) -->
+                <div id="login-pengurus" class="cutout-card group">
                     <div>
-                        <div class="mb-5">
+                        <!-- Top Row: Icon & Masked ID -->
+                        <div class="flex items-center justify-between">
                             <div class="neu-card--access-icon neu-card--access-icon--ice">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             </div>
+                            <span class="font-mono text-xs font-semibold text-navy-500 tracking-[0.1em]">
+                                •••• &nbsp;02
+                            </span>
                         </div>
-                        <h3 class="font-display font-semibold text-xl text-navy-900">
-                            Staff & Bendahara
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Login dengan <strong>Kode Organisasi</strong> dan <strong>Username</strong>. Catat mutasi kas, upload bukti nota, buat tagihan, serta kelola anggota.
-                        </p>
+
+                        <!-- Title & Description -->
+                        <div class="mt-5">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-navy-500 block">Peran Akses</span>
+                            <h3 class="font-display font-bold text-xl sm:text-[22px] text-navy-900 mt-0.5">
+                                Staff & Bendahara
+                            </h3>
+                            <p class="mt-2.5 text-sm text-navy-500 leading-relaxed">
+                                Login dengan <strong>Kode Organisasi</strong> dan <strong>Username</strong>. Catat mutasi kas, upload bukti nota, buat tagihan, serta kelola data anggota.
+                            </p>
+                        </div>
                     </div>
-                    <div class="mt-8 pt-4 border-t border-ice-200/60">
-                        <a href="{{ route('login') }}" class="neu-btn w-full font-semibold text-navy-900 flex items-center justify-center gap-2">
-                            <span>Masuk sebagai Pengurus</span>
-                            <svg class="w-4 h-4 text-navy-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+
+                    <!-- Bottom Info & Cutout Nest -->
+                    <div class="mt-6 max-w-[55%]">
+                        <span class="text-[10px] font-semibold uppercase tracking-wider text-navy-500 block">Metode</span>
+                        <span class="text-xs font-bold text-navy-900 block">Akun Pengurus</span>
+                    </div>
+
+                    <!-- Cutout Notch Nest at Bottom Right -->
+                    <div class="cutout-nest">
+                        <svg class="cutout-fillet-top" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M16 0 C16 8.83656 8.83656 16 0 16 H16 V0 Z" fill="#DDEBFC"/>
+                        </svg>
+                        <svg class="cutout-fillet-left" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M0 16 C8.83656 16 16 8.83656 16 0 V16 H0 Z" fill="#DDEBFC"/>
+                        </svg>
+                        <a href="{{ route('login') }}" class="cutout-pill-btn group-hover:scale-105">
+                            <span>Masuk</span>
+                            <svg class="w-4 h-4 text-white transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Card 3: Ajukan Organisasi -->
-                <div class="neu-card neu-card--access flex flex-col justify-between group">
+                <!-- Card 3: Ajukan Organisasi (Cutout Notch Referensi image copy 3.png) -->
+                <div class="cutout-card group">
                     <div>
-                        <div class="mb-5">
+                        <!-- Top Row: Icon & Masked ID -->
+                        <div class="flex items-center justify-between">
                             <div class="neu-card--access-icon neu-card--access-icon--navy">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                             </div>
+                            <span class="font-mono text-xs font-semibold text-navy-500 tracking-[0.1em]">
+                                •••• &nbsp;03
+                            </span>
                         </div>
-                        <h3 class="font-display font-semibold text-xl text-navy-900">
-                            Ajukan Organisasi
-                        </h3>
-                        <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Organisasi atau himpunan kamu belum terdaftar? Ajukan pendaftaran online untuk mendapatkan database kas mandiri dan akun Staff pengelola awal.
-                        </p>
+
+                        <!-- Title & Description -->
+                        <div class="mt-5">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-navy-500 block">Peran Akses</span>
+                            <h3 class="font-display font-bold text-xl sm:text-[22px] text-navy-900 mt-0.5">
+                                Ajukan Organisasi
+                            </h3>
+                            <p class="mt-2.5 text-sm text-navy-500 leading-relaxed">
+                                Organisasi kamu belum terdaftar? Ajukan pendaftaran online mandiri untuk mendapatkan database kas dan akun Staff pengelola.
+                            </p>
+                        </div>
                     </div>
-                    <div class="mt-8 pt-4 border-t border-ice-200/60">
-                        <a href="{{ route('ajukan-organisasi') }}" class="neu-btn w-full font-semibold text-navy-900 flex items-center justify-center gap-2">
-                            <span>Ajukan Sekarang</span>
-                            <svg class="w-4 h-4 text-navy-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+
+                    <!-- Bottom Info & Cutout Nest -->
+                    <div class="mt-6 max-w-[55%]">
+                        <span class="text-[10px] font-semibold uppercase tracking-wider text-navy-500 block">Pendaftaran</span>
+                        <span class="text-xs font-bold text-navy-900 block">Ormawa Baru</span>
+                    </div>
+
+                    <!-- Cutout Notch Nest at Bottom Right -->
+                    <div class="cutout-nest">
+                        <svg class="cutout-fillet-top" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M16 0 C16 8.83656 8.83656 16 0 16 H16 V0 Z" fill="#DDEBFC"/>
+                        </svg>
+                        <svg class="cutout-fillet-left" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M0 16 C8.83656 16 16 8.83656 16 0 V16 H0 Z" fill="#DDEBFC"/>
+                        </svg>
+                        <a href="{{ route('ajukan-organisasi') }}" class="cutout-pill-btn group-hover:scale-105">
+                            <span>Ajukan</span>
+                            <svg class="w-4 h-4 text-white transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
@@ -399,5 +547,114 @@
         </div>
     </footer>
 
+    <script>
+        const kasThemes = {
+            kas: {
+                themeClass: 'theme--kas',
+                tag: 'Kas Utama',
+                label: 'Total Saldo Kas Tersedia',
+                amount: 'Rp 14.850.000',
+                detail: '100% Kas Transparan • Terisolasi Multi-Tenant',
+                filletColor: '#34506E',
+                kasTabBg: '#34506E',
+                kasTabColor: '#FFFFFF',
+                kasLabel: 'AKTIF'
+            },
+            iuran: {
+                themeClass: 'theme--iuran',
+                tag: 'Pemasukan (Iuran)',
+                label: 'Total Pemasukan Iuran',
+                amount: '+Rp 18.200.000',
+                detail: '142 Anggota Lunas (94%) • 8 Tagihan Berjalan',
+                filletColor: '#FFF9D9',
+                kasTabBg: '#FFF9D9',
+                kasTabColor: '#2F4862',
+                kasLabel: 'Kas Utama'
+            },
+            cadangan: {
+                themeClass: 'theme--cadangan',
+                tag: 'Pengeluaran (Kas Cadangan)',
+                label: 'Total Pengeluaran Kas',
+                amount: '-Rp 3.350.000',
+                detail: '24 Transaksi Operasional • Dilengkapi Bukti Nota',
+                filletColor: '#182635',
+                kasTabBg: '#182635',
+                kasTabColor: '#FFFFFF',
+                kasLabel: 'Kas Utama'
+            }
+        };
+
+        function switchKasCard(type) {
+            const data = kasThemes[type];
+            if (!data) return;
+
+            // 1. Reset all tab buttons
+            document.querySelectorAll('.wallet-tab-btn').forEach(btn => {
+                btn.classList.remove('is-active');
+                btn.setAttribute('aria-selected', 'false');
+                const dot = btn.querySelector('.active-dot');
+                if (dot) dot.remove();
+            });
+
+            // 2. Activate the clicked tab
+            const activeBtn = document.getElementById(`tab-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.add('is-active');
+                activeBtn.setAttribute('aria-selected', 'true');
+            }
+
+            // 3. Update the SVG fillet fill to match the card header color
+            const filletSvg = document.getElementById('tab-fillet');
+            if (filletSvg) {
+                const path = filletSvg.querySelector('path');
+                if (path) path.setAttribute('fill', data.filletColor);
+            }
+
+            // 4. Update the right-hand shoulder tab
+            const kasTab = document.getElementById('tab-kas');
+            const kasTabText = document.getElementById('tab-kas-text');
+            if (kasTab) {
+                kasTab.style.background = data.kasTabBg;
+                kasTab.style.color = data.kasTabColor;
+            }
+
+            if (type === 'kas') {
+                if (kasTabText) kasTabText.textContent = 'AKTIF';
+                if (kasTab && !kasTab.querySelector('.active-dot')) {
+                    const dot = document.createElement('span');
+                    dot.className = 'active-dot';
+                    dot.id = 'active-dot';
+                    kasTab.appendChild(dot);
+                }
+            } else {
+                if (kasTabText) kasTabText.textContent = 'Kas Utama';
+                if (activeBtn && !activeBtn.querySelector('.active-dot')) {
+                    const dot = document.createElement('span');
+                    dot.className = 'active-dot';
+                    activeBtn.appendChild(dot);
+                }
+            }
+
+            // 5. Update Card Body content & theme with smooth transition
+            const cardBody = document.getElementById('hero-card-body');
+            if (cardBody) {
+                cardBody.style.opacity = '0.7';
+                setTimeout(() => {
+                    cardBody.className = 'card-main-body ' + data.themeClass;
+                    const tagEl = document.getElementById('hero-card-tag');
+                    const labelEl = document.getElementById('hero-card-label');
+                    const amountEl = document.getElementById('hero-card-amount');
+                    const detailEl = document.getElementById('hero-card-detail');
+
+                    if (tagEl) tagEl.textContent = data.tag;
+                    if (labelEl) labelEl.textContent = data.label;
+                    if (amountEl) amountEl.textContent = data.amount;
+                    if (detailEl) detailEl.textContent = data.detail;
+
+                    cardBody.style.opacity = '1';
+                }, 100);
+            }
+        }
+    </script>
 </body>
 </html>

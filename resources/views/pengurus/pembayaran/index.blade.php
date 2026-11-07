@@ -212,12 +212,23 @@
                         <div class="flex items-center justify-between pb-3 border-b border-ice-200/60">
                             <div>
                                 <h2 class="font-display font-bold text-base text-navy-900">Saluran Pembayaran Gateway Otomatis</h2>
-                                <p class="text-xs text-navy-500">11 metode Virtual Account & QRIS siap pakai untuk anggota ormawa</p>
+                                <p class="text-xs text-navy-500">12 metode E-Wallet, QRIS, & Virtual Account siap pakai untuk anggota</p>
                             </div>
-                            <span class="neu-badge-ice text-[10px] py-0.5 px-2 font-mono">11 SALURAN AKTIF</span>
+                            <span class="neu-badge-ice text-[10px] py-0.5 px-2 font-mono">12 SALURAN AKTIF</span>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                            <!-- GOPAY -->
+                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
+                                <div class="w-14 h-7 rounded-md bg-[#00AED6] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                    GOPAY
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-bold text-navy-900 truncate">GoPay E-Wallet</p>
+                                    <p class="text-[10px] text-navy-500 truncate">Deeplink App & Simulator</p>
+                                </div>
+                            </div>
+
                             <!-- QRIS -->
                             <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
                                 <div class="w-14 h-7 rounded-md bg-[#EE3124] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
@@ -225,7 +236,7 @@
                                 </div>
                                 <div class="min-w-0">
                                     <p class="font-bold text-navy-900 truncate">QRIS Dinamis</p>
-                                    <p class="text-[10px] text-navy-500 truncate">GoPay, ShopeePay, DANA, OVO, dll</p>
+                                    <p class="text-[10px] text-navy-500 truncate">GoPay, ShopeePay, DANA, dll</p>
                                 </div>
                             </div>
 

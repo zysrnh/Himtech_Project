@@ -348,10 +348,25 @@
                         <!-- DAFTAR LENGKAP 11 METODE PEMBAYARAN MIDTRANS SANDBOX -->
                         <div class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
 
-                            <!-- 1. QRIS DINAMIS -->
+                            <!-- 1. GOPAY E-WALLET -->
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
-                                    <input type="radio" name="auto_channel" value="qris" checked class="text-navy-900 focus:ring-0">
+                                    <input type="radio" name="auto_channel" value="gopay" checked class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#00AED6] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        GOPAY
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">GoPay Deeplink / QR</p>
+                                        <p class="text-[10px] text-navy-500">Aplikasi Gojek, GoPay, atau Simulator Deeplink</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">E-WALLET</span>
+                            </label>
+
+                            <!-- 2. QRIS DINAMIS -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="qris" class="text-navy-900 focus:ring-0">
                                     <div class="w-14 h-7 rounded-md bg-[#EE3124] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
                                         QRIS
                                     </div>
@@ -562,6 +577,43 @@
                             </p>
                         </div>
 
+                        <!-- Box GoPay Deeplink & QR Display -->
+                        <div id="box-gopay-display" class="p-4 rounded-xl bg-ice-100/60 border border-ice-200/80 space-y-3 text-center hidden">
+                            <p class="text-xs font-bold text-navy-900">Pembayaran GoPay Deeplink & QR</p>
+                            <div class="flex justify-center">
+                                <img id="charge-gopay-image" src="" alt="GoPay QR Code" class="w-48 h-48 rounded-xl border border-ice-200 shadow-sm bg-white p-2 object-contain">
+                            </div>
+                            <p class="text-[11px] text-navy-500">Scan QR via aplikasi Gojek / GoPay, atau gunakan simulator di bawah.</p>
+
+                            <!-- Tombol Langsung Buka Simulator GoPay & Salin Redirect URL -->
+                            <div class="space-y-2 pt-1">
+                                <a
+                                    id="btn-open-gopay-simulator"
+                                    href="#"
+                                    target="_blank"
+                                    class="w-full h-9 px-3 rounded-xl bg-[#00AED6] text-white font-semibold text-xs hover:bg-[#0092b3] transition-colors shadow-xs flex items-center justify-center gap-1.5"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                    <span>Buka Simulator GoPay (Langsung Bayar)</span>
+                                </a>
+
+                                <button
+                                    type="button"
+                                    id="btn-copy-deeplink-url"
+                                    onclick="copyDeeplinkUrl(this)"
+                                    class="w-full h-8 px-3 rounded-lg bg-ice-200/70 text-navy-900 font-semibold text-xs border border-ice-300/70 hover:bg-ice-300 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>Salin Redirect URL (untuk Form Simulator)</span>
+                                </button>
+                                <p class="text-[10px] text-navy-500">Bisa langsung klik tombol biru di atas, atau paste ke menu Deeplink simulator.</p>
+                            </div>
+                        </div>
+
                         <!-- Box QRIS Image Display -->
                         <div id="box-qris-display" class="p-4 rounded-xl bg-ice-100/60 border border-ice-200/80 space-y-3 text-center hidden">
                             <p class="text-xs font-bold text-navy-900">Scan Barcode QRIS Dinamis</p>
@@ -667,6 +719,7 @@
         let currentPayingBillId = null;
         let statusPollTimer = null;
         let currentQrString = null;
+        let currentDeeplinkUrl = null;
 
         function startStatusPolling() {
             stopStatusPolling();
@@ -797,6 +850,7 @@
                     document.getElementById('pay-step-2').classList.remove('hidden');
 
                     const channelMap = {
+                        'gopay': 'GoPay E-Wallet',
                         'qris': 'QRIS Dinamis',
                         'bca_va': 'BCA Virtual Account',
                         'mandiri_bill': 'Mandiri Bill Payment',
@@ -810,11 +864,26 @@
                         'saqu_va': 'Bank Saqu Virtual Account'
                     };
 
-                    document.getElementById('charge-channel-label').innerText = channelMap[paymentType] || 'Virtual Account';
+                    document.getElementById('charge-channel-label').innerText = channelMap[paymentType] || 'Pembayaran Otomatis';
 
-                    if (paymentType === 'qris') {
-                        document.getElementById('box-va-display').classList.add('hidden');
-                        document.getElementById('box-qris-display').classList.remove('hidden');
+                    const boxVa = document.getElementById('box-va-display');
+                    const boxQris = document.getElementById('box-qris-display');
+                    const boxGopay = document.getElementById('box-gopay-display');
+
+                    boxVa.classList.add('hidden');
+                    boxQris.classList.add('hidden');
+                    if (boxGopay) boxGopay.classList.add('hidden');
+
+                    if (paymentType === 'gopay') {
+                        if (boxGopay) boxGopay.classList.remove('hidden');
+                        document.getElementById('charge-gopay-image').src = data.qr_url || 'https://api.sandbox.midtrans.com/v2/gopay/mock/qr-code';
+                        currentDeeplinkUrl = data.deeplink_url || null;
+                        const btnSim = document.getElementById('btn-open-gopay-simulator');
+                        if (btnSim && currentDeeplinkUrl) {
+                            btnSim.href = currentDeeplinkUrl;
+                        }
+                    } else if (paymentType === 'qris') {
+                        boxQris.classList.remove('hidden');
                         document.getElementById('charge-qris-image').src = data.qr_url;
 
                         currentQrString = data.qr_string || null;
@@ -827,8 +896,7 @@
                             }
                         }
                     } else {
-                        document.getElementById('box-va-display').classList.remove('hidden');
-                        document.getElementById('box-qris-display').classList.add('hidden');
+                        boxVa.classList.remove('hidden');
                         document.getElementById('charge-va-number').innerText = data.va_number || '-';
 
                         if (data.biller_code) {
@@ -866,6 +934,15 @@
             navigator.clipboard.writeText(currentQrString).then(() => {
                 const orig = btn.innerHTML;
                 btn.innerHTML = '<span>Kode QR String Berhasil Disalin!</span>';
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+            });
+        }
+
+        function copyDeeplinkUrl(btn) {
+            if (!currentDeeplinkUrl) return;
+            navigator.clipboard.writeText(currentDeeplinkUrl).then(() => {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<span>Redirect URL Berhasil Disalin!</span>';
                 setTimeout(() => { btn.innerHTML = orig; }, 2000);
             });
         }

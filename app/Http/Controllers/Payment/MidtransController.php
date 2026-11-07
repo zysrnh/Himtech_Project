@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class MidtransController extends Controller
 {
     /**
-     * Terbitkan Nomor Virtual Account Bank atau Barcode QRIS langsung via Midtrans Core API.
+     * Terbitkan Nomor Virtual Account Bank, Barcode QRIS, atau Deeplink GoPay via Midtrans Core API.
      */
     public function charge(Request $request, DuesBill $bill): JsonResponse
     {
@@ -39,7 +39,7 @@ class MidtransController extends Controller
             'payment_type' => [
                 'required',
                 'string',
-                'in:bca_va,bri_va,bni_va,mandiri_bill,permata_va,cimb_va,danamon_va,bsi_va,seabank_va,saqu_va,qris',
+                'in:bca_va,bri_va,bni_va,mandiri_bill,permata_va,cimb_va,danamon_va,bsi_va,seabank_va,saqu_va,qris,gopay',
             ],
         ]);
 
@@ -119,6 +119,13 @@ class MidtransController extends Controller
                 $payload['payment_type'] = 'qris';
                 $payload['qris'] = ['acquirer' => 'gopay'];
                 break;
+            case 'gopay':
+                $payload['payment_type'] = 'gopay';
+                $payload['gopay'] = [
+                    'enable_callback' => true,
+                    'callback_url' => url('/anggota/dashboard'),
+                ];
+                break;
         }
 
         try {
@@ -136,9 +143,21 @@ class MidtransController extends Controller
                 $billerCode = $data['biller_code'] ?? null;
                 $qrUrl = null;
                 $qrString = $data['qr_string'] ?? null;
+                $deeplinkUrl = null;
 
-                if ($validated['payment_type'] === 'qris') {
-                    $qrUrl = $data['actions'][0]['url'] ?? "https://api.sandbox.midtrans.com/v2/qris/{$data['transaction_id']}/qr-code";
+                if (! empty($data['actions'])) {
+                    foreach ($data['actions'] as $action) {
+                        if (($action['name'] ?? '') === 'deeplink-redirect') {
+                            $deeplinkUrl = $action['url'] ?? null;
+                        }
+                        if (empty($qrUrl) && in_array($action['name'] ?? '', ['generate-qr-code', 'generate-qr-code-v2'])) {
+                            $qrUrl = $action['url'] ?? null;
+                        }
+                    }
+                }
+
+                if ($validated['payment_type'] === 'qris' && empty($qrUrl)) {
+                    $qrUrl = "https://api.sandbox.midtrans.com/v2/qris/{$data['transaction_id']}/qr-code";
                 }
 
                 $bill->midtrans_order_id = $orderId;
@@ -154,6 +173,7 @@ class MidtransController extends Controller
                     'biller_code' => $billerCode,
                     'qr_url' => $qrUrl,
                     'qr_string' => $qrString,
+                    'deeplink_url' => $deeplinkUrl,
                     'expiry_time' => $data['expiry_time'] ?? now()->addDay()->format('Y-m-d H:i:s'),
                     'gross_amount' => $grossAmount,
                 ]);
@@ -177,6 +197,7 @@ class MidtransController extends Controller
                 'biller_code' => '70012',
                 'qr_url' => 'https://api.sandbox.midtrans.com/v2/qris/mock-sample/qr-code',
                 'qr_string' => '00020101021226590014ID.LINKAJA.WWW011893600911002247738002150000000000000010303UMI51440014ID.GO-PAY.WWW0215G297001444495210303UMI5204581253033605802ID5911KASLY ORMAWA6007JAKARTA61051293062070703A016304C92E',
+                'deeplink_url' => 'https://simulator.sandbox.midtrans.com/v2/deeplink/detail?tref=MOCK'.time(),
                 'expiry_time' => now()->addDay()->format('Y-m-d H:i:s'),
                 'gross_amount' => $grossAmount,
             ]);

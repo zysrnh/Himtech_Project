@@ -14,101 +14,94 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row">
+<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
 
     <!-- Sidebar Super Admin Neumorphic Interaktif -->
     <x-sidebar-admin active="dashboard" :pending-requests-count="$pendingRequestsCount ?? null" />
 
     <!-- Main Content Area: Overview -->
-    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8">
-        <div class="max-w-[1140px] mx-auto space-y-6 sm:space-y-8">
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen md:h-screen overflow-y-auto custom-scrollbar pb-28 md:pb-8">
+
+        <main class="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
 
             <!-- Top Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 class="font-display font-semibold text-2xl lg:text-[28px] text-navy-900 leading-tight">
-                        Overview Sistem
+                    <h1 class="font-display font-bold text-2xl lg:text-3xl text-navy-900 tracking-tight">
+                        Overview Sistem Kasly
                     </h1>
                     <p class="text-xs sm:text-sm text-navy-500 mt-1">
-                        Ringkasan telemetri, metrik global, dan status operasional sistem multi-tenant Kasly.
+                        Ringkasan telemetri, metrik global, dan status operasional sistem multi-tenant ormawa.
                     </p>
                 </div>
-                <div class="flex flex-wrap items-center gap-2.5">
+                <div class="shrink-0">
                     <a
-                        href="{{ route('admin.organizations.index') }}"
-                        class="h-10 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs shadow-[3px_3px_10px_rgba(47,72,98,0.3)] hover:bg-navy-700 active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.4)] transition-all cursor-pointer inline-flex items-center gap-2"
+                        href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
+                        class="h-11 px-5 rounded-xl bg-navy-900 text-white font-semibold text-xs shadow-[3px_4px_12px_rgba(47,72,98,0.25)] hover:bg-navy-700 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
                     >
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>Kelola Organisasi</span>
+                        <span>Verifikasi Pengajuan ({{ $pendingRequestsCount }})</span>
                     </a>
                 </div>
             </div>
 
-            <!-- Notifikasi Pengajuan Baru (Banner Alert) -->
+            <!-- Notifikasi Pengajuan Baru (Banner Alert Neumorphic) -->
             @if ($pendingRequestsCount > 0)
-                <div class="p-4 sm:p-5 rounded-xl bg-white border border-amber-200 text-navy-900 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-xl bg-butter-100 text-amber-900 border border-amber-200 flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+                <div class="p-5 rounded-[28px] bg-white/90 border border-butter-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-butter-100 text-navy-900 flex items-center justify-center font-bold text-base shrink-0 shadow-xs border border-butter-200">
                             {{ $pendingRequestsCount }}
-                        </span>
+                        </div>
                         <div>
-                            <p class="text-sm font-semibold text-navy-900">
+                            <p class="text-sm font-bold text-navy-900">
                                 Ada {{ $pendingRequestsCount }} pengajuan organisasi baru yang menunggu persetujuan Anda!
                             </p>
                             <p class="text-xs text-navy-500 mt-0.5">
-                                Segera tinjau identitas pemohon dan lakukan persetujuan (ACC) agar akun pengelola ormawa aktif.
+                                Segera tinjau identitas pemohon dan lakukan ACC agar akun pengelola ormawa aktif.
                             </p>
                         </div>
                     </div>
                     <a
                         href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
-                        class="h-9 px-4 rounded-lg bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shrink-0 inline-flex items-center justify-center shadow-xs"
+                        class="h-10 px-5 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs flex items-center justify-center gap-1.5 shrink-0"
                     >
-                        Tinjau & Setujui (ACC) Sekarang
+                        <span>Tinjau & Setujui (ACC)</span>
+                        <span>&rarr;</span>
                     </a>
                 </div>
             @endif
 
-            <!-- Kartu Hero Stat Telemetri (Sesuai Gaya Kartu Saldo Kas Bendahara) -->
-            <div class="bg-gradient-to-br from-navy-700 via-navy-900 to-[#182635] text-white rounded-[28px] p-6 sm:p-8 shadow-[8px_14px_32px_rgba(47,72,98,0.36),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-ice-400/10 blur-2xl pointer-events-none"></div>
-
-                <div class="relative z-1">
-                    <span class="text-xs text-ice-200 font-semibold tracking-wider uppercase block">Total Organisasi Terdaftar</span>
-                    <p class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tabular-nums mt-2 tracking-tight text-white">
+            <!-- Kartu Hero Stat Telemetri Neumorphic -->
+            <div class="bg-gradient-to-br from-navy-900 via-navy-700 to-navy-900 text-white rounded-[28px] p-6 sm:p-8 shadow-[6px_6px_20px_rgba(47,72,98,0.3),-4px_-4px_16px_rgba(255,255,255,0.7)] border border-navy-700/60 flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-white/70 font-medium">Total Organisasi Terdaftar</span>
+                        <span class="neu-badge-pill text-[10px] py-0.5 px-2 bg-butter-100 text-navy-900">MULTI-TENANT</span>
+                    </div>
+                    <p class="font-display font-bold text-4xl sm:text-5xl tabular-nums mt-3 tracking-tight text-white">
                         {{ $totalOrganizations }}
                     </p>
-                    <p class="text-xs text-ice-200/80 mt-2 font-medium">
-                        Ekosistem multi-tenant terisolasi aktif untuk seluruh ormawa kampus.
-                    </p>
+                    <p class="text-xs text-white/60 mt-2">Seluruh himpunan & unit mahasiswa terhubung di Kasly.</p>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-5 lg:pt-0 border-t lg:border-t-0 lg:border-l border-white/15 lg:pl-8 shrink-0 relative z-1">
-                    <div>
-                        <span class="text-xs text-ice-200/90 font-medium block">Organisasi Aktif</span>
-                        <span class="font-display font-bold text-lg md:text-xl tabular-nums text-white block mt-1">
+                <div class="flex flex-wrap items-center gap-3 relative z-10">
+                    <div class="bg-white/10 px-5 py-3.5 rounded-2xl border border-white/10 shadow-xs min-w-[130px]">
+                        <span class="text-xs text-white/70 block font-medium">Organisasi Aktif</span>
+                        <span class="font-display font-bold text-2xl tabular-nums mt-1 block text-white">
                             {{ $activeOrganizations }}
                         </span>
-                        <span class="text-[11px] text-emerald-400 block mt-0.5 font-medium">● Beroperasi Penuh</span>
                     </div>
-
-                    <div>
-                        <span class="text-xs text-ice-200/90 font-medium block">Total Anggota Terdata</span>
-                        <span class="font-display font-bold text-lg md:text-xl tabular-nums text-white block mt-1">
+                    <div class="bg-white/10 px-5 py-3.5 rounded-2xl border border-white/10 shadow-xs min-w-[130px]">
+                        <span class="text-xs text-white/70 block font-medium">Anggota Terdata</span>
+                        <span class="font-display font-bold text-2xl tabular-nums mt-1 block text-white">
                             {{ $totalMembers }}
                         </span>
-                        <span class="text-[11px] text-ice-200/60 block mt-0.5">Mahasiswa Terdata</span>
                     </div>
-
-                    <div>
-                        <span class="text-xs text-ice-200/90 font-medium block">Pengajuan Pending</span>
-                        <span class="font-display font-bold text-lg md:text-xl tabular-nums block mt-1 {{ $pendingRequestsCount > 0 ? 'text-butter-100' : 'text-white' }}">
+                    <div class="bg-white/10 px-5 py-3.5 rounded-2xl border border-white/10 shadow-xs min-w-[130px] {{ $pendingRequestsCount > 0 ? 'border-butter-100/60 bg-butter-100/10' : '' }}">
+                        <span class="text-xs text-white/70 block font-medium">Pengajuan Pending</span>
+                        <span class="font-display font-bold text-2xl tabular-nums mt-1 block text-butter-100">
                             {{ $pendingRequestsCount }}
-                        </span>
-                        <span class="text-[11px] {{ $pendingRequestsCount > 0 ? 'text-butter-200 font-medium' : 'text-ice-200/60' }} block mt-0.5">
-                            {{ $pendingRequestsCount > 0 ? 'Menunggu Review' : 'Semua Bersih' }}
                         </span>
                     </div>
                 </div>
@@ -116,34 +109,35 @@
 
             <!-- Widget Antrean Pengajuan Masuk (Jika Ada) -->
             @if ($pendingRequests->isNotEmpty())
-                <div class="bg-white rounded-xl p-4 sm:p-6 border border-ice-200 shadow-sm space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b border-ice-200">
+                <div class="bg-white/90 rounded-[28px] p-6 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3.5 border-b border-ice-200/70">
                         <div>
-                            <h2 class="font-display font-semibold text-base sm:text-lg text-navy-900">
+                            <h2 class="font-display font-bold text-base text-navy-900">
                                 Pengajuan Organisasi Terbaru yang Butuh ACC
                             </h2>
                             <p class="text-xs text-navy-500 mt-0.5">
                                 Formulir permohonan pendaftaran yang baru masuk dari calon pengelola ormawa.
                             </p>
                         </div>
-                        <a href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}" class="text-xs font-semibold text-navy-500 hover:text-navy-900 transition-colors">
-                            Lihat Semua ({{ $pendingRequestsCount }})
+                        <a href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}" class="text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors inline-flex items-center gap-1">
+                            <span>Lihat Semua ({{ $pendingRequestsCount }})</span>
+                            <span>&rarr;</span>
                         </a>
                     </div>
 
-                    <div class="divide-y divide-ice-200">
+                    <div class="divide-y divide-ice-100/80">
                         @foreach ($pendingRequests as $req)
                             <div class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <span class="font-semibold text-sm text-navy-900">{{ $req->name }}</span>
-                                        <span class="font-mono text-xs px-2 py-0.5 rounded-md bg-ice-100 text-navy-900 border border-ice-200/80">{{ $req->code }}</span>
+                                        <span class="font-bold text-xs sm:text-sm text-navy-900">{{ $req->name }}</span>
+                                        <span class="neu-badge-ice text-[10px] py-0.2 px-2 font-mono font-bold">{{ $req->code }}</span>
                                     </div>
                                     <p class="text-xs text-navy-500 mt-1">
-                                        Pemohon: <strong class="text-navy-900 font-medium">{{ $req->pic_name }}</strong> (WA: {{ $req->pic_phone }}) · Diajukan {{ $req->created_at->diffForHumans() }}
+                                        Pemohon: <strong class="text-navy-900">{{ $req->pic_name }}</strong> (WA: <span class="font-mono">{{ $req->pic_phone }}</span>) · Diajukan {{ $req->created_at->diffForHumans() }}
                                     </p>
                                 </div>
-                                <div class="flex items-center gap-2 shrink-0">
+                                <div class="flex items-center gap-2">
                                     <form
                                         action="{{ route('admin.organizations.requests.approve', $req) }}"
                                         method="POST"
@@ -152,17 +146,14 @@
                                         @csrf
                                         <button
                                             type="submit"
-                                            class="h-8 px-3 rounded-lg bg-navy-900 text-white font-semibold text-xs shadow-xs hover:bg-navy-700 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1.5"
+                                            class="h-8 px-4 rounded-lg bg-navy-900 text-white hover:bg-navy-700 text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                                         >
-                                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span>Setujui (ACC)</span>
+                                            Setujui (ACC)
                                         </button>
                                     </form>
                                     <a
                                         href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
-                                        class="h-8 px-3 rounded-lg border border-ice-200 text-navy-700 hover:text-navy-900 hover:bg-ice-100 text-xs font-medium transition-colors inline-flex items-center"
+                                        class="h-8 px-3 rounded-lg border border-ice-200 text-navy-600 hover:text-navy-900 bg-white hover:bg-ice-100 text-xs font-medium shadow-xs transition-colors flex items-center justify-center"
                                     >
                                         Detail
                                     </a>
@@ -177,45 +168,45 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                 <!-- Kolom 1: Organisasi Terbaru -->
-                <div class="bg-white rounded-xl p-4 sm:p-6 border border-ice-200 shadow-sm flex flex-col justify-between">
+                <div class="bg-white/90 rounded-[28px] p-6 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between space-y-4">
                     <div>
-                        <div class="flex items-center justify-between pb-3 border-b border-ice-200">
+                        <div class="flex items-center justify-between pb-3.5 border-b border-ice-200/70">
                             <div>
-                                <h2 class="font-display font-semibold text-base sm:text-lg text-navy-900">
+                                <h2 class="font-display font-bold text-base text-navy-900">
                                     Organisasi Terdaftar
                                 </h2>
-                                <p class="text-xs text-navy-500 mt-0.5">Daftar ormawa yang telah diverifikasi</p>
+                                <p class="text-xs text-navy-500 mt-0.5">Entitas ormawa yang aktif dalam platform.</p>
                             </div>
-                            <a href="{{ route('admin.organizations.index') }}" class="text-xs font-semibold text-navy-500 hover:text-navy-900 transition-colors">
-                                Kelola Semua
+                            <a href="{{ route('admin.organizations.index') }}" class="text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors">
+                                Kelola Semua &rarr;
                             </a>
                         </div>
 
                         @if ($recentOrganizations->isEmpty())
-                            <div class="py-10 text-center">
+                            <div class="py-12 text-center">
                                 <p class="text-xs text-navy-500">
                                     Belum ada organisasi yang terdaftar.
                                 </p>
                             </div>
                         @else
-                            <div class="divide-y divide-ice-200">
+                            <div class="divide-y divide-ice-100/80">
                                 @foreach ($recentOrganizations as $org)
                                     <div class="py-3.5 flex items-center justify-between gap-3">
-                                        <div class="min-w-0">
-                                            <p class="text-sm font-semibold text-navy-900 truncate">
+                                        <div>
+                                            <p class="text-xs sm:text-sm font-bold text-navy-900">
                                                 {{ $org->name }}
                                             </p>
-                                            <p class="text-xs text-navy-500 mt-0.5 font-mono">
-                                                Kode: {{ $org->code }} · {{ $org->created_at->format('d M Y') }}
+                                            <p class="text-[11px] text-navy-500 mt-0.5 font-mono">
+                                                Kode: {{ $org->code }} · {{ $org->created_at->format('d/m/Y') }}
                                             </p>
                                         </div>
-                                        <div class="shrink-0">
+                                        <div>
                                             @if ($org->status === 'active')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
+                                                <span class="neu-badge-pill text-[10px] py-0.5 px-2 bg-butter-100">
                                                     Aktif
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-red-50 text-danger border border-red-200 text-xs font-medium">
+                                                <span class="px-2 py-0.5 rounded-full bg-danger/10 text-danger border border-danger/20 text-[10px] font-bold">
                                                     Nonaktif
                                                 </span>
                                             @endif
@@ -226,10 +217,10 @@
                         @endif
                     </div>
 
-                    <div class="pt-4 border-t border-ice-200 mt-4">
+                    <div class="pt-3 border-t border-ice-200/70">
                         <a
                             href="{{ route('admin.organizations.index') }}"
-                            class="w-full flex items-center justify-center h-10 px-4 rounded-xl bg-ice-100 text-navy-900 font-semibold text-xs hover:bg-ice-200 transition-colors border border-ice-200/80"
+                            class="w-full flex items-center justify-center h-10 px-4 rounded-xl bg-ice-100 text-navy-900 font-semibold text-xs hover:bg-ice-200 transition-colors border border-ice-200/70 shadow-xs"
                         >
                             Ke Manajemen Organisasi
                         </a>
@@ -237,10 +228,10 @@
                 </div>
 
                 <!-- Kolom 2: Status & Aktivitas Sistem -->
-                <div class="bg-white rounded-xl p-4 sm:p-6 border border-ice-200 shadow-sm flex flex-col justify-between">
+                <div class="bg-white/90 rounded-[28px] p-6 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between space-y-4">
                     <div>
-                        <div class="pb-3 border-b border-ice-200">
-                            <h2 class="font-display font-semibold text-base sm:text-lg text-navy-900">
+                        <div class="pb-3.5 border-b border-ice-200/70">
+                            <h2 class="font-display font-bold text-base text-navy-900">
                                 Status & Aktivitas Sistem
                             </h2>
                             <p class="text-xs text-navy-500 mt-0.5">
@@ -248,40 +239,34 @@
                             </p>
                         </div>
 
-                        <!-- 2 Status Card Kecil -->
-                        <div class="grid grid-cols-2 gap-3 my-4">
-                            <div class="p-3.5 rounded-xl bg-ice-100/60 border border-ice-200/80">
-                                <span class="text-xs text-navy-500 block">Isolasi Multi-Tenant</span>
-                                <div class="flex items-center gap-1.5 mt-1">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span class="text-xs font-semibold text-navy-900">Aktif Normal</span>
-                                </div>
+                        <!-- 2 Status Card Kecil Inset Neumorphic -->
+                        <div class="grid grid-cols-2 gap-3 my-3">
+                            <div class="p-3.5 rounded-2xl bg-ice-100/60 border border-ice-200/70 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.15)]">
+                                <span class="text-[10.5px] font-semibold text-navy-500 block uppercase tracking-wider">Isolasi Multi-Tenant</span>
+                                <span class="text-xs font-bold text-navy-900 block mt-1">Aktif Normal</span>
                             </div>
-                            <div class="p-3.5 rounded-xl bg-ice-100/60 border border-ice-200/80">
-                                <span class="text-xs text-navy-500 block">Integritas Audit Log</span>
-                                <div class="flex items-center gap-1.5 mt-1">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span class="text-xs font-semibold text-navy-900">Terkunci</span>
-                                </div>
+                            <div class="p-3.5 rounded-2xl bg-ice-100/60 border border-ice-200/70 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.15)]">
+                                <span class="text-[10.5px] font-semibold text-navy-500 block uppercase tracking-wider">Integritas Audit Log</span>
+                                <span class="text-xs font-bold text-navy-900 block mt-1">Terkunci</span>
                             </div>
                         </div>
 
                         <!-- Daftar Log Aktivitas -->
                         <div>
-                            <p class="text-xs font-semibold text-navy-700 mb-2">Log Terakhir</p>
+                            <p class="text-[11px] font-bold text-navy-500 mb-2 uppercase tracking-wider">Log Terakhir</p>
                             @if ($recentActivities->isEmpty())
                                 <p class="text-xs text-navy-500 italic py-4">Belum ada aktivitas tercatat.</p>
                             @else
-                                <div class="divide-y divide-ice-200 text-xs">
+                                <div class="divide-y divide-ice-100/80 text-xs">
                                     @foreach ($recentActivities as $act)
                                         <div class="py-2.5 flex items-center justify-between gap-2">
-                                            <div class="min-w-0">
-                                                <p class="font-mono text-navy-900 font-semibold truncate">{{ $act->action }}</p>
-                                                <p class="text-navy-500 text-[11px] mt-0.5 truncate">
+                                            <div>
+                                                <p class="font-mono text-navy-900 font-bold text-[11px]">{{ $act->action }}</p>
+                                                <p class="text-navy-500 text-[10.5px] mt-0.5">
                                                     {{ $act->payload['organization_name'] ?? ($act->organization->name ?? 'Sistem') }}
                                                 </p>
                                             </div>
-                                            <span class="text-navy-500 tabular-nums text-[11px] shrink-0">
+                                            <span class="text-navy-400 tabular-nums text-[10.5px] shrink-0 font-mono">
                                                 {{ $act->created_at->diffForHumans() }}
                                             </span>
                                         </div>
@@ -291,10 +276,10 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 border-t border-ice-200 mt-4">
+                    <div class="pt-3 border-t border-ice-200/70">
                         <a
                             href="{{ route('admin.organizations.index') }}"
-                            class="w-full flex items-center justify-center h-10 px-4 rounded-xl bg-ice-100 text-navy-900 font-semibold text-xs hover:bg-ice-200 transition-colors border border-ice-200/80"
+                            class="w-full flex items-center justify-center h-10 px-4 rounded-xl bg-ice-100 text-navy-900 font-semibold text-xs hover:bg-ice-200 transition-colors border border-ice-200/70 shadow-xs"
                         >
                             Lihat Log Lengkap
                         </a>
@@ -303,8 +288,8 @@
 
             </div>
 
-        </div>
-    </main>
+        </main>
+    </div>
 
 </body>
 </html>

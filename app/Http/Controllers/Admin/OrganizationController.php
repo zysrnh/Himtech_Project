@@ -7,6 +7,7 @@ use App\Mail\StaffAccountCreatedMail;
 use App\Models\ActivityLog;
 use App\Models\CashCategory;
 use App\Models\Organization;
+use App\Models\OrganizationRequest;
 use App\Models\User;
 use App\Services\FonnteService;
 use Illuminate\Http\RedirectResponse;
@@ -22,9 +23,9 @@ use Illuminate\View\View;
 class OrganizationController extends Controller
 {
     /**
-     * Tampilkan halaman daftar seluruh organisasi terdaftar.
+     * Tampilkan halaman daftar seluruh organisasi terdaftar dan pengajuan masuk.
      */
-    public function index(): View|RedirectResponse
+    public function index(Request $request): View|RedirectResponse
     {
         if (! Auth::check() || ! Auth::user()->is_super_admin) {
             return redirect()->route('admin.login')->withErrors([
@@ -32,21 +33,29 @@ class OrganizationController extends Controller
             ]);
         }
 
+        $activeTab = $request->query('tab', 'organizations');
+
         $totalOrganizations = Organization::count();
         $activeOrganizations = Organization::where('status', 'active')->count();
         $inactiveOrganizations = Organization::where('status', 'inactive')->count();
-        $organizations = Organization::latest()->paginate(10);
+        $pendingRequestsCount = OrganizationRequest::where('status', 'pending')->count();
+
+        $organizations = Organization::latest()->paginate(10, ['*'], 'org_page');
+        $pendingRequests = OrganizationRequest::where('status', 'pending')->latest()->paginate(10, ['*'], 'req_page');
 
         return view('admin.organizations.index', [
             'organizations' => $organizations,
+            'pendingRequests' => $pendingRequests,
             'totalOrganizations' => $totalOrganizations,
             'activeOrganizations' => $activeOrganizations,
             'inactiveOrganizations' => $inactiveOrganizations,
+            'pendingRequestsCount' => $pendingRequestsCount,
+            'activeTab' => $activeTab,
         ]);
     }
 
     /**
-     * Tampilkan formulir terpisah untuk pendaftaran organisasi baru.
+     * Tampilkan formulir terpisah untuk pendaftaran organisasi baru secara manual.
      */
     public function create(): View|RedirectResponse
     {
@@ -188,6 +197,158 @@ class OrganizationController extends Controller
         }
 
         return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) berhasil didaftarkan. Kredensial akun staff telah dikirim via WhatsApp dan Email.");
+    }
+
+    /**
+     * Setujui (ACC) pengajuan organisasi publik.
+     */
+    public function approveRequest(OrganizationRequest $organizationRequest): RedirectResponse
+    {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        if ($organizationRequest->status !== 'pending') {
+            return redirect()->route('admin.organizations.index', ['tab' => 'requests'])
+                ->withErrors(['error' => 'Pengajuan ini sudah pernah diproses sebelumnya.']);
+        }
+
+        // Generate password acak kuat 10 karakter
+        $password = Str::password(10, letters: true, numbers: true, symbols: true, spaces: false);
+        $organization = null;
+        $staff = null;
+
+        DB::transaction(function () use ($organizationRequest, $password, &$organization, &$staff) {
+            // 1. Buat Organisasi
+            $organization = Organization::create([
+                'name' => $organizationRequest->name,
+                'code' => $organizationRequest->code,
+                'description' => $organizationRequest->description,
+                'status' => 'active',
+            ]);
+
+            // 2. Buat Akun Pengelola / Staff Awal
+            $staff = User::create([
+                'name' => $organizationRequest->pic_name,
+                'username' => Str::lower($organizationRequest->pic_username),
+                'email' => $organizationRequest->pic_email,
+                'phone' => $organizationRequest->pic_phone,
+                'password' => Hash::make($password),
+                'is_super_admin' => false,
+            ]);
+
+            // 3. Hubungkan di tabel pivot organization_user
+            $organization->users()->attach($staff->id, [
+                'role' => 'staff',
+                'is_active' => true,
+            ]);
+
+            // 4. Buatkan 7 Kategori Kas Bawaan
+            $defaultCategories = [
+                ['name' => 'Iuran Wajib', 'type' => 'in'],
+                ['name' => 'Donasi / Sponsor', 'type' => 'in'],
+                ['name' => 'Kas Awal', 'type' => 'in'],
+                ['name' => 'Konsumsi', 'type' => 'out'],
+                ['name' => 'ATK & Perlengkapan', 'type' => 'out'],
+                ['name' => 'Operasional Kegiatan', 'type' => 'out'],
+                ['name' => 'Lain-lain', 'type' => 'out'],
+            ];
+
+            foreach ($defaultCategories as $category) {
+                CashCategory::create([
+                    'organization_id' => $organization->id,
+                    'name' => $category['name'],
+                    'type' => $category['type'],
+                ]);
+            }
+
+            // 5. Update Status Pengajuan
+            $organizationRequest->update([
+                'status' => 'approved',
+                'approved_by' => Auth::id(),
+                'approved_at' => now(),
+            ]);
+
+            // 6. Catat Log Aktivitas
+            ActivityLog::create([
+                'organization_id' => $organization->id,
+                'user_id' => Auth::id(),
+                'action' => 'approve_organization_request',
+                'subject_type' => Organization::class,
+                'subject_id' => $organization->id,
+                'payload' => [
+                    'organization_name' => $organization->name,
+                    'organization_code' => $organization->code,
+                    'staff_username' => $staff->username,
+                    'staff_email' => $staff->email,
+                    'staff_phone' => $staff->phone,
+                ],
+            ]);
+        });
+
+        // 7. Blast Kredensial via WhatsApp (Fonnte API)
+        if ($staff && ! empty($staff->phone)) {
+            FonnteService::sendStaffAccountCreated(
+                phone: $staff->phone,
+                staffName: $staff->name,
+                orgName: $organization->name,
+                orgCode: $organization->code,
+                email: $staff->email,
+                password: $password,
+                username: $staff->username
+            );
+        }
+
+        // 8. Blast Kredensial via Email (SMTP)
+        if ($staff && ! empty($staff->email)) {
+            try {
+                Mail::to($staff->email)->send(new StaffAccountCreatedMail(
+                    staffName: $staff->name,
+                    orgName: $organization->name,
+                    orgCode: $organization->code,
+                    email: $staff->email,
+                    password: $password,
+                    loginUrl: url('/login'),
+                    username: $staff->username
+                ));
+            } catch (\Throwable $e) {
+                Log::warning("Gagal mengirim email kredensial staff ke [{$staff->email}]: ".$e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.organizations.index', ['tab' => 'requests'])
+            ->with('success', "Pengajuan organisasi {$organizationRequest->name} ({$organizationRequest->code}) berhasil DISETUJUI (ACC). Organisasi telah aktif dan kredensial akun Pengelola telah dikirimkan via WhatsApp dan Email.");
+    }
+
+    /**
+     * Tolak pengajuan organisasi publik.
+     */
+    public function rejectRequest(Request $request, OrganizationRequest $organizationRequest): RedirectResponse
+    {
+        if (! Auth::check() || ! Auth::user()->is_super_admin) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $reason = $request->input('rejection_reason', 'Data pengajuan belum memenuhi persyaratan verifikasi.');
+
+        $organizationRequest->update([
+            'status' => 'rejected',
+            'rejection_reason' => $reason,
+            'approved_by' => Auth::id(),
+        ]);
+
+        // Notifikasi Penolakan via WhatsApp
+        if (! empty($organizationRequest->pic_phone)) {
+            $msg = "Halo {$organizationRequest->pic_name},\n\n"
+                ."Mohon maaf, pengajuan pendaftaran organisasi *{$organizationRequest->name} ({$organizationRequest->code})* belum dapat disetujui saat ini.\n\n"
+                ."Alasan: {$reason}\n\n"
+                ."Anda dapat mengajukan kembali dengan melengkapi data yang sesuai.\n\n"
+                ."Salam,\nTim Kasly";
+            FonnteService::send($organizationRequest->pic_phone, $msg);
+        }
+
+        return redirect()->route('admin.organizations.index', ['tab' => 'requests'])
+            ->with('success', "Pengajuan organisasi {$organizationRequest->name} telah ditolak.");
     }
 
     /**

@@ -31,8 +31,11 @@
                 <a href="#faq" class="hover:text-navy-900 transition-colors">FAQ</a>
             </nav>
 
-            <div>
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('ajukan-organisasi') }}" class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-ice-200 bg-white text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
+                    Ajukan Organisasi
+                </a>
+                <a href="{{ route('login') }}" class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors shadow-sm">
                     Masuk
                 </a>
             </div>
@@ -99,19 +102,19 @@
                     </div>
                 </div>
 
-                <!-- Card Hubungi Kami -->
+                <!-- Card Ajukan Organisasi -->
                 <div class="neu-card flex flex-col justify-between">
                     <div>
                         <h3 class="font-display font-medium text-lg text-navy-900">
                             Belum punya organisasi?
                         </h3>
                         <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Hubungi admin untuk mendaftarkan organisasimu.
+                            Ajukan pendaftaran ormawa secara online dan kelola kas bersama.
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="https://wa.me/?text=Halo%20Admin%20Kasly,%20saya%20ingin%20mendaftarkan%20organisasi%20baru" target="_blank" rel="noopener noreferrer" class="neu-btn w-full">
-                            Hubungi Kami
+                        <a href="{{ route('ajukan-organisasi') }}" class="neu-btn w-full">
+                            Ajukan Organisasi
                         </a>
                     </div>
                 </div>

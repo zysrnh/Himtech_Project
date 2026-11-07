@@ -5,13 +5,20 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationController;
 use App\Http\Controllers\Anggota\DashboardController as AnggotaDashboardController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\OrganizationRequestController;
 use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Depan / Landing Page
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Formulir Publik Pengajuan Pendaftaran Organisasi Baru
+Route::get('/ajukan-organisasi', [OrganizationRequestController::class, 'showForm'])->name('ajukan-organisasi');
+Route::post('/ajukan-organisasi', [OrganizationRequestController::class, 'store'])->name('ajukan-organisasi.submit');
+Route::get('/ajukan-organisasi/sukses', [OrganizationRequestController::class, 'success'])->name('ajukan-organisasi.success');
 
 // Portal Login Tunggal Universal (Pengurus & Anggota)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -27,6 +34,8 @@ Route::post('/anggota/logout', [LoginController::class, 'logout'])->name('anggot
 // Panel Kerja Pengurus / Staff (Multi-Tenant Protected)
 Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->group(function () {
     Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'showPengurusProfile'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'updatePengurusProfile'])->name('profile.update');
 });
 
 // Portal Transparansi Anggota
@@ -46,3 +55,11 @@ Route::get('/admin/organizations/create', [AdminOrganizationController::class, '
 Route::post('/admin/organizations', [AdminOrganizationController::class, 'store'])->name('admin.organizations.store');
 Route::patch('/admin/organizations/{organization}/toggle-status', [AdminOrganizationController::class, 'toggleStatus'])->name('admin.organizations.toggle-status');
 Route::delete('/admin/organizations/{organization}', [AdminOrganizationController::class, 'destroy'])->name('admin.organizations.destroy');
+
+// Persetujuan (Approval) Pengajuan Organisasi oleh Super Admin
+Route::post('/admin/organizations/requests/{organizationRequest}/approve', [AdminOrganizationController::class, 'approveRequest'])->name('admin.organizations.requests.approve');
+Route::post('/admin/organizations/requests/{organizationRequest}/reject', [AdminOrganizationController::class, 'rejectRequest'])->name('admin.organizations.requests.reject');
+
+// Profil Super Admin & Pengaturan Kontak Notifikasi
+Route::get('/admin/profile', [ProfileController::class, 'showAdminProfile'])->name('admin.profile');
+Route::put('/admin/profile', [ProfileController::class, 'updateAdminProfile'])->name('admin.profile.update');

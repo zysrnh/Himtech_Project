@@ -64,6 +64,12 @@
                     Buku Kas Mutasi
                 </a>
                 <a
+                    href="{{ route('pengurus.profile') }}"
+                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                >
+                    Profil Saya
+                </a>
+                <a
                     href="/"
                     target="_blank"
                     class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"

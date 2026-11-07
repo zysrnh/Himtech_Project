@@ -138,3 +138,25 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Keterbukaan Finansial Kas Ormawa: Anggota dapat melihat saldo kas aktual dan ringkasan mutasi secara real-time untuk mencegah penyelewengan kas.
 - Pelacakan Status Tagihan Kas Pribadi: Status Lunas, Menunggu Verifikasi, atau Belum Dibayar dengan penanda apakah pembayaran dilakukan Tepat Waktu atau Terlambat.
 - Riwayat Mutasi Kas Publik: Seluruh pembukuan organisasi ditampilkan transparan bagi anggota.
+
+================================================================================
+10. FORMULIR PUBLIK PENGAJUAN ORGANISASI & OTOMASI PERSETUJUAN (ACC)
+================================================================================
+- Endpoint Publik: /ajukan-organisasi (Tautan cepat di navbar beranda samping tombol Masuk).
+- Alur Pendaftaran Mandiri Ormawa:
+  * Publik/calon pengelola mengisi data ormawa (Nama, Usulan Kode, Profil) dan data pemohon (Nama PIC, Username, Email, No. WhatsApp).
+  * Sistem otomatis mengirim notifikasi WhatsApp Fonnte ke Super Admin bahwa ada pengajuan baru yang butuh ditinjau.
+- Panel Persetujuan Super Admin (/admin/organizations?tab=requests):
+  * Super Admin dapat meninjau seluruh pengajuan pending dengan badge counter pengajuan yang butuh ACC.
+  * Tombol "Setujui (ACC)": Otomatis membuat organisasi aktif, membuat akun Pengelola, membuat 7 kategori kas default, mencatat ActivityLog, dan menembak pesan kredensial otomatis (Kode, Username, Password acak kuat 10 karakter) via WhatsApp Fonnte dan Email SMTP ke pemohon.
+  * Tombol "Tolak": Mengarsipkan pengajuan dan mengirimkan pesan penolakan yang sopan ke WhatsApp pemohon.
+
+================================================================================
+11. MANAJEMEN PROFIL PENGGUNA & KONTAK NOTIFIKASI WHATSAPP
+================================================================================
+- Endpoint Super Admin: /admin/profile
+- Endpoint Pengurus Ormawa: /pengurus/profile
+- Fitur Pengaturan Mandiri:
+  * Pengubahan Nama Lengkap, Username, dan Email.
+  * Pengaturan Nomor WhatsApp Aktif: Menjadi nomor tujuan resmi sistem Fonnte untuk menerima alert pengajuan baru dan notifikasi sistem penting.
+  * Pembaruan Kata Sandi Mandiri dengan konfirmasi kata sandi.

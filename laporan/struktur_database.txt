@@ -146,6 +146,23 @@ Keunggulan Pola Perancangan Ini:
      * payload: JSON (Nullable) - Data sebelum/sesudah perubahan
      * created_at, updated_at: TIMESTAMP
 
+10. TABEL: organization_requests (Pengajuan Pendaftaran Ormawa Publik)
+    - Deskripsi: Menampung formulir permohonan pembukaan akun organisasi dari publik sebelum disetujui (ACC) oleh Super Admin.
+    - Kolom:
+      * id: BIGINT (Primary Key, Auto Increment)
+      * name: VARCHAR(255) - Nama organisasi yang diajukan
+      * code: VARCHAR(20) - Usulan kode unik organisasi
+      * description: TEXT (Nullable) - Deskripsi profil ormawa
+      * pic_name: VARCHAR(255) - Nama lengkap ketua/pemohon
+      * pic_username: VARCHAR(50) - Username yang diinginkan
+      * pic_email: VARCHAR(255) - Email resmi pemohon
+      * pic_phone: VARCHAR(25) - Nomor WhatsApp aktif pemohon untuk pengiriman notifikasi dan kredensial
+      * status: VARCHAR(20) (Default: 'pending') - Status: 'pending', 'approved', 'rejected'
+      * rejection_reason: TEXT (Nullable) - Alasan penolakan jika ditolak
+      * approved_by: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
+      * approved_at: DATETIME (Nullable)
+      * created_at, updated_at: TIMESTAMP
+
 ================================================================================
 3. KORELASI DENGAN TEMA LOMBA
 ================================================================================

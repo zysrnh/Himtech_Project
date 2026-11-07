@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profil Pengurus - {{ config('app.name', 'Kasly') }}</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex">
+
+    <!-- Sidebar Pengurus (240px) Sesuai Ice & Butter v2 -->
+    <aside class="w-[240px] bg-white border-r border-ice-200 flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen">
+        <div>
+            <!-- Brand -->
+            <div class="h-18 px-6 flex items-center justify-between border-b border-ice-200">
+                <a href="{{ route('pengurus.dashboard') }}" class="inline-flex items-center">
+                    <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-8 w-auto">
+                </a>
+            </div>
+
+            <!-- Nav Items -->
+            <nav class="p-4 space-y-1">
+                <a
+                    href="{{ route('pengurus.dashboard') }}"
+                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                >
+                    Overview Kas
+                </a>
+                <a
+                    href="{{ route('pengurus.profile') }}"
+                    class="flex items-center h-11 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm transition-colors"
+                >
+                    Profil Saya
+                </a>
+                <a
+                    href="/"
+                    target="_blank"
+                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                >
+                    Lihat Beranda Web
+                </a>
+            </nav>
+        </div>
+
+        <!-- User Info & Logout -->
+        <div class="p-4 border-t border-ice-200">
+            <div class="px-2 mb-3">
+                <p class="text-sm font-medium text-navy-900 truncate">
+                    {{ Auth::user()->name }}
+                </p>
+                <p class="text-[13px] text-navy-500 truncate">
+                    {{ Auth::user()->email ?? Auth::user()->username }}
+                </p>
+            </div>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button
+                    type="submit"
+                    class="w-full flex items-center justify-center h-10 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors cursor-pointer"
+                >
+                    Keluar Sesi
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content Area: Profil Pengurus -->
+    <main class="flex-1 min-w-0 p-8">
+        <div class="max-w-[760px] mx-auto space-y-8">
+
+            <!-- Top Header -->
+            <div>
+                <h1 class="font-display font-semibold text-[28px] text-navy-900">
+                    Pengaturan Profil Pengurus
+                </h1>
+                <p class="text-sm text-navy-500 mt-1">
+                    Kelola data identitas akun pengurus, nomor WhatsApp notifikasi, dan kata sandi login Anda.
+                </p>
+            </div>
+
+            <!-- Notifikasi Sukses / Error -->
+            @if (session('success'))
+                <div class="p-4 rounded-md bg-butter-100 text-navy-900 text-sm font-medium shadow-card flex items-center justify-between">
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="p-4 rounded-md bg-danger/10 text-danger text-sm font-medium">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <!-- Card Formulir Profil -->
+            <div class="bg-white rounded-lg p-8 shadow-card border border-ice-200">
+                <form action="{{ route('pengurus.profile.update') }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+
+                    <div>
+                        <label for="name" class="block text-[13px] text-navy-500 font-medium mb-2">
+                            Nama Lengkap Pengurus <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ old('name', $user->name) }}"
+                            required
+                            class="w-full h-12 px-4 rounded-md bg-ice-100 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                        >
+                        @error('name')
+                            <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="username" class="block text-[13px] text-navy-500 font-medium mb-2">
+                                Username Login <span class="text-danger">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value="{{ old('username', $user->username) }}"
+                                required
+                                class="w-full h-12 px-4 rounded-md bg-ice-100 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                            >
+                            @error('username')
+                                <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-[13px] text-navy-500 font-medium mb-2">
+                                Alamat Email <span class="text-danger">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value="{{ old('email', $user->email) }}"
+                                required
+                                class="w-full h-12 px-4 rounded-md bg-ice-100 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                            >
+                            @error('email')
+                                <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-[13px] text-navy-500 font-medium mb-2">
+                            Nomor WhatsApp <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="phone"
+                            name="phone"
+                            value="{{ old('phone', $user->phone) }}"
+                            required
+                            placeholder="Contoh: 081234567890"
+                            class="w-full h-12 px-4 rounded-md bg-ice-100 text-navy-900 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                        >
+                        @error('phone')
+                            <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="pt-4 border-t border-ice-200">
+                        <h2 class="font-display font-medium text-base text-navy-900 mb-1">
+                            Ubah Kata Sandi (Opsional)
+                        </h2>
+                        <p class="text-xs text-navy-500 mb-4">
+                            Biarkan kosong jika Anda tidak ingin mengganti kata sandi login.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="password" class="block text-[13px] text-navy-500 font-medium mb-2">
+                                    Kata Sandi Baru
+                                </label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Minimal 8 karakter"
+                                    class="w-full h-12 px-4 rounded-md bg-ice-100 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('password')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="password_confirmation" class="block text-[13px] text-navy-500 font-medium mb-2">
+                                    Konfirmasi Kata Sandi Baru
+                                </label>
+                                <input
+                                    type="password"
+                                    id="password_confirmation"
+                                    name="password_confirmation"
+                                    placeholder="Ulangi kata sandi baru"
+                                    class="w-full h-12 px-4 rounded-md bg-ice-100 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-ice-200 flex items-center justify-end">
+                        <button
+                            type="submit"
+                            class="inline-flex items-center justify-center h-11 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors shadow-sm cursor-pointer"
+                        >
+                            Simpan Perubahan Profil
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

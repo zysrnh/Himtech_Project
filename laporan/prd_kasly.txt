@@ -9,9 +9,9 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Nama Produk               : Kasly (Smart Multi-Tenant Student Organization Cash & Dues Platform)
 - Penulis / Pemilik Produk  : Product Manager & Lead Developer Kasly (Tim Himtech)
 - Tanggal Dokumen           : 2026-11-07
-- Versi Dokumen             : v1.0 (Production Ready / Final Submission)
-- Status Dokumen            : Approved & Implemented
-- Target Waktu Peluncuran   : Q4 2026 (Live Deployment & Siap Uji Lomba)
+- Versi Dokumen             : v1.0-draft (Active Development Sprint)
+- Status Dokumen            : In Active Development (Living Document - Berjalan Seiring Pembuatan Fitur)
+- Target Waktu Peluncuran   : Sisa Sprint Hari Ini (Target Selesai & Demo Q4 2026)
 - Tumpukan Teknologi (Stack): Laravel 12 (PHP 8.3), Tailwind CSS v4 (Ice & Butter v2), MySQL / SQLite, Fonnte WhatsApp API Gateway, Laravel Mail SMTP.
 
 --------------------------------------------------------------------------------
@@ -81,25 +81,39 @@ B. Metrik Kesuksesan (Key Performance Indicators / KPI):
    - Batasan: Hak akses read-only dan hanya dapat mengunggah bukti bayar untuk tagihannya sendiri.
 
 --------------------------------------------------------------------------------
-5. RUANG LINGKUP (SCOPE)
+5. RUANG LINGKUP & STATUS IMPLEMENTASI (SCOPE & STATUS)
 --------------------------------------------------------------------------------
-A. In-Scope (Fitur yang Selesai Dikerjakan & Siap Produksi):
+A. Status Milestone 1: SELESAI & SIAP UJI (Implemented & Live Demo):
    1. Arsitektur Multi-Tenant Terisolasi (partition key organization_id di seluruh tabel transaksi dan anggota).
    2. Landing Page Lengkap berbasis Ice & Butter v2 dengan formulir pendaftaran ormawa mandiri (/ajukan-organisasi).
    3. Panel Khusus Admin Penerima Organisasi untuk review dan ACC pendaftaran dengan otomatisasi pembuatan akun pengelola.
    4. Otomasi Pengiriman Kredensial via WhatsApp Gateway (Fonnte API) dan Email Notifikasi resmi (SMTP).
    5. Portal Login Tunggal Universal (/login) dengan deteksi otomatis peran (Pengurus vs Anggota) dan proteksi anti-brute force (Rate Limiting 5x/menit).
-   6. Dashboard Pengurus dengan Indikator Kedisiplinan Iuran (% skor tepat waktu) dan telemetri tunggakan real-time.
+   6. Dashboard Ringkasan Pengurus (/pengurus/dashboard) dengan Indikator Kedisiplinan Iuran (% skor tepat waktu) dan telemetri tunggakan real-time.
    7. Manajemen Staf & Bendahara bertingkat oleh Admin Organisasi (/pengurus/staff).
    8. Portal Transparansi Anggota (/anggota/dashboard) dengan pelacakan status is_on_time dan buku kas terbuka.
    9. Sistem Pembukuan Locked Ledger dengan mekanisme pembalik (reversal) dan audit trail permanen (activity_logs).
    10. Desain Responsif & Flat Design (Ice & Butter v2: Tanpa gradien, tipografi Outfit + Plus Jakarta Sans).
 
-B. Out-of-Scope (Sengaja Ditunda untuk Rilis Masa Depan):
-   1. Integrasi Payment Gateway Pihak Ketiga (Midtrans/Xendit/QRIS Statis Bank Mandiri/BCA):
+B. Status Milestone 2: SEDANG BERJALAN (In Active Sprint - Pengerjaan Berjalan):
+   1. Modul Manajemen Tagihan Iuran (/pengurus/tagihan):
+      - Pembuatan periode tagihan kas baru (judul, nominal, batas tanggal jatuh tempo).
+      - Otomatisasi generate tagihan serentak ke seluruh anggota aktif ormawa.
+      - Fitur konfirmasi pembayaran kas (verifikasi bukti bayar anggota & ubah status jadi lunas).
+   2. Modul Buku Kas Mutasi Mandiri (/pengurus/buku-kas):
+      - Form pencatatan kas masuk dan kas keluar dengan upload bukti nota/struk belanja fisik.
+      - Rekapitulasi mutasi dan filter berdasarkan kategori kas.
+   3. Modul Buku Induk Anggota Ormawa (/pengurus/anggota):
+      - Tambah anggota manual atau import daftar anggota angkatan.
+      - Aktivasi dan penonaktifan keanggotaan mahasiswa.
+
+C. Status Milestone 3: OUT-OF-SCOPE (Sengaja Ditunda untuk Rilis Masa Depan):
+   1. Integrasi Payment Gateway Pihak Ketiga (Midtrans/Xendit/QRIS Otomatis):
       Alasan: Sengaja ditunda agar organisasi mahasiswa tidak dibebankan biaya transaksi (MDR) yang memberatkan untuk nominal iuran kas kecil (misal: Rp 5.000 - Rp 20.000). Sistem saat ini mengandalkan upload bukti transfer yang diverifikasi bendahara dengan sekali klik.
    2. Aplikasi Mobile Native (Flutter/React Native):
       Alasan: Web-first responsive PWA jauh lebih ringan, tidak memerlukan instalasi lewat Google Play Store, dan dapat diakses langsung oleh seluruh mahasiswa dari browser ponsel masing-masing.
+   3. Export Laporan Keuangan ke PDF & Excel Cetak Resmi:
+      Alasan: Format digital real-time di portal anggota sudah memenuhi prinsip transparansi tanpa kertas. Fitur export formal disiapkan untuk rilis v2 pasca lomba.
 
 --------------------------------------------------------------------------------
 6. KEBUTUHAN FITUR (REQUIREMENTS & USER STORIES)

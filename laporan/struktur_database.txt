@@ -1,5 +1,5 @@
 DOKUMENTASI ARSITEKTUR & SKEMA BASIS DATA - KASLY
-Tanggal: 2026-11-07
+Tanggal Pembaruan: 2026-11-07
 Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pembayaran Iuran/Kas
 
 ================================================================================
@@ -13,7 +13,7 @@ Keunggulan Pola Perancangan Ini:
 3. Kedaulatan Finansial: Data kas antar organisasi tidak saling bercampur, menjamin independensi pembukuan masing-masing ormawa.
 
 ================================================================================
-2. ENTITY RELATIONSHIP & KAMUS DATA (8 TABEL UTAMA)
+2. ENTITY RELATIONSHIP & KAMUS DATA (10 TABEL UTAMA)
 ================================================================================
 
 1. TABEL: organizations (Entitas Master Tenant)
@@ -23,7 +23,7 @@ Keunggulan Pola Perancangan Ini:
      * code: VARCHAR(50) (Unique, Index) - Kode unik huruf kapital (contoh: HIMTECH, BEM)
      * name: VARCHAR(255) - Nama resmi organisasi
      * description: TEXT (Nullable) - Keterangan/deskripsi organisasi
-     * status: VARCHAR(20) (Default: 'active') - Status aktif/nonaktif
+     * status: VARCHAR(20) (Default: 'active') - Status aktif/nonaktif ('active', 'inactive')
      * created_at, updated_at: TIMESTAMP
    - Relasi:
      * One-to-Many ke members (1 organisasi memiliki banyak anggota)
@@ -33,15 +33,18 @@ Keunggulan Pola Perancangan Ini:
      * Many-to-Many ke users melalui organization_user
 
 2. TABEL: users (Entitas Akun Pengguna Global)
-   - Deskripsi: Menyimpan kredensial autentikasi sistem dan kontak pengurus/anggota.
+   - Deskripsi: Menyimpan kredensial autentikasi sistem dan kontak pengurus/anggota/admin pusat.
    - Kolom:
      * id: BIGINT (Primary Key, Auto Increment)
-     * name: VARCHAR(255) - Nama pengguna
-     * username: VARCHAR(255) (Nullable, Unique) - Username identitas pengurus/anggota untuk login multi-tenant
+     * name: VARCHAR(255) - Nama lengkap pengguna
+     * username: VARCHAR(50) (Nullable, Unique) - Username unik untuk login multi-tenant atau admin
      * email: VARCHAR(255) (Nullable, Unique) - Alamat email pengguna
      * phone: VARCHAR(30) (Nullable) - Nomor WhatsApp pengurus/pengguna untuk blast kredensial via Fonnte
-     * password: VARCHAR(255) - Hash kata sandi pengguna (Bcrypt)
+     * password: VARCHAR(255) - Hash kata sandi pengguna (Bcrypt cost factor 12)
      * is_super_admin: BOOLEAN (Default: false) - Hak akses administrator pusat
+     * admin_role: VARCHAR(50) (Nullable) - Sub-peran tingkat admin pusat:
+       - 'super_admin' : Master platform (kontrol penuh: overview, kelola ormawa, toggle status, delete cascade, kelola admin)
+       - 'admin_penerima' : Admin Penerima Organisasi (spesialisasi review & ACC/Tolak pengajuan ormawa publik dari landing page)
      * remember_token: VARCHAR(100) (Nullable)
      * created_at, updated_at: TIMESTAMP
    - Relasi:
@@ -50,18 +53,22 @@ Keunggulan Pola Perancangan Ini:
      * One-to-Many ke dues_periods (sebagai created_by)
      * One-to-Many ke dues_bills (sebagai verified_by)
 
-3. TABEL: organization_user (Tabel Pivot Hak Akses & Peran)
-   - Deskripsi: Menghubungkan user ke organisasi dengan peran spesifik.
+3. TABEL: organization_user (Tabel Pivot Hak Akses & Peran Multi-Tenant)
+   - Deskripsi: Menghubungkan user ke organisasi tertentu dengan tingkat peran spesifik.
    - Kolom:
      * id: BIGINT (Primary Key, Auto Increment)
      * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
      * user_id: BIGINT (Foreign Key -> users.id, Cascade Delete)
-     * role: VARCHAR(50) - Peran dalam organisasi: 'staff', 'bendahara', 'anggota'
+     * role: VARCHAR(50) - Tingkatan peran operasional ormawa:
+       - 'admin_organisasi' : Ketua/PIC pemohon ormawa (memiliki wewenang kelola kas dan bikin akun staf)
+       - 'bendahara'        : Pengelola teknis keuangan (kelola iuran, validasi tagihan, buku kas)
+       - 'staff'            : Staf pembantu operasional pencatatan kas
+       - 'anggota'          : Anggota biasa pembayar kas
      * member_id: BIGINT (Nullable, Foreign Key -> members.id, Null on Delete)
-     * is_active: BOOLEAN (Default: true) - Status keaktifan pengurus/pengguna
+     * is_active: BOOLEAN (Default: true) - Status keaktifan akun dalam organisasi
      * created_at, updated_at: TIMESTAMP
    - Kunci Unik: UNIQUE(organization_id, user_id)
-   - Alasan Desain: Memungkinkan satu pengguna memegang peran berbeda di organisasi berbeda tanpa duplikasi data kredensial.
+   - Alasan Desain: Memungkinkan satu pengguna memegang peran berbeda di organisasi berbeda tanpa duplikasi data akun.
 
 4. TABEL: members (Entitas Buku Induk Anggota Organisasi)
    - Deskripsi: Daftar anggota resmi yang menjadi subjek pembayaran kas di organisasi bersangkutan.
@@ -71,18 +78,18 @@ Keunggulan Pola Perancangan Ini:
      * user_id: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete) - Tautan jika anggota memiliki akun login
      * member_number: VARCHAR(50) - Nomor Induk Anggota / NIM
      * name: VARCHAR(255) - Nama lengkap anggota
-     * phone: VARCHAR(30) (Nullable) - Nomor telepon/WhatsApp untuk kebutuhan reminder tagihan
-     * is_active: BOOLEAN (Default: true) - Status anggota (aktif menerima tagihan kas baru)
+     * phone: VARCHAR(30) (Nullable) - Nomor WhatsApp anggota untuk reminder tagihan
+     * is_active: BOOLEAN (Default: true) - Status keaktifan anggota
      * created_at, updated_at: TIMESTAMP
    - Kunci Unik: UNIQUE(organization_id, member_number)
-   - Alasan Desain: NIM yang sama tidak akan bertabrakan jika seorang mahasiswa terdaftar di dua organisasi berbeda.
+   - Alasan Desain: NIM yang sama tidak akan bentrok jika seorang mahasiswa terdaftar di dua organisasi berbeda.
 
 5. TABEL: cash_categories (Kategori Mutasi Kas)
    - Deskripsi: Klasifikasi pos pemasukan dan pengeluaran spesifik per organisasi.
    - Kolom:
      * id: BIGINT (Primary Key, Auto Increment)
      * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
-     * name: VARCHAR(100) - Nama pos/kategori (contoh: Iuran Kas, Konsumsi, ATK)
+     * name: VARCHAR(100) - Nama pos/kategori (contoh: Iuran Wajib, Donasi, Konsumsi, ATK, Operasional)
      * type: VARCHAR(10) - Jenis aliran kas: 'in' (kas masuk) atau 'out' (kas keluar)
      * created_at, updated_at: TIMESTAMP
    - Relasi: One-to-Many ke transactions
@@ -102,7 +109,7 @@ Keunggulan Pola Perancangan Ini:
      * is_locked: BOOLEAN (Default: true) - Kunci integritas transaksi
      * reversal_of: BIGINT (Nullable) - Referensi ID transaksi yang dikoreksi/dibatalkan secara sah
      * created_at, updated_at: TIMESTAMP
-   - Nilai Transparansi di Laporan: Kolom is_locked dan reversal_of menegakkan prinsip akuntansi forensik. Pengurus tidak diperkenankan menghapus data secara diam-diam. Koreksi kesalahan wajib dilakukan melalui pencatatan transaksi pembalik (reversal) sehingga tidak timbul kecurigaan manipulasi saldo.
+   - Nilai Transparansi: Kolom is_locked dan reversal_of menegakkan prinsip akuntansi forensik. Pengurus tidak diperkenankan menghapus data secara diam-diam. Koreksi dilakukan melalui transaksi pembalik (reversal).
 
 7. TABEL: dues_periods (Periode Iuran & Parameter Kedisiplinan)
    - Deskripsi: Master periode penagihan kas rutin (bulanan/mingguan/kepanitiaan).
@@ -114,7 +121,7 @@ Keunggulan Pola Perancangan Ini:
      * due_date: DATE - Tanggal jatuh tempo resmi penagihan kas
      * created_by: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
      * created_at, updated_at: TIMESTAMP
-   - Nilai Kedisiplinan di Laporan: Kolom due_date adalah kunci otomatis penentu kedisiplinan anggota.
+   - Nilai Kedisiplinan: Kolom due_date adalah kunci otomatis penentu penilaian kedisiplinan anggota.
 
 8. TABEL: dues_bills (Lembar Tagihan Iuran Anggota)
    - Deskripsi: Rincian kewajiban kas per anggota per periode.
@@ -132,7 +139,7 @@ Keunggulan Pola Perancangan Ini:
      * payment_method: VARCHAR(20) (Default: 'cash') - 'cash' atau 'transfer'
      * created_at, updated_at: TIMESTAMP
    - Kunci Unik: UNIQUE(dues_period_id, member_id)
-   - Nilai Kedisiplinan di Laporan: Status is_on_time memberikan diferensiasi objektif dan transparan antara anggota yang disiplin membayar tepat waktu dan yang terlambat.
+   - Nilai Kedisiplinan: Status is_on_time memberikan diferensiasi objektif dan transparan antara anggota yang disiplin membayar tepat waktu dan yang terlambat.
 
 9. TABEL: activity_logs (Audit Trail Forensik)
    - Deskripsi: Rekam jejak seluruh mutasi dan perubahan data penting dalam sistem.
@@ -140,14 +147,14 @@ Keunggulan Pola Perancangan Ini:
      * id: BIGINT (Primary Key, Auto Increment)
      * organization_id: BIGINT (Nullable, Foreign Key -> organizations.id, Null on Delete)
      * user_id: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
-     * action: VARCHAR(100) - Jenis tindakan (contoh: 'create_organization', 'record_payment', 'add_expense')
+     * action: VARCHAR(100) - Jenis tindakan (contoh: 'create_organization', 'approve_request', 'record_payment')
      * subject_type: VARCHAR(100) (Nullable) - Nama Model terkait
      * subject_id: BIGINT (Nullable) - ID entitas terkait
      * payload: JSON (Nullable) - Data sebelum/sesudah perubahan
      * created_at, updated_at: TIMESTAMP
 
 10. TABEL: organization_requests (Pengajuan Pendaftaran Ormawa Publik)
-    - Deskripsi: Menampung formulir permohonan pembukaan akun organisasi dari publik sebelum disetujui (ACC) oleh Super Admin.
+    - Deskripsi: Menampung formulir permohonan pembukaan akun organisasi dari landing page sebelum disetujui (ACC) oleh Admin Penerima / Super Admin.
     - Kolom:
       * id: BIGINT (Primary Key, Auto Increment)
       * name: VARCHAR(255) - Nama organisasi yang diajukan
@@ -164,14 +171,46 @@ Keunggulan Pola Perancangan Ini:
       * created_at, updated_at: TIMESTAMP
 
 ================================================================================
-3. KORELASI DENGAN TEMA LOMBA
+3. HIRARKI PERAN SISTEM (6 PERAN OPERASIONAL)
+================================================================================
+1. Super Admin Kasly (Master Platform):
+   - Scope: Platform Pusat (Seluruh Tenant).
+   - Indikator Basis Data: is_super_admin = true, admin_role = 'super_admin'.
+   - Wewenang: Kontrol global telemetri, pembuatan organisasi manual, pengubahan status aktif/nonaktif ormawa, hapus organisasi permanen (cascade), dan kelola akun administrator kasly.
+
+2. Admin Penerima Organisasi (ACC Engine / Kampus):
+   - Scope: Platform Pusat (Gerbang Onboarding Ormawa).
+   - Indikator Basis Data: is_super_admin = true, admin_role = 'admin_penerima'.
+   - Wewenang: Khusus meninjau dan menyetujui (ACC) atau menolak formulir pengajuan pendaftaran ormawa baru dari landing page. Tidak dapat mengubah struktur organisasi yang sudah berjalan.
+
+3. Admin Organisasi / PIC Ormawa:
+   - Scope: Tenant Spesifik (Organisasinya sendiri).
+   - Indikator Basis Data: is_super_admin = false, pivot role = 'admin_organisasi'.
+   - Wewenang: Pengelola utama ormawa hasil pendaftaran landing page. Mengelola kas dan berwenang membuat/mengelola akun staf dan bendahara internal organisasinya.
+
+4. Bendahara Ormawa:
+   - Scope: Tenant Spesifik.
+   - Indikator Basis Data: is_super_admin = false, pivot role = 'bendahara'.
+   - Wewenang: Membuat periode tagihan iuran, mencatat dan memverifikasi pembayaran kas masuk, menginput pengeluaran dengan bukti nota, dan memantau skor kedisiplinan.
+
+5. Staff Operasional Ormawa:
+   - Scope: Tenant Spesifik.
+   - Indikator Basis Data: is_super_admin = false, pivot role = 'staff'.
+   - Wewenang: Membantu operasional harian kas, mencatat transaksi masuk/keluar, dan melihat daftar tagihan anggota.
+
+6. Anggota Ormawa (Mahasiswa):
+   - Scope: Tenant Spesifik (Personal View).
+   - Indikator Basis Data: is_super_admin = false, pivot role = 'anggota'.
+   - Wewenang: Login menggunakan NIM / nomor anggota, melihat riwayat tagihan pribadi (status lunas/tunggakan dan ketepatan waktu is_on_time), serta mengakses transparansi buku kas mutasi ormawa.
+
+================================================================================
+4. KORELASI DENGAN TEMA LOMBA
 ================================================================================
 A. KEDISIPLINAN (Bayar Kas Tepat Waktu):
    - Kolom due_date pada dues_periods dipadukan dengan paid_at pada dues_bills mengevaluasi ketepatan waktu secara otomatis tanpa sentimen pribadi pengurus.
-   - Menghasilkan metrik kedisiplinan yang terukur (contoh: "Tingkat Kepatuhan Tepat Waktu Organisasi: 94%").
+   - Menghasilkan metrik kedisiplinan yang terukur (Skor Disiplin %: tagihan tepat waktu dibagi total tagihan lunas).
 
 B. TRANSPARANSI:
-   - Kolom is_locked dan reversal_of pada transactions mencegah manipulasi kas.
+   - Kolom is_locked dan reversal_of pada transactions mencegah manipulasi kas fisik dan digital.
    - Kolom proof_path mewajibkan adanya lampiran foto nota fisik atau struk transfer.
-   - Tabel activity_logs mencatat riwayat perubahan secara permanen sehingga dapat diaudit kapan saja.
-
+   - Tabel activity_logs mencatat riwayat perubahan data secara permanen untuk audit forensik kapan saja.

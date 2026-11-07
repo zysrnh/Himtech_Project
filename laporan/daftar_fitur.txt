@@ -188,3 +188,53 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Fitur Pembuatan Akun Staf Baru: Nama lengkap, username unik, email, no. WhatsApp, dan password (dengan generator acak kuat 10 karakter).
   * Otomasi Dispatch Kredensial: Sistem otomatis mengirimkan Kode Organisasi, Username, dan Password ke nomor WhatsApp (via Fonnte) dan Email (via SMTP) staf baru.
   * Kontrol Status Staf: Fitur aktivasi / penonaktifan staf dan penghapusan staf dari kepengurusan ormawa.
+
+================================================================================
+14. SPESIALISASI PERAN ADMIN PENERIMA ORGANISASI (PORTAL ACC & ONBOARDING)
+================================================================================
+- Endpoint Khusus: /admin/organizations?tab=requests
+- Konsep & Tujuan: Memisahkan kewenangan antara Super Admin Kasly (master platform) dan Admin Penerima Organisasi (tingkat operasional kampus/koordinator ormawa yang bertugas menerima dan menyetujui pendaftaran ormawa dari landing page).
+- Pembatasan Wewenang Ketat (Strict Access Isolation):
+  * Admin Penerima HANYA memiliki akses ke antarmuka review dan ACC / Tolak formulir pengajuan pendaftaran ormawa.
+  * Tombol dan hak akses pendaftaran organisasi manual (+ Tambah Organisasi Manual) diblokir total di tingkat controller dan view.
+  * Akses toggle aktif/nonaktif organisasi yang sudah berjalan diblokir.
+  * Akses hapus permanen organisasi (delete cascade) diblokir.
+  * Akses manajemen akun administrator platform (/admin/admins) diblokir.
+- Antarmuka & Sidebar Adaptif:
+  * Sidebar otomatis menyesuaikan saat login sebagai Admin Penerima: Hanya menampilkan menu "Pengajuan Masuk" (dengan badge jumlah pending), "Profil Saya", dan "Lihat Beranda Web".
+  * Header tabel menampilkan panduan verifikasi identitas pemohon dan menghilangkan kontrol aksi destruktif.
+- Login Fleksibel & Anti-Nyasar:
+  * Form /admin/login mendukung autentikasi fleksibel: bisa menggunakan Username (admin_organisasi) maupun Email (admin.organisasi@kasly.id).
+  * Pengalihan Otomatis (Direct Redirect): Saat login, Admin Penerima langsung mendarat di halaman Pengajuan Masuk (/admin/organizations?tab=requests).
+  * Proteksi Middleware (EnsureOrganizationStaff): Jika Admin Penerima membuka URL dashboard pengurus tenant (/pengurus/dashboard), sistem secara cerdas langsung mengalihkannya kembali ke panel pengajuan ormawa.
+- Tombol Pintas Pengurus:
+  * Tersedia tombol navigasi "<- Ke Panel Admin Kasly" di panel pengurus untuk memudahkan administrator kembali ke panel pusat tanpa mengetik URL manual.
+
+================================================================================
+15. REKAPITULASI KREDENSIAL DEMO SISTEM SIAP UJI
+================================================================================
+1. Super Admin Kasly:
+   - URL: /admin/login
+   - Login: admin_kasly atau admin@kasly.id | Pass: password
+   - Hak: Akses penuh master telemetri, kelola ormawa, kelola admin platform.
+
+2. Admin Penerima Organisasi:
+   - URL: /admin/login
+   - Login: admin_organisasi atau admin.organisasi@kasly.id | Pass: password
+   - Hak: Spesialisasi review & ACC/Tolak pengajuan ormawa baru dari landing page.
+
+3. Admin Organisasi / PIC Ormawa Demo (HIMTECH):
+   - URL: /login (Kode Organisasi: HIMTECH)
+   - Login: bendahara_himtech | Pass: password
+   - Hak: Kelola kas internal HIMTECH & buat akun staf/bendahara baru (/pengurus/staff).
+
+4. Bendahara Ormawa Demo (HIMTECH):
+   - URL: /login (Kode Organisasi: HIMTECH)
+   - Login: siti_bendahara | Pass: password
+   - Hak: Kelola iuran kas, validasi bukti transfer, dan pembukuan kas.
+
+5. Anggota Mahasiswa Sampel (HIMTECH):
+   - URL: /login (Kode Organisasi: HIMTECH)
+   - Login: NIM 2026001 sampai 2026010 | Pass: sama dengan NIM
+   - Hak: Portal transparansi kas dan status pelunasan tagihan pribadi.
+

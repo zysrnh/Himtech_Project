@@ -113,3 +113,4 @@ class OrganizationRequestController extends Controller
         return view('auth.register_organization_success');
     }
 }
+

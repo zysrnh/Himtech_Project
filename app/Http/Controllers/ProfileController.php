@@ -121,3 +121,4 @@ class ProfileController extends Controller
         return redirect()->route('pengurus.profile')->with('success', 'Profil dan informasi kontak pengurus berhasil diperbarui.');
     }
 }
+

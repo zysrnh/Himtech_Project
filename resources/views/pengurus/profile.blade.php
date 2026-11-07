@@ -256,26 +256,27 @@
                 </form>
             </div>
 
-            <!-- Danger Zone / Keluar Sesi Akun Pengurus -->
-            <div class="bg-white rounded-2xl p-5 sm:p-6 border border-red-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-red-50 border border-red-200 text-danger flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Danger Zone / Keluar Sesi Akun Pengurus (Sesuai NEUMORPHISM.md) -->
+            <div class="neu-card rounded-[32px] !p-6 sm:!p-7 border border-white/80 shadow-[8px_8px_20px_rgba(122,163,214,0.25),-8px_-8px_20px_#ffffff] flex flex-col sm:flex-row sm:items-center justify-between gap-5 mt-6" style="background: linear-gradient(145deg, #F8FBFE, #E0EDFC);">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-danger shrink-0 border border-white/80 shadow-[inset_2px_2px_5px_rgba(122,163,214,0.35),inset_-2px_-2px_5px_#ffffff]" style="background: linear-gradient(145deg, #FFF5F5, #FEE8E8);">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-display font-semibold text-sm sm:text-base text-navy-900">Keluar Sesi Akun</h3>
+                        <h3 class="font-display font-extrabold text-base text-navy-900 tracking-tight">Keluar Sesi Akun</h3>
                         <p class="text-xs text-navy-500 mt-0.5">Akhiri sesi login pengurus pada perangkat ini dengan aman.</p>
                     </div>
                 </div>
                 <button
                     type="button"
                     onclick="openLogoutModal()"
-                    class="h-10 px-5 rounded-xl bg-red-50 text-danger border border-red-200 font-semibold text-xs hover:bg-red-600 hover:text-white transition-colors cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                    class="h-11 px-6 rounded-full font-bold text-xs text-white border border-white/30 shadow-[6px_8px_18px_rgba(192,82,74,0.35),-3px_-3px_8px_rgba(255,255,255,0.9)] hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                    style="background: linear-gradient(135deg, #DE5D53, #9E2A2B);"
                 >
-                    <svg class="w-4 h-4 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                     <span>Keluar Sesi</span>
                 </button>

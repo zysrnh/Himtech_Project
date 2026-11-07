@@ -43,11 +43,12 @@
         <button
             type="button"
             onclick="openLogoutModal()"
-            class="w-8 h-8 rounded-lg bg-red-50 text-danger border border-red-200/80 hover:bg-red-100 flex items-center justify-center transition-colors shadow-xs cursor-pointer"
+            class="w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer border border-white/80 shadow-[2px_2px_6px_rgba(122,163,214,0.3),-2px_-2px_6px_#ffffff] text-danger hover:scale-105 active:scale-95"
+            style="background: linear-gradient(145deg, #FFF5F5, #FEE8E8);"
             title="Keluar Sesi"
         >
             <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
         </button>
     </div>
@@ -316,27 +317,29 @@
     </a>
 </nav>
 
-<!-- Modal Konfirmasi Logout Sesi (Neumorphic Solid Clean) -->
+<!-- Modal Konfirmasi Logout Sesi (Neumorphic Style Sesuai NEUMORPHISM.md) -->
 <div id="modal-logout-confirm" style="display: none;" onclick="if(event.target === this) closeLogoutModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-ice-200 text-center space-y-4">
-        <div class="w-12 h-12 rounded-xl bg-red-50 border border-red-200 text-danger mx-auto flex items-center justify-center shadow-xs">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    <div class="rounded-[32px] max-w-sm w-full p-7 sm:p-8 text-center space-y-5 border border-white/80 shadow-[14px_14px_32px_rgba(122,163,214,0.45),-14px_-14px_32px_rgba(255,255,255,0.95)]" style="background: linear-gradient(145deg, #F4F9FF, #D7E7F9);">
+        <!-- Inset Well Circle Icon -->
+        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-danger border border-white/90 shadow-[inset_3px_3px_6px_rgba(122,163,214,0.35),inset_-3px_-3px_6px_#ffffff,4px_4px_10px_rgba(192,82,74,0.18)]" style="background: linear-gradient(145deg, #FFF5F5, #FEE8E8);">
+            <svg class="w-7 h-7 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
         </div>
 
         <div>
-            <h3 class="font-display font-semibold text-base text-navy-900">Keluar Sesi Pengurus?</h3>
-            <p class="text-xs text-navy-500 mt-1 leading-relaxed">
+            <h3 class="font-display font-extrabold text-xl text-navy-900 tracking-tight">Keluar Sesi Pengurus?</h3>
+            <p class="text-xs text-navy-500 mt-1.5 leading-relaxed">
                 Sesi Anda saat ini akan diakhiri. Anda perlu memasukkan email & kata sandi lagi untuk mengakses kembali panel pengurus.
             </p>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <div class="grid grid-cols-2 gap-3 pt-1">
             <button
                 type="button"
                 onclick="closeLogoutModal()"
-                class="h-9 px-4 rounded-lg bg-ice-100 text-navy-700 font-medium text-xs hover:bg-ice-200 transition-colors cursor-pointer"
+                class="neu-btn h-11 px-5 rounded-full font-bold text-xs text-navy-700 border border-white/80 shadow-[4px_4px_10px_rgba(122,163,214,0.35),-4px_-4px_10px_#ffffff] hover:scale-105 active:scale-95 transition-all cursor-pointer w-full"
+                style="background: linear-gradient(145deg, #F8FAFD, #DBE7F6);"
             >
                 Batal
             </button>
@@ -344,8 +347,12 @@
                 @csrf
                 <button
                     type="submit"
-                    class="w-full h-9 px-4 rounded-lg bg-danger text-white font-semibold text-xs hover:bg-red-700 transition-colors shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                    class="h-11 px-5 rounded-full font-bold text-xs text-white border border-white/30 shadow-[6px_8px_18px_rgba(192,82,74,0.38),-3px_-3px_8px_rgba(255,255,255,0.9)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 w-full"
+                    style="background: linear-gradient(135deg, #DE5D53, #9E2A2B);"
                 >
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
                     <span>Ya, Keluar</span>
                 </button>
             </form>

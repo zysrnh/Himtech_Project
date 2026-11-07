@@ -16,7 +16,7 @@ class NewAccountSeeder extends Seeder
 {
     /**
      * Seeder Akun Tambahan Baru - Kasly Platform
-     * 
+     *
      * CATATAN: Seeder ini TIDAK dijalankan secara otomatis pada migrasi default.
      * Untuk menjalankannya secara manual saat pengujian, jalankan perintah:
      * php artisan db:seed --class=NewAccountSeeder
@@ -262,4 +262,3 @@ class NewAccountSeeder extends Seeder
         );
     }
 }
-

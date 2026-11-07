@@ -45,16 +45,18 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Role: is_super_admin = true
 
 ================================================================================
-4. PANEL PUSAT / DASHBOARD SUPER ADMIN
+4. PANEL PUSAT SUPER ADMIN: PEMISAHAN OVERVIEW & MANAJEMEN ORGANISASI
 ================================================================================
-- Endpoint dashboard terproteksi di /admin/dashboard (hanya dapat diakses setelah login Super Admin).
 - Sidebar Web 240px: Desain flat white dengan border ice-200, penanda menu aktif berlatar ice-100 (tanpa label kategori dekoratif sesuai aturan v2).
-- Kartu Hero Telemetri (radius-blob khas Ice & Butter): Menampilkan metrik global:
-  * Total Organisasi Terdaftar
-  * Total Organisasi Aktif
-  * Total Anggota Terdata di Seluruh Ormawa
-- Tabel Monitoring Organisasi: Menampilkan daftar organisasi terdaftar, kode unik, nama, status aktivasi badge (Aktif / Nonaktif), dan tanggal pendaftaran.
-- Pagination data organisasi yang terstruktur rapi.
+  * Menu Navigasi: "Overview" (/admin/dashboard), "Organisasi" (/admin/organizations), dan "Lihat Beranda Web" (/).
+- Halaman 1 - Overview Sistem (/admin/dashboard):
+  * Kartu Hero Telemetri (radius-blob khas Ice & Butter): Menampilkan metrik global (Total Organisasi Terdaftar, Organisasi Aktif, Total Anggota).
+  * Widget 5 Organisasi Terbaru dengan tautan cepat menuju halaman organisasi lengkap.
+  * Widget Status Sistem & Audit Trail (pemantauan status isolasi multi-tenant dan log aktivitas real-time).
+- Halaman 2 - Manajemen Organisasi (/admin/organizations):
+  * Tabel Data Lengkap Organisasi: Menampilkan seluruh ormawa terdaftar, kode unik, nama, status badge aktif/nonaktif, dan tanggal pembuatan (dengan paginasi).
+  * Form Onboarding Organisasi Baru: Formulir atomik pendaftaran nama ormawa, kode unik kapital, deskripsi, serta akun Bendahara 1 (nama, email, password awal).
+  * Otomatisasi Kategori Kas: Sistem otomatis membuat 7 kategori kas default (Iuran Wajib, Donasi, Operasional, Konsumsi, ATK, dll) agar ormawa baru siap pakai.
 
 ================================================================================
 5. SISTEM DESAIN & PANDUAN STYLING (ICE & BUTTER V2)

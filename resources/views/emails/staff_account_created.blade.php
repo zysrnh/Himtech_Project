@@ -14,8 +14,10 @@
                     <!-- Header -->
                     <tr>
                         <td style="background-color: #2F4862; padding: 24px 32px; color: #FFFFFF;">
-                            <img src="{{ asset('logo/logo-dark@2x.png') }}" alt="Kasly" height="32" style="height: 32px; width: auto; display: block; border: 0;">
-                            <p style="margin: 8px 0 0; font-size: 14px; opacity: 0.85;">Pemberitahuan Akun Pengurus Baru</p>
+                            <div style="font-size: 24px; font-weight: bold; letter-spacing: -0.5px; color: #FFFFFF; margin-bottom: 4px;">
+                                Kasly
+                            </div>
+                            <p style="margin: 4px 0 0; font-size: 14px; opacity: 0.85;">Pemberitahuan Akun Pengurus Baru</p>
                         </td>
                     </tr>
 
@@ -24,17 +26,35 @@
                         <td style="padding: 32px;">
                             <p style="font-size: 15px; margin: 0 0 16px;">Halo <strong>{{ $staffName }}</strong>,</p>
                             <p style="font-size: 14px; line-height: 1.6; margin: 0 0 24px; color: #4A6583;">
-                                Organisasi <strong>{{ $orgName }}</strong> (Kode: <strong>{{ $orgCode }}</strong>) telah resmi didaftarkan di sistem manajemen kas <strong>Kasly</strong>. Akun Staff pengelola awal Anda telah siap digunakan.
+                                Organisasi <strong>{{ $orgName }}</strong> telah resmi didaftarkan di sistem manajemen kas <strong>Kasly</strong>. Akun Staff pengelola awal Anda telah siap digunakan.
                             </p>
 
                             <!-- Credentials Box -->
                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #DDEBFC; border-radius: 10px; margin-bottom: 24px;">
                                 <tr>
                                     <td style="padding: 20px;">
-                                        <p style="margin: 0 0 8px; font-size: 13px; color: #4A6583;">Rincian Kredensial Login:</p>
-                                        <p style="margin: 4px 0; font-size: 14px;"><strong>Peran:</strong> Staff Pengelola Kas</p>
-                                        <p style="margin: 4px 0; font-size: 14px;"><strong>Email:</strong> {{ $email }}</p>
-                                        <p style="margin: 4px 0; font-size: 14px;"><strong>Password Sementara:</strong> {{ $password }}</p>
+                                        <p style="margin: 0 0 12px; font-size: 13px; font-weight: 600; color: #2F4862;">Rincian Kredensial Login:</p>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px; color: #2F4862;">
+                                            <tr>
+                                                <td width="160" style="color: #4A6583;">Kode Organisasi:</td>
+                                                <td><code style="font-family: monospace; font-size: 16px; font-weight: bold; color: #2F4862; background-color: #FFFFFF; padding: 2px 8px; border-radius: 4px;">{{ $orgCode }}</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #4A6583;">Peran:</td>
+                                                <td><strong>Staff Pengelola Kas</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #4A6583;">Alamat Email:</td>
+                                                <td><strong>{{ $email }}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #4A6583;">Password Sementara:</td>
+                                                <td><code style="font-family: monospace; font-size: 16px; font-weight: bold; color: #2F4862; background-color: #FFFFFF; padding: 2px 8px; border-radius: 4px;">{{ $password }}</code></td>
+                                            </tr>
+                                        </table>
+                                        <p style="margin: 12px 0 0; font-size: 12px; color: #4A6583;">
+                                            *Pada halaman login Kasly, pilih tab <strong>Pengurus / Staff</strong> lalu masukkan <strong>Kode Organisasi</strong> di atas beserta email dan password Anda.
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
@@ -51,7 +71,7 @@
                             </table>
 
                             <p style="font-size: 13px; line-height: 1.6; color: #4A6583; margin: 0;">
-                                Harap segera mengganti kata sandi Anda setelah berhasil login pertama kali demi keamanan akun.
+                                Demi keamanan, Anda dapat mengganti kata sandi setelah berhasil masuk pertama kali.
                             </p>
                         </td>
                     </tr>
@@ -70,4 +90,3 @@
 
 </body>
 </html>
-

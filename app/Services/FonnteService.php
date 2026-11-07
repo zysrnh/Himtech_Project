@@ -62,11 +62,12 @@ class FonnteService
             . "Halo {$staffName},\n"
             . "Organisasi *{$orgName}* ({$orgCode}) telah resmi didaftarkan di sistem Kasly.\n\n"
             . "Berikut rincian akun Staff Anda:\n"
+            . "• Kode Organisasi: *{$orgCode}*\n"
             . "• Peran: Staff Pengelola Kas\n"
             . "• Email Login: {$email}\n"
             . "• Password Sementara: {$password}\n"
             . "• Tautan Login: {$loginUrl}\n\n"
-            . "Silakan login dan amankan kata sandi Anda setelah masuk. Terima kasih.";
+            . "Pada halaman login Kasly, pilih tab *Pengurus / Staff*, masukkan Kode Organisasi di atas beserta email dan password Anda. Terima kasih.";
 
         return self::send($phone, $message);
     }

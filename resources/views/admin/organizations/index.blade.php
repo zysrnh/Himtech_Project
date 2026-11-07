@@ -303,17 +303,47 @@
                                 @enderror
                             </div>
 
+                            <!-- Input Password dengan Generator Kuat Otomatis -->
                             <div>
-                                <label for="staff_password" class="block text-[13px] text-navy-500 font-normal mb-2">
-                                    Password Awal (Kosongkan jika default: password)
-                                </label>
-                                <input
-                                    type="password"
-                                    id="staff_password"
-                                    name="staff_password"
-                                    placeholder="Minimal 6 karakter"
-                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                                >
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="staff_password" class="block text-[13px] text-navy-500 font-normal">
+                                        Password Awal Staf (Kombinasi Kuat)
+                                    </label>
+                                    <span class="text-[11px] text-navy-500 font-normal">
+                                        Min. 8 karakter kombinasi
+                                    </span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <div class="relative flex-1">
+                                        <input
+                                            type="text"
+                                            id="staff_password"
+                                            name="staff_password"
+                                            value="{{ old('staff_password') }}"
+                                            placeholder="Klik tombol Generate"
+                                            class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 font-mono text-sm tracking-wider focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                        >
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onclick="generateStrongPassword()"
+                                        class="h-12 px-4 rounded-md bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shrink-0 cursor-pointer"
+                                    >
+                                        Generate
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onclick="copyPasswordToClipboard()"
+                                        id="btn-copy-pass"
+                                        class="h-12 px-3 rounded-md bg-ice-100 border border-ice-200 text-navy-900 font-medium text-xs hover:bg-ice-200 transition-colors shrink-0 cursor-pointer"
+                                        title="Salin Password"
+                                    >
+                                        Salin
+                                    </button>
+                                </div>
+                                <p id="copy-feedback" class="mt-1 text-[11px] text-navy-500 hidden">
+                                    Password berhasil disalin ke clipboard.
+                                </p>
                                 @error('staff_password')
                                     <p class="mt-1 text-xs text-danger">{{ $message }}</p>
                                 @enderror
@@ -335,6 +365,61 @@
 
         </div>
     </main>
+
+    <!-- Script Generator Password Kuat Sesuai Kriteria -->
+    <script>
+        function generateStrongPassword() {
+            const uppers = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+            const lowers = 'abcdefghijkmnopqrstuvwxyz';
+            const numbers = '23456789';
+            const symbols = '@#$%!&*?';
+            const all = uppers + lowers + numbers + symbols;
+
+            let pass = '';
+            // Pastikan ada minimal 1 karakter dari masing-masing kategori
+            pass += uppers[Math.floor(Math.random() * uppers.length)];
+            pass += lowers[Math.floor(Math.random() * lowers.length)];
+            pass += numbers[Math.floor(Math.random() * numbers.length)];
+            pass += symbols[Math.floor(Math.random() * symbols.length)];
+
+            // Isi sisanya sehingga panjang total menjadi 10 karakter
+            for (let i = 4; i < 10; i++) {
+                pass += all[Math.floor(Math.random() * all.length)];
+            }
+
+            // Acak urutan karakter
+            const shuffled = pass.split('').sort(() => 0.5 - Math.random()).join('');
+            const input = document.getElementById('staff_password');
+            if (input) {
+                input.value = shuffled;
+            }
+        }
+
+        function copyPasswordToClipboard() {
+            const input = document.getElementById('staff_password');
+            const feedback = document.getElementById('copy-feedback');
+            if (!input || !input.value) {
+                generateStrongPassword();
+            }
+
+            navigator.clipboard.writeText(input.value).then(() => {
+                if (feedback) {
+                    feedback.classList.remove('hidden');
+                    setTimeout(() => {
+                        feedback.classList.add('hidden');
+                    }, 2500);
+                }
+            });
+        }
+
+        // Generate otomatis saat form pertama kali dimuat jika masih kosong
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('staff_password');
+            if (input && !input.value) {
+                generateStrongPassword();
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -533,8 +533,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="qris" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#EE3124] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        QRIS
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/qrislogo-removebg-preview.png') }}" alt="QRIS" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">QRIS Dinamis</p>
@@ -548,8 +548,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bca_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#003399] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        BCA
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/bcalogo-removebg-preview.png') }}" alt="BCA" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">BCA Virtual Account</p>
@@ -563,8 +563,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="mandiri_bill" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#003D79] text-[#F9A825] flex items-center justify-center font-black text-[9px] tracking-tighter shrink-0 shadow-xs">
-                                        MANDIRI
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/mandirilogo-removebg-preview.png') }}" alt="Mandiri" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">Mandiri Bill Payment</p>
@@ -578,8 +578,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bri_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#00529C] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        BRI
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/brivalogo-removebg-preview.png') }}" alt="BRI" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">BRI Virtual Account (BRIVA)</p>
@@ -593,8 +593,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bni_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#005E6A] text-[#F37023] flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        BNI
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/bnilogo-removebg-preview.png') }}" alt="BNI" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">BNI Virtual Account</p>
@@ -623,8 +623,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="cimb_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#ED1B24] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        CIMB
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/niagalogo-removebg-preview.png') }}" alt="CIMB Niaga" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">CIMB Niaga Virtual Account</p>
@@ -638,8 +638,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="danamon_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#FF6600] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
-                                        DANAMON
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/danamonlogo-removebg-preview.png') }}" alt="Danamon" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">Bank Danamon Virtual Account</p>
@@ -653,8 +653,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bsi_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#00A39D] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        BSI
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/bsilogo-removebg-preview.png') }}" alt="BSI" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">BSI Virtual Account</p>
@@ -668,8 +668,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="seabank_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#FF5722] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
-                                        SEABANK
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/seabank_logo-removebg-preview.png') }}" alt="SeaBank" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">SeaBank Virtual Account</p>
@@ -683,8 +683,8 @@
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="saqu_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#6C5CE7] text-white flex items-center justify-center font-black text-[9px] tracking-wider shrink-0 shadow-xs">
-                                        SAQU
+                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/banksaqulogo-removebg-preview.png') }}" alt="Bank Saqu" class="h-5.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">Bank Saqu Virtual Account</p>

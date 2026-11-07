@@ -1,0 +1,157 @@
+DOKUMENTASI ARSITEKTUR & SKEMA BASIS DATA - KASLY
+Tanggal: 2026-11-07
+Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pembayaran Iuran/Kas
+
+================================================================================
+1. PRINSIP PERANCANGAN BASIS DATA
+================================================================================
+Sistem Kasly menggunakan pendekatan arsitektur Multi-Tenant Shared Database with Tenant Identifier (organization_id). Seluruh tabel operasional kas, anggota, dan tagihan terisolasi menggunakan kunci partisi organization_id.
+
+Keunggulan Pola Perancangan Ini:
+1. Efisiensi Biaya & Pemeliharaan: Seluruh organisasi di lingkungan universitas dapat diakomodasi dalam satu basis data tanpa perlu instansiasi database terpisah untuk setiap himpunan atau UKM.
+2. Keamanan & Integritas Data: Isolasi query mutlak pada tingkat repository/query builder memastikan tidak ada kebocoran data antar organisasi.
+3. Kedaulatan Finansial: Data kas antar organisasi tidak saling bercampur, menjamin independensi pembukuan masing-masing ormawa.
+
+================================================================================
+2. ENTITY RELATIONSHIP & KAMUS DATA (8 TABEL UTAMA)
+================================================================================
+
+1. TABEL: organizations (Entitas Master Tenant)
+   - Deskripsi: Menyimpan profil organisasi/himpunan/komunitas pengguna sistem.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * code: VARCHAR(50) (Unique, Index) - Kode unik huruf kapital (contoh: HIMTECH, BEM)
+     * name: VARCHAR(255) - Nama resmi organisasi
+     * description: TEXT (Nullable) - Keterangan/deskripsi organisasi
+     * status: VARCHAR(20) (Default: 'active') - Status aktif/nonaktif
+     * created_at, updated_at: TIMESTAMP
+   - Relasi:
+     * One-to-Many ke members (1 organisasi memiliki banyak anggota)
+     * One-to-Many ke cash_categories (1 organisasi memiliki banyak kategori kas)
+     * One-to-Many ke transactions (1 organisasi memiliki banyak transaksi)
+     * One-to-Many ke dues_periods (1 organisasi memiliki banyak periode tagihan)
+     * Many-to-Many ke users melalui organization_user
+
+2. TABEL: users (Entitas Akun Pengguna Global)
+   - Deskripsi: Menyimpan kredensial autentikasi sistem.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * name: VARCHAR(255) - Nama pengguna
+     * email: VARCHAR(255) (Nullable, Unique) - Alamat email pengguna
+     * password: VARCHAR(255) - Hash kata sandi pengguna (Bcrypt)
+     * is_super_admin: BOOLEAN (Default: false) - Hak akses administrator pusat
+     * remember_token: VARCHAR(100) (Nullable)
+     * created_at, updated_at: TIMESTAMP
+   - Relasi:
+     * Many-to-Many ke organizations melalui organization_user
+     * One-to-Many ke transactions (sebagai created_by)
+     * One-to-Many ke dues_periods (sebagai created_by)
+     * One-to-Many ke dues_bills (sebagai verified_by)
+
+3. TABEL: organization_user (Tabel Pivot Hak Akses & Peran)
+   - Deskripsi: Menghubungkan user ke organisasi dengan peran spesifik.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+     * user_id: BIGINT (Foreign Key -> users.id, Cascade Delete)
+     * role: VARCHAR(50) - Peran dalam organisasi: 'bendahara', 'staff', 'anggota'
+     * member_id: BIGINT (Nullable, Foreign Key -> members.id, Null on Delete)
+     * is_active: BOOLEAN (Default: true) - Status keaktifan pengurus/pengguna
+     * created_at, updated_at: TIMESTAMP
+   - Kunci Unik: UNIQUE(organization_id, user_id)
+   - Alasan Desain: Memungkinkan satu pengguna memegang peran berbeda di organisasi berbeda tanpa duplikasi data kredensial.
+
+4. TABEL: members (Entitas Buku Induk Anggota Organisasi)
+   - Deskripsi: Daftar anggota resmi yang menjadi subjek pembayaran kas di organisasi bersangkutan.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+     * user_id: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete) - Tautan jika anggota memiliki akun login
+     * member_number: VARCHAR(50) - Nomor Induk Anggota / NIM
+     * name: VARCHAR(255) - Nama lengkap anggota
+     * phone: VARCHAR(30) (Nullable) - Nomor telepon/WhatsApp untuk kebutuhan reminder tagihan
+     * is_active: BOOLEAN (Default: true) - Status anggota (aktif menerima tagihan kas baru)
+     * created_at, updated_at: TIMESTAMP
+   - Kunci Unik: UNIQUE(organization_id, member_number)
+   - Alasan Desain: NIM yang sama tidak akan bertabrakan jika seorang mahasiswa terdaftar di dua organisasi berbeda.
+
+5. TABEL: cash_categories (Kategori Mutasi Kas)
+   - Deskripsi: Klasifikasi pos pemasukan dan pengeluaran spesifik per organisasi.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+     * name: VARCHAR(100) - Nama pos/kategori (contoh: Iuran Kas, Konsumsi, ATK)
+     * type: VARCHAR(10) - Jenis aliran kas: 'in' (kas masuk) atau 'out' (kas keluar)
+     * created_at, updated_at: TIMESTAMP
+   - Relasi: One-to-Many ke transactions
+
+6. TABEL: transactions (Buku Besar Mutasi Kas & Transparansi)
+   - Deskripsi: Catatan riil uang kas masuk dan uang kas keluar dengan prinsip locked ledger.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+     * type: VARCHAR(10) - 'in' (pemasukan) atau 'out' (pengeluaran)
+     * category_id: BIGINT (Nullable, Foreign Key -> cash_categories.id, Null on Delete)
+     * amount: DECIMAL(15, 2) - Nilai nominal transaksi
+     * transaction_date: DATE - Tanggal pencatatan transaksi
+     * description: TEXT - Rincian keterangan tujuan transaksi
+     * proof_path: VARCHAR(255) (Nullable) - Berkas nota/struk belanja fisik atau bukti transfer
+     * created_by: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
+     * is_locked: BOOLEAN (Default: true) - Kunci integritas transaksi
+     * reversal_of: BIGINT (Nullable) - Referensi ID transaksi yang dikoreksi/dibatalkan secara sah
+     * created_at, updated_at: TIMESTAMP
+   - Nilai Transparansi di Laporan: Kolom is_locked dan reversal_of menegakkan prinsip akuntansi forensik. Pengurus tidak diperkenankan menghapus data secara diam-diam. Koreksi kesalahan wajib dilakukan melalui pencatatan transaksi pembalik (reversal) sehingga tidak timbul kecurigaan manipulasi saldo.
+
+7. TABEL: dues_periods (Periode Iuran & Parameter Kedisiplinan)
+   - Deskripsi: Master periode penagihan kas rutin (bulanan/mingguan/kepanitiaan).
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+     * title: VARCHAR(255) - Nama periode (contoh: Iuran Kas November 2026)
+     * amount: DECIMAL(15, 2) - Besaran iuran per anggota
+     * due_date: DATE - Tanggal jatuh tempo resmi penagihan kas
+     * created_by: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
+     * created_at, updated_at: TIMESTAMP
+   - Nilai Kedisiplinan di Laporan: Kolom due_date adalah kunci otomatis penentu kedisiplinan anggota.
+
+8. TABEL: dues_bills (Lembar Tagihan Iuran Anggota)
+   - Deskripsi: Rincian kewajiban kas per anggota per periode.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+     * dues_period_id: BIGINT (Foreign Key -> dues_periods.id, Cascade Delete)
+     * member_id: BIGINT (Foreign Key -> members.id, Cascade Delete)
+     * amount: DECIMAL(15, 2) - Nilai tagihan
+     * status: VARCHAR(20) (Default: 'unpaid') - Status bayar: 'unpaid', 'pending', 'paid'
+     * is_on_time: BOOLEAN (Nullable) - True: Dibayar tepat waktu (<= due_date), False: Terlambat (> due_date)
+     * proof_path: VARCHAR(255) (Nullable) - Foto bukti transfer yang diunggah anggota
+     * paid_at: DATETIME (Nullable) - Waktu pelunasan transaksi
+     * verified_by: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete) - Bendahara yang memverifikasi
+     * payment_method: VARCHAR(20) (Default: 'cash') - 'cash' atau 'transfer'
+     * created_at, updated_at: TIMESTAMP
+   - Kunci Unik: UNIQUE(dues_period_id, member_id)
+   - Nilai Kedisiplinan di Laporan: Status is_on_time memberikan diferensiasi objektif dan transparan antara anggota yang disiplin membayar tepat waktu dan yang terlambat.
+
+9. TABEL: activity_logs (Audit Trail Forensik)
+   - Deskripsi: Rekam jejak seluruh mutasi dan perubahan data penting dalam sistem.
+   - Kolom:
+     * id: BIGINT (Primary Key, Auto Increment)
+     * organization_id: BIGINT (Nullable, Foreign Key -> organizations.id, Null on Delete)
+     * user_id: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
+     * action: VARCHAR(100) - Jenis tindakan (contoh: 'create_organization', 'record_payment', 'add_expense')
+     * subject_type: VARCHAR(100) (Nullable) - Nama Model terkait
+     * subject_id: BIGINT (Nullable) - ID entitas terkait
+     * payload: JSON (Nullable) - Data sebelum/sesudah perubahan
+     * created_at, updated_at: TIMESTAMP
+
+================================================================================
+3. KORELASI DENGAN TEMA LOMBA
+================================================================================
+A. KEDISIPLINAN (Bayar Kas Tepat Waktu):
+   - Kolom due_date pada dues_periods dipadukan dengan paid_at pada dues_bills mengevaluasi ketepatan waktu secara otomatis tanpa sentimen pribadi pengurus.
+   - Menghasilkan metrik kedisiplinan yang terukur (contoh: "Tingkat Kepatuhan Tepat Waktu Organisasi: 94%").
+
+B. TRANSPARANSI:
+   - Kolom is_locked dan reversal_of pada transactions mencegah manipulasi kas.
+   - Kolom proof_path mewajibkan adanya lampiran foto nota fisik atau struk transfer.
+   - Tabel activity_logs mencatat riwayat perubahan secara permanen sehingga dapat diaudit kapan saja.

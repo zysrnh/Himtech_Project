@@ -13,7 +13,7 @@
 </head>
 <body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex">
 
-    <!-- Sidebar Web (240px) -->
+    <!-- Sidebar Web (240px) Sesuai Ice & Butter v2 -->
     <aside class="w-[240px] bg-white border-r border-ice-200 flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen">
         <div>
             <!-- Brand -->
@@ -68,7 +68,7 @@
         <div class="max-w-[1120px] mx-auto space-y-8">
 
             <!-- Top Header -->
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="font-display font-semibold text-[28px] text-navy-900">
                         Panel Pusat Super Admin
@@ -77,7 +77,28 @@
                         Kelola data organisasi dan pantau penggunaan sistem Kasly secara terpusat.
                     </p>
                 </div>
+                <div>
+                    <a
+                        href="#form-tambah-organisasi"
+                        class="inline-flex items-center justify-center h-11 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors"
+                    >
+                        Tambah Organisasi Baru
+                    </a>
+                </div>
             </div>
+
+            <!-- Notifikasi Sukses / Error -->
+            @if (session('success'))
+                <div class="p-4 rounded-md bg-butter-100 text-navy-900 text-sm font-medium shadow-card">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="p-4 rounded-md bg-danger/10 text-danger text-sm font-medium">
+                    Ada kesalahan saat pengisian form. Silakan periksa kembali input Anda.
+                </div>
+            @endif
 
             <!-- Kartu Hero Stat (radius-blob khas Ice & Butter v2) -->
             <div class="bg-navy-900 text-white rounded-blob p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -105,15 +126,13 @@
 
             <!-- Bagian Tabel Organisasi -->
             <div class="bg-white rounded-lg shadow-card overflow-hidden">
-                <div class="p-6 border-b border-ice-200 flex items-center justify-between">
-                    <div>
-                        <h2 class="font-display font-medium text-lg text-navy-900">
-                            Daftar Organisasi
-                        </h2>
-                        <p class="text-sm text-navy-500 mt-0.5">
-                            Organisasi terdaftar dengan partisi data terisolasi.
-                        </p>
-                    </div>
+                <div class="p-6 border-b border-ice-200">
+                    <h2 class="font-display font-medium text-lg text-navy-900">
+                        Daftar Organisasi Terdaftar
+                    </h2>
+                    <p class="text-sm text-navy-500 mt-0.5">
+                        Organisasi yang terdaftar di dalam sistem Kasly dengan data terisolasi.
+                    </p>
                 </div>
 
                 @if ($organizations->isEmpty())
@@ -140,7 +159,7 @@
                                         <td class="py-4 px-6 font-semibold text-navy-900 font-display">
                                             {{ $org->code }}
                                         </td>
-                                        <td class="py-4 px-6 text-navy-900">
+                                        <td class="py-4 px-6 text-navy-900 font-medium">
                                             {{ $org->name }}
                                         </td>
                                         <td class="py-4 px-6">
@@ -171,9 +190,146 @@
                 @endif
             </div>
 
+            <!-- Bagian Form Tambah Organisasi Baru -->
+            <div id="form-tambah-organisasi" class="bg-white rounded-lg p-8 shadow-card">
+                <div>
+                    <h2 class="font-display font-medium text-xl text-navy-900">
+                        Tambah Organisasi Baru
+                    </h2>
+                    <p class="text-sm text-navy-500 mt-1">
+                        Daftarkan entitas ormawa baru sekaligus buatkan akun Bendahara pertamanya.
+                    </p>
+                </div>
+
+                <form action="{{ route('admin.organizations.store') }}" method="POST" class="mt-8 space-y-6">
+                    @csrf
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Kolom Kiri: Data Organisasi -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Nama Organisasi
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value="{{ old('name') }}"
+                                    required
+                                    placeholder="Contoh: Himpunan Mahasiswa Teknologi"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('name')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="code" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Kode Organisasi (Huruf Kapital, Tanpa Spasi)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="code"
+                                    name="code"
+                                    value="{{ old('code') }}"
+                                    required
+                                    placeholder="Contoh: HIMTECH"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('code')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="description" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Deskripsi Singkat (Opsional)
+                                </label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    rows="3"
+                                    placeholder="Deskripsi kegiatan atau ormawa..."
+                                    class="w-full p-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >{{ old('description') }}</textarea>
+                                @error('description')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Kolom Kanan: Data Akun Bendahara Awal -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="treasurer_name" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Nama Lengkap Bendahara Awal
+                                </label>
+                                <input
+                                    type="text"
+                                    id="treasurer_name"
+                                    name="treasurer_name"
+                                    value="{{ old('treasurer_name') }}"
+                                    required
+                                    placeholder="Contoh: Zaki Yusron"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('treasurer_name')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="treasurer_email" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Email Bendahara (Untuk Login Pengurus)
+                                </label>
+                                <input
+                                    type="email"
+                                    id="treasurer_email"
+                                    name="treasurer_email"
+                                    value="{{ old('treasurer_email') }}"
+                                    required
+                                    placeholder="Contoh: bendahara@himtech.id"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('treasurer_email')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="treasurer_password" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Password Awal (Kosongkan jika default: password)
+                                </label>
+                                <input
+                                    type="password"
+                                    id="treasurer_password"
+                                    name="treasurer_password"
+                                    placeholder="Minimal 6 karakter"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('treasurer_password')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Simpan -->
+                    <div class="pt-4 flex justify-end">
+                        <button
+                            type="submit"
+                            class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer"
+                        >
+                            Daftarkan Organisasi & Akun Bendahara
+                        </button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </main>
 
 </body>
 </html>
-

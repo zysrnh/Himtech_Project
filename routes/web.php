@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationController;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Depan / Landing Page
@@ -16,3 +17,4 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 
 // Dashboard Panel Pusat Super Admin
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::post('/admin/organizations', [AdminOrganizationController::class, 'store'])->name('admin.organizations.store');

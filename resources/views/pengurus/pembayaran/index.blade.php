@@ -21,27 +21,8 @@
     <x-sidebar-pengurus active="pembayaran" :organization="$organization" />
 
     <!-- Area Konten Utama -->
-    <div class="flex-1 flex flex-col min-w-0 min-h-screen md:h-screen overflow-y-auto custom-scrollbar pb-28 md:pb-8">
-
-        <!-- Topbar Sederhana & Navigasi -->
-        <header class="h-16 px-4 sm:px-6 lg:px-8 border-b border-ice-200/70 flex items-center justify-between shrink-0 bg-white/50 backdrop-blur-md sticky top-0 z-20">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('pengurus.tagihan.index') }}" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 hover:bg-white text-xs font-semibold text-navy-700 hover:text-navy-900 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.15),-2px_-2px_6px_#ffffff] transition-all">
-                    <svg class="w-4 h-4 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    <span class="hidden sm:inline">Kembali ke Jadwal & Tagihan</span>
-                    <span class="sm:hidden">Kembali</span>
-                </a>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <span class="neu-badge-ice text-xs">{{ $organization->code }}</span>
-                <span class="neu-badge-pill text-xs hidden sm:inline-flex">Kas & Keuangan</span>
-            </div>
-        </header>
-
-        <main class="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8">
+        <div class="max-w-7xl mx-auto space-y-6">
 
             <!-- Banner Notifikasi Flash Sukses / Error -->
             @if (session('success'))
@@ -71,10 +52,6 @@
             <!-- Header Halaman -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <div class="flex items-center gap-2 mb-1.5">
-                        <span class="neu-badge-pill text-[10px] py-0.5 px-2.5">KONFIGURASI PEMBAYARAN</span>
-                        <span class="neu-badge-ice text-[10px] py-0.5 px-2.5">CASH & CASHLESS</span>
-                    </div>
                     <h1 class="font-display font-bold text-2xl lg:text-3xl text-navy-900 tracking-tight">Metode Pembayaran Kas</h1>
                     <p class="text-xs sm:text-sm text-navy-500 mt-1">Konfigurasi saluran penerimaan kas ormawa: Kas Tunai (Cash) dan Kas Non-Tunai Otomatis (Cashless).</p>
                 </div>
@@ -412,8 +389,8 @@
 
             </div>
 
-        </main>
-    </div>
+        </div>
+    </main>
 
 </body>
 </html>

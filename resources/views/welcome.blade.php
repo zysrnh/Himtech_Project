@@ -16,30 +16,36 @@
 </head>
 <body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <header class="w-full bg-white border-b border-ice-200 sticky top-0 z-40">
-        <div class="landing-neu__container h-18 flex items-center justify-between">
-            <a href="/" class="inline-flex items-center gap-2">
-                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-10 w-auto">
+    <!-- Floating Capsule Navbar (Matching revisi/image.png) -->
+    <header class="floating-capsule-wrapper">
+        <nav class="floating-capsule-nav" aria-label="Navigasi Utama">
+            <!-- Left Circular Icon Button -->
+            <a href="/" class="floating-capsule-nav__icon-circle" title="Kasly">
+                <svg class="w-5 h-5 text-navy-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.8" fill="#2F4862" stroke="#2F4862"></circle>
+                    <ellipse cx="12" cy="12" rx="8.8" ry="3.2" transform="rotate(-25 12 12)" stroke="#2F4862" stroke-width="1.8" fill="none" stroke-linecap="round"></ellipse>
+                </svg>
             </a>
 
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-navy-500">
-                <a href="#fitur" class="hover:text-navy-900 transition-colors">Fitur</a>
-                <span class="text-ice-200">·</span>
-                <a href="#cara-kerja" class="hover:text-navy-900 transition-colors">Cara Kerja</a>
-                <span class="text-ice-200">·</span>
-                <a href="#faq" class="hover:text-navy-900 transition-colors">FAQ</a>
-            </nav>
+            <!-- Center Navigation Links -->
+            <div class="floating-capsule-nav__links">
+                <a href="#fitur" class="floating-capsule-nav__link">Fitur</a>
+                <a href="#cara-kerja" class="floating-capsule-nav__link hidden sm:inline-block">Cara Kerja</a>
+                <a href="#faq" class="floating-capsule-nav__link hidden md:inline-block">FAQ</a>
+                <a href="{{ route('ajukan-organisasi') }}" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
+            </div>
 
-            <div class="flex items-center gap-3">
-                <a href="{{ route('ajukan-organisasi') }}" class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-ice-200 bg-white text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
-                    Ajukan Organisasi
+            <!-- Right Pill Button -->
+            @auth
+                <a href="{{ route('dashboard') }}" class="floating-capsule-nav__btn">
+                    {{ auth()->user()->email ?? 'Dashboard' }}
                 </a>
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors shadow-sm">
+            @else
+                <a href="{{ route('login') }}" class="floating-capsule-nav__btn">
                     Masuk
                 </a>
-            </div>
-        </div>
+            @endauth
+        </nav>
     </header>
 
     <!-- Main Content -->

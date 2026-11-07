@@ -47,4 +47,3 @@ class Transaction extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 }
-

@@ -42,4 +42,3 @@ class DuesPeriod extends Model
         return $this->hasMany(DuesBill::class);
     }
 }
-

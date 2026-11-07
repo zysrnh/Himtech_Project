@@ -17,6 +17,7 @@ class FonnteService
         // Jika token belum diatur, catat ke log sistem agar tidak crash saat demo
         if (empty($token)) {
             Log::info("Fonnte WA Broadcast (Token Belum Diatur) ke [{$target}]:\n{$message}");
+
             return false;
         }
 
@@ -34,13 +35,16 @@ class FonnteService
 
             if ($response->successful()) {
                 Log::info("Fonnte WA Berhasil Terkirim ke [{$target}]");
+
                 return true;
             }
 
-            Log::warning("Fonnte WA Gagal Terkirim ke [{$target}]: " . $response->body());
+            Log::warning("Fonnte WA Gagal Terkirim ke [{$target}]: ".$response->body());
+
             return false;
         } catch (\Throwable $e) {
-            Log::error("Fonnte WA Exception ke [{$target}]: " . $e->getMessage());
+            Log::error("Fonnte WA Exception ke [{$target}]: ".$e->getMessage());
+
             return false;
         }
     }
@@ -59,18 +63,18 @@ class FonnteService
     ): bool {
         $loginUrl = url('/login');
 
-        $usernameLine = !empty($username) ? "• Username: *{$username}*\n" : "";
+        $usernameLine = ! empty($username) ? "• Username: *{$username}*\n" : '';
 
         $message = "*PEMBERITAHUAN AKUN PENGURUS KASLY*\n\n"
-            . "Halo {$staffName},\n"
-            . "Organisasi *{$orgName}* ({$orgCode}) telah resmi didaftarkan di sistem Kasly.\n\n"
-            . "Berikut rincian akun Staff Anda:\n"
-            . "• Kode Organisasi: *{$orgCode}*\n"
-            . $usernameLine
-            . "• Email Login: {$email}\n"
-            . "• Password Sementara: {$password}\n"
-            . "• Tautan Login: {$loginUrl}\n\n"
-            . "Pada halaman login Kasly, masukkan Kode Organisasi di atas beserta username atau email dan password Anda. Terima kasih.";
+            ."Halo {$staffName},\n"
+            ."Organisasi *{$orgName}* ({$orgCode}) telah resmi didaftarkan di sistem Kasly.\n\n"
+            ."Berikut rincian akun Staff Anda:\n"
+            ."• Kode Organisasi: *{$orgCode}*\n"
+            .$usernameLine
+            ."• Email Login: {$email}\n"
+            ."• Password Sementara: {$password}\n"
+            ."• Tautan Login: {$loginUrl}\n\n"
+            .'Pada halaman login Kasly, masukkan Kode Organisasi di atas beserta username atau email dan password Anda. Terima kasih.';
 
         return self::send($phone, $message);
     }

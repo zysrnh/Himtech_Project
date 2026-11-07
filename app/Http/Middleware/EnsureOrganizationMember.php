@@ -14,11 +14,11 @@ class EnsureOrganizationMember
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('anggota.login');
         }
 
@@ -33,7 +33,7 @@ class EnsureOrganizationMember
             $member = Member::where('id', $memberId)->where('organization_id', $orgId)->where('is_active', true)->first();
         }
 
-        if (!$organization || !$member) {
+        if (! $organization || ! $member) {
             $user = Auth::user();
             $member = $user->member;
             if ($member && $member->is_active && $member->organization?->status === 'active') {
@@ -46,7 +46,7 @@ class EnsureOrganizationMember
             }
         }
 
-        if (!$organization || !$member) {
+        if (! $organization || ! $member) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -62,4 +62,3 @@ class EnsureOrganizationMember
         return $next($request);
     }
 }
-

@@ -65,14 +65,14 @@
         <section class="landing-neu__container landing-neu__hero-section">
             <div class="landing-neu__hero-grid">
                 <!-- Kolom Kiri: Teks & Tombol Primer -->
-                <div>
-                    <h1 class="landing-neu__hero-title font-display font-semibold text-navy-900 tracking-tight">
+                <div class="contents lg:block">
+                    <h1 class="landing-neu__hero-title font-display font-semibold text-navy-900 tracking-tight order-1">
                         Kas organisasi, rapi tanpa buku tulis.
                     </h1>
-                    <p class="landing-neu__hero-desc mt-6 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal">
+                    <p class="landing-neu__hero-desc mt-2 lg:mt-6 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal order-3">
                         Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
                     </p>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                    <div class="mt-4 lg:mt-8 flex flex-col sm:flex-row gap-4 order-4">
                         <a href="#pilih-akses" class="neu-btn neu-btn--primary">
                             Masuk ke Sistem Kasly
                         </a>
@@ -80,7 +80,7 @@
                 </div>
 
                 <!-- Kolom Kanan: Pratinjau Kas Digital Model Stacked Card Interaktif -->
-                <div class="w-full">
+                <div class="w-full order-2 lg:order-none">
                     <div class="tabbed-wallet-card">
                         <!-- The 3-Tab Bar across the top: Exact Match to media_1794038706460_3d4b4e58.png (Berdekatan) -->
                         <div class="wallet-tabs-bar" role="tablist">

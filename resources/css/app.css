@@ -84,18 +84,19 @@ body {
     box-sizing: border-box;
 }
 
-/* 2. Layout Grid Hero 2-Kolom (>= 1024px) */
+/* 2. Layout Grid Hero 2-Kolom (>= 1024px) & Mobile Reordering per NEUMORPHISM.md */
 .landing-neu__hero-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 36px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 @media (min-width: 1024px) {
     .landing-neu__hero-grid {
+        display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
         gap: clamp(48px, 4vw, 56px);
+        align-items: center;
     }
 }
 

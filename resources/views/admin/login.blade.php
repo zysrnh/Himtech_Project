@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login Super Admin - {{ config('app.name', 'Kasly') }}</title>
 
-    <link rel="icon" type="image/svg+xml" href="{{ asset('logo/icon-kasly.svg') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/icon-32.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('logo/icon-192.png') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

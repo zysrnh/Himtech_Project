@@ -1,25 +1,294 @@
-Berikut adalah struktur standar Product Requirements Document (PRD) yang umum digunakan secara profesional:
-1.	Informasi Dokumen (Document Information)
-o	Nama Produk atau Fitur
-o	Penulis (Product Manager/Owner)
-o	Tanggal & Status Dokumen (Draft, In Review, Approved)
-o	Target Waktu Peluncuran (Target Release)
-2.	Ringkasan Eksekutif & Latar Belakang (Executive Summary & Background)
-o	Penjelasan singkat tentang apa yang dibangun.
-o	Masalah utama pengguna atau peluang bisnis yang memicu pembuatan produk ini.
-3.	Tujuan & Metrik Kesuksesan (Objectives & Success Metrics/KPI)
-o	Tujuan (Goals): Apa yang ingin dicapai dari produk ini.tyy
-o	Metrik: Cara mengukur kesuksesan setelah rilis (contoh: persentase retensi, penurunan komplain, peningkatan waktu respon).
-4.	Target Pengguna (User Personas)
-o	Siapa audiens spesifik yang akan menggunakan produk ini.
-o	Apa karakteristik, kebiasaan, dan batasan mereka.
-5.	Ruang Lingkup (Scope)
-o	In-Scope: Fitur atau modul apa saja yang pasti dikerjakan pada rilis ini (fokus pada Minimum Viable Product / MVP).
-o	Out-of-Scope: Hal-hal yang sengaja ditunda atau tidak dikerjakan agar proyek tidak bengkak (scope creep).
-6.	Kebutuhan Fitur (Requirements & User Stories)
-o	Daftar fitur yang dijabarkan dari sudut pandang pengguna.
-o	Umumnya menggunakan format: Sebagai [User], saya ingin [Aksi] sehingga [Manfaat/Tujuan].
-o	Dilengkapi dengan Acceptance Criteria (Kriteria Selesai) untuk setiap fitur.
-7.	Desain & Pengalaman Pengguna (UI/UX & User Flow)
-o	Tautan ke wireframe, mockup (Figma/Sketch), atau purwarupa (prototype).
-o	Diagram alur pengguna (user journey) dari awal masuk aplikasi hingga mencapai tujuan.
+# PRODUCT REQUIREMENTS DOCUMENT (PRD)
+## KASLY - Multi-Tenant Organization Cash Flow & Financial Transparency Platform
+
+---
+
+### 1. INFORMASI DOKUMEN (DOCUMENT INFORMATION)
+
+* **Nama Produk:** Kasly (Platform Tata Kelola Kas & Transparansi Keuangan Ormawa Multi-Tenant)
+* **Inisiator & Tim Pengembang:** Tim Pengembang Himtech / Kasly Project Team
+* **Versi Dokumen:** v1.0.0
+* **Tanggal Penyusunan:** 7 November 2026
+* **Status Dokumen:** Approved (Siap Implementasi & Pengujian)
+* **Target Waktu Peluncuran (Target Release):** Q4 2026 (Kompetisi / Hackathon & Production Deployment)
+
+---
+
+### 2. RINGKASAN EKSEKUTIF & LATAR BELAKANG (EXECUTIVE SUMMARY & BACKGROUND)
+
+#### 2.1 Penjelasan Produk
+Kasly adalah platform Software-as-a-Service (SaaS) berbasis multi-tenant yang dirancang khusus untuk memodernisasi tata kelola kas organisasi mahasiswa (Ormawa, Himpunan Mahasiswa Jurusan, BEM, dan UKM). Sistem ini menyediakan solusi terpadu mulai dari pengajuan pendaftaran ormawa mandiri, pembukuan kas anti-manipulasi (terkunci dengan bukti nota fisik/transfer dan jejak audit), otomatisasi penerbitan tagihan iuran berkala, pemantauan kedisiplinan jatuh tempo pembayaran, integrasi alert WhatsApp (Fonnte API) & Email, hingga portal transparansi mandiri bagi anggota tanpa birokrasi manual.
+
+#### 2.2 Masalah Utama Pengguna (Problem Statement)
+1. **Pencatatan Konvensional & Rawan Manipulasi:** Sebagian besar ormawa masih mengandalkan buku tulis fisik atau spreadsheet (Excel) yang tidak memiliki kontrol versi. Angka kas mudah diubah sepihak tanpa bukti nota otentik atau riwayat jejak audit (audit trail).
+2. **Tingginya Tunggakan & Sulitnya Melacak Jatuh Tempo:** Bendahara kesulitan merekap siapa anggota yang membayar tepat waktu versus yang terlambat. Penagihan manual via grup pesan instan sering kali terabaikan dan tidak terdata secara objektif.
+3. **Krisis Transparansi kepada Anggota:** Anggota yang telah membayar iuran tidak memiliki akses langsung untuk melihat saldo kas terkini dan rincian alokasi pengeluaran dana bersama, sehingga sering memicu kecurigaan dan penurunan kepatuhan iuran di masa mendatang.
+4. **Isolasi Data Antar-Organisasi yang Lemah:** Kampus memiliki puluhan organisasi, namun belum ada platform terpadu yang mampu menampung banyak organisasi dalam satu sistem (multi-tenant) dengan pemisahan akses data yang aman dan ketat.
+
+#### 2.3 Peluang & Nilai Tambah (Value Proposition)
+Kasly menawarkan transparansi total melalui portal anggota mandiri (cukup login dengan NIM dan kode organisasi), memacu kedisiplinan melalui *On-Time Payment Rate*, serta mengotomatisasi pengiriman bukti dan kredensial melalui WhatsApp Gateway & Email sehingga bendahara dapat menghemat waktu rekapitulasi dari hitungan jam menjadi hitungan menit.
+
+---
+
+### 3. TUJUAN & METRIK KESUKSESAN (OBJECTIVES & SUCCESS METRICS / KPI)
+
+#### 3.1 Tujuan (Goals)
+* Menggantikan pembukuan manual dengan sistem buku kas digital yang terkunci (*immutable locked record*) dan terdokumentasi rapi.
+* Mengotomatisasi siklus penagihan iuran anggota dan evaluasi ketepatan waktu pembayaran (*on-time discipline*).
+* Memberikan akses transparansi keuangan mandiri kepada seluruh anggota ormawa secara real-time.
+* Menyederhanakan proses pendaftaran organisasi baru melalui sistem *self-service request* yang ditinjau oleh Super Admin Kasly dan Admin Penerima Organisasi.
+* Memastikan keamanan isolasi data multi-tenant antar-ormawa di lingkungan kampus.
+
+#### 3.2 Metrik Kesuksesan (KPIs)
+* **Kepatuhan Pembayaran Tepat Waktu (On-Time Payment Rate):** Mencapai minimal **85%** dari total anggota yang melunasi iuran sebelum batas jatuh tempo.
+* **Efisiensi Waktu Rekapitulasi Kas:** Menurunkan waktu rekapitulasi keuangan bendahara sebesar **>80%** (dari rata-rata 4 jam per minggu menjadi di bawah 30 menit).
+* **Tingkat Transparansi Anggota:** **100%** mutasi kas keluar dan masuk dapat dipantau oleh anggota terdaftar tanpa perlu meminta laporan manual ke pengurus.
+* **Kecepatan Onboarding Organisasi:** Waktu pemrosesan pengajuan ormawa hingga akun aktif dan kredensial terkirim via WhatsApp/Email maksimal **< 15 menit** setelah disetujui (ACC).
+* **Zero Cross-Tenant Leakage:** 0% insiden kebocoran data antar-organisasi yang berbeda.
+
+---
+
+### 4. TARGET PENGGUNA (USER PERSONAS)
+
+#### 4.1 Super Admin Kasly (Master Platform Admin)
+* **Karakteristik:** Pengelola utama platform Kasly di tingkat institusi/sistem.
+* **Tanggung Jawab:** Mengawasi kesehatan platform, mengaktifkan/menonaktifkan ormawa, menyetujui/menolak pengajuan ormawa baru, mengelola akun Administrator Kasly, melihat log audit global, dan mengatur konfigurasi kontak alert WhatsApp.
+
+#### 4.2 Admin Penerima Organisasi (Reviewer Admin)
+* **Karakteristik:** Tim verifikator pendaftaran ormawa.
+* **Tanggung Jawab:** Bertugas khusus meninjau (review) permohonan pendaftaran ormawa yang masuk melalui formulir publik dan melakukan persetujuan (ACC) atau penolakan, tanpa memiliki hak akses mengubah master data sistem lainnya.
+
+#### 4.3 Admin Organisasi / Ketua Ormawa (Tenant Admin)
+* **Karakteristik:** Ketua umum atau penanggung jawab utama ormawa (misal Ketua BEM / Himpunan).
+* **Tanggung Jawab:** Mendaftarkan ormawa, mengelola profil organisasi, mendaftarkan dan mengatur peran akun Staff/Bendahara, serta memonitor ringkasan arus kas organisasi.
+
+#### 4.4 Bendahara & Staff Pengurus (Treasurer & Operational Staff)
+* **Karakteristik:** Mahasiswa pengurus bidang keuangan ormawa yang mengelola operasional harian.
+* **Tanggung Jawab:** Membuat periode iuran kas, menerbitkan tagihan anggota, mencatat transaksi masuk/keluar, mengunggah bukti nota transfer/fisik, memverifikasi pembayaran iuran, serta mengevaluasi anggota yang menunggak.
+
+#### 4.5 Anggota Ormawa (Student Members)
+* **Karakteristik:** Mahasiswa aktif yang terdaftar sebagai anggota ormawa.
+* **Tanggung Jawab/Kebutuhan:** Login mudah tanpa memerlukan email (cukup kode organisasi + NIM), mengecek status tagihan iuran pribadinya (lunas/belum lunas), memantau jatuh tempo, serta melihat laporan mutasi kas ormawa secara transparan.
+
+---
+
+### 5. RUANG LINGKUP (SCOPE)
+
+#### 5.1 In-Scope (Fitur yang Diimplementasikan pada Rilis Ini)
+1. **Landing Page Publik & Formulir Pengajuan Ormawa:**
+   * Antarmuka modern Neumorphic (palet Ice-blue & Deep Navy) dengan bagian Hero, Showcase Fitur Unggulan, Alur Cara Kerja, FAQ, dan Card Akses Cepat.
+   * Formulir pengajuan organisasi baru mandiri publik (`/ajukan-organisasi`) dengan validasi keunikan kode dan akun PIC.
+2. **Sistem Multi-Tenant & Keamanan Akses:**
+   * Isolasi data absolut berdasarkan `organization_id` pada seluruh entitas (members, transactions, dues_periods, dues_bills, cash_categories).
+   * Middleware proteksi ketat (`EnsureOrganizationStaff` dan `EnsureOrganizationMember`).
+3. **Portal Autentikasi Tunggal Universal (`/login`):**
+   * Satu form login untuk seluruh peran dengan deteksi otomatis: Pengurus (Admin Org, Bendahara, Staff) vs Anggota (NIM).
+   * Fitur pembuatan akun mandiri otomatis saat login pertama anggota menggunakan NIM sebagai kata sandi default.
+   * Portal login terpisah khusus Super Admin (`/admin/login`).
+   * Proteksi rate limiting (maksimal 5 percobaan gagal per menit).
+4. **Panel Pusat Super Admin Kasly:**
+   * Dashboard ringkasan: Total Organisasi, Organisasi Aktif, Total Anggota, dan Pengajuan Pending.
+   * Manajemen Organisasi: Daftar organisasi, status aktif/nonaktif toggle, hapus organisasi, dan pendaftaran manual.
+   * Modul Peninjauan Pengajuan: Review detail pemohon, tombol ACC (otomatis buat organisasi, user pengelola, 7 kategori kas default, password random 10 karakter) dan tombol Tolak.
+   * Manajemen Administrator Kasly: Multi-admin, tambah admin baru, hapus admin (dengan proteksi minimal 1 admin aktif).
+   * Profil Admin & Pengaturan Nomor WhatsApp penerima alert sistem.
+5. **Panel Kerja Pengurus & Bendahara:**
+   * Dashboard Analitik: Saldo Kas, Total Kas Masuk, Total Kas Keluar, Metrik Kedisiplinan (*On-Time Rate %*), Jumlah Anggota, Total Tunggakan (nominal & jumlah tagihan), 5 Transaksi Terkini, dan Periode Iuran Aktif.
+   * Manajemen Staff & Bendahara: Tambah akun staf baru (peran: admin_organisasi, bendahara, staff), toggle status aktif, hapus akun.
+   * Profil Pengurus: Edit identitas, username, email, WhatsApp, dan kata sandi.
+6. **Portal Transparansi Anggota (`/anggota/dashboard`):**
+   * Ringkasan saldo kas ormawa yang dapat diaudit secara terbuka.
+   * Daftar tagihan iuran anggota (status bayar, jatuh tempo, tepat waktu vs terlambat).
+   * Riwayat 5 mutasi kas publik terbaru lengkap dengan kategori dan pembuat transaksi.
+7. **Integrasi Notifikasi Multi-Channel:**
+   * **WhatsApp Gateway (Fonnte API):**
+     * Notifikasi instan ke pemohon saat formulir pengajuan terkirim.
+     * Alert instan ke seluruh Super Admin saat ada permohonan baru yang perlu di-ACC.
+     * Blast otomatis rincian akun (kode organisasi, username, password) ke nomor WhatsApp pengurus saat disetujui atau saat staf baru ditambahkan.
+   * **Email Notifikasi (Laravel Mail / SMTP):** Pengiriman kredensial akun staf melalui template email resmi (`StaffAccountCreatedMail`).
+8. **Integritas Pembukuan & Audit Trail:**
+   * Transaksi kas terkunci (`is_locked = true`) demi mencegah manipulasi data.
+   * Pencatatan log aktivitas terperinci pada tabel `activity_logs`.
+
+#### 5.2 Out-of-Scope (Fase Pengembangan Selanjutnya / Future Roadmap)
+* Integrasi Payment Gateway otomatis (seperti Midtrans/Xendit/QRIS Dinamis) — saat ini pembayaran menggunakan transfer manual atau tunai yang diverifikasi oleh bendahara.
+* Aplikasi Mobile Native (Android / iOS) — platform saat ini dioptimalkan penuh melalui Progressive & Responsive Mobile Web.
+* Ekspor laporan kas otomatis dalam format PDF berkop institusi atau format Excel terenkripsi.
+* Fitur broadcast pengingat tunggakan massal via WhatsApp terjadwal menggunakan Cron Job / Task Scheduler.
+
+---
+
+### 6. KEBUTUHAN FITUR (REQUIREMENTS & USER STORIES)
+
+#### 6.1 Epik 1: Pengajuan & Registrasi Organisasi Baru (Public & Super Admin)
+* **User Story 1.1 (Pengajuan Publik):**
+  * *Sebagai* perwakilan Ormawa/Ketua, *saya ingin* mengajukan pendaftaran organisasi secara daring melalui website, *sehingga* organisasi kami dapat terdaftar di platform Kasly tanpa menyerahkan dokumen fisik manual.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Pengguna mengisi form di `/ajukan-organisasi`: Nama Organisasi, Usulan Kode (uppercase alpha-dash), Deskripsi, Nama PIC, Username PIC, Email PIC, dan No WhatsApp PIC.
+    * Sistem memvalidasi keunikan kode terhadap organisasi yang sudah ada dan pengajuan pending lainnya.
+    * Data tersimpan di tabel `organization_requests` dengan status `pending`.
+    * Sistem otomatis mengirim pesan konfirmasi ke WhatsApp pemohon dan alert ke WhatsApp seluruh Super Admin Kasly.
+    * Pengguna dialihkan ke halaman sukses `/ajukan-organisasi/sukses`.
+
+* **User Story 1.2 (Review & Persetujuan oleh Admin):**
+  * *Sebagai* Super Admin / Admin Penerima Organisasi, *saya ingin* meninjau daftar pengajuan ormawa dan menyetujui (ACC) atau menolaknya, *sehingga* hanya ormawa yang sah yang dapat beroperasi.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Muncul tab khusus "Pengajuan Masuk" di halaman manajemen organisasi admin.
+    * Saat tombol "Setujui & Buat Akun" ditekan:
+      * Sistem menjalankan DB Transaction untuk membuat record di `organizations` (status `active`).
+      * Membuat akun user di `users` dengan kata sandi acak kuat 10 karakter.
+      * Menghubungkan user ke organisasi sebagai `admin_organisasi` di pivot `organization_user`.
+      * Menginisiasi 7 kategori kas bawaan (Iuran Wajib, Donasi/Sponsor, Kas Awal, Konsumsi, ATK & Perlengkapan, Operasional Kegiatan, Lain-lain).
+      * Mengubah status pengajuan menjadi `approved`, mencatat `approved_by` dan `approved_at`.
+      * Mencatat aksi ke `activity_logs`.
+      * Menembak API WhatsApp Fonnte dan mengirimkan email kredensial akun ke pemohon secara otomatis.
+
+#### 6.2 Epik 2: Autentikasi Tunggal & Kontrol Hak Akses
+* **User Story 2.1 (Login Universal Pengurus & Anggota):**
+  * *Sebagai* pengguna (Pengurus maupun Anggota), *saya ingin* masuk ke sistem melalui satu halaman login yang sama, *sehingga* saya tidak bingung mencari portal yang berbeda.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Form login di `/login` meminta: Kode Organisasi, Username / NIM, dan Kata Sandi.
+    * Sistem memverifikasi kode organisasi; jika tidak aktif/tidak ada, muncul pesan kesalahan spesifik.
+    * Sistem mendeteksi otomatis jika akun terdaftar sebagai staf/bendahara ormawa, lalu mengarahkan ke `/pengurus/dashboard`.
+    * Sistem mendeteksi otomatis jika akun merupakan Anggota (berdasarkan NIM):
+      * Jika sudah memiliki user, verifikasi password dan arahkan ke `/anggota/dashboard`.
+      * Jika baru pertama kali login dengan password default (NIM), sistem otomatis membuat akun user, mengaitkan ke anggota, dan langsung login ke `/anggota/dashboard`.
+    * Proteksi *rate limiting* mengunci form sementara setelah 5 kali gagal berturut-turut.
+
+* **User Story 2.2 (Login Khusus Super Admin):**
+  * *Sebagai* Super Admin Kasly, *saya ingin* mengakses portal administrasi pusat melalui rute khusus, *sehingga* kendali master platform tetap aman dan terpisah.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Endpoint login khusus di `/admin/login` dengan kredensial email/username dan password.
+    * Mengarahkan ke `/admin/dashboard` jika `is_super_admin = true`.
+    * Admin dengan role `admin_penerima` dibatasi hanya dapat mengakses tab pengajuan organisasi.
+
+#### 6.3 Epik 3: Panel Pengurus & Tata Kelola Keuangan Ormawa
+* **User Story 3.1 (Dashboard Analitik & Metrik Kedisiplinan):**
+  * *Sebagai* Bendahara/Pengurus, *saya ingin* melihat ringkasan keuangan dan tingkat kedisiplinan anggota secara visual, *sehingga* saya dapat mengetahui performa kas secara seketika.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Menampilkan Saldo Kas Saat Ini (Total Masuk dikurangi Total Keluar).
+    * Menampilkan persentase *On-Time Rate* (proporsi tagihan terbayar tepat waktu dibanding total tagihan terbayar).
+    * Menampilkan nominal dan jumlah tagihan yang belum terbayar (tunggakan).
+    * Menampilkan daftar 5 mutasi kas terakhir dan daftar periode iuran yang aktif.
+
+* **User Story 3.2 (Manajemen Akun Staf & Pembagian Peran):**
+  * *Sebagai* Admin Organisasi, *saya ingin* mendaftarkan bendahara atau staf tambahan, *sehingga* pengelolaan kas dapat didelegasikan dengan aman.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Halaman `/pengurus/staff` menampilkan seluruh staf aktif ormawa.
+    * Form modal penambahan staf: Nama, Username, Email, WhatsApp, dan Peran (`admin_organisasi`, `bendahara`, `staff`).
+    * Sistem men-generate password otomatis jika dikosongkan.
+    * Kredensial staf baru langsung dikirimkan melalui WhatsApp Fonnte dan Email.
+    * Tersedia aksi toggle aktif/nonaktif dan hapus akun staf.
+
+#### 6.4 Epik 4: Portal Transparansi Anggota
+* **User Story 4.1 (Monitoring Kas & Tagihan Mandiri):**
+  * *Sebagai* Anggota Ormawa, *saya ingin* memeriksa status kewajiban iuran saya dan keterbukaan penggunaan uang kas, *sehingga* saya yakin dana dikelola secara amanah.
+  * **Kriteria Penerimaan (Acceptance Criteria):**
+    * Halaman `/anggota/dashboard` menampilkan saldo kas total ormawa secara transparan.
+    * Menampilkan status tagihan pribadi: Nominal, Judul Periode, Tanggal Jatuh Tempo, dan Status (Lunas / Belum Bayar / Tepat Waktu / Terlambat).
+    * Menampilkan 5 transaksi mutasi pengeluaran dan pemasukan organisasi terbaru beserta kategori dan deskripsinya.
+
+---
+
+### 7. DESAIN & PENGALAMAN PENGGUNA (UI/UX & USER FLOW)
+
+#### 7.1 Design System & Arah Visual
+* **Gaya Visual:** Modern Soft Neumorphic (Neu-Brutalism lembut dengan bayangan inset/outset halus).
+* **Palet Warna Utama:**
+  * *Primary Navy:* `#0f172a` (Navy 900), `#1e293b` (Navy 800), `#334155` (Navy 700) — Melambangkan profesionalisme dan keamanan perbankan.
+  * *Ice Blue Background:* `#f1f5f9` (Ice 100), `#e2e8f0` (Ice 200), `#cbd5e1` (Ice 300) — Memberikan nuansa bersih, modern, dan tidak melelahkan mata.
+  * *Accent Butter/Amber:* `#fef3c7` (Butter 100) — Memberikan aksen lembut untuk tag status dan sorotan fitur.
+  * *Status Colors:* Emerald (Lunas / Tepat Waktu / Aktif), Rose (Tunggakan / Terlambat / Ditolak), Amber (Pending).
+* **Tipografi:** Plus Jakarta Sans (Body Text & Data Tabular) dan Outfit (Headings & Display Text).
+
+#### 7.2 Diagram Alur Pengguna (User Journey Flow)
+
+```mermaid
+flowchart TD
+    subgraph Publik
+        A["Pengunjung Buka Landing Page (/)"] --> B{"Pilih Aksi"}
+        B -->|"Ajukan Ormawa"| C["Form Pengajuan (/ajukan-organisasi)"]
+        B -->|"Masuk Sistem"| D["Universal Login (/login)"]
+        C --> E["Kirim Data & Notif WA ke Pemohon + Super Admin"]
+    end
+
+    subgraph Panel Super Admin
+        E --> F["Admin Buka /admin/organizations?tab=requests"]
+        F --> G{"Keputusan Admin"}
+        G -->|"Tolak"| H["Status Ditandai Rejected"]
+        G -->|"ACC / Approve"| I["Otomatis Buat Tenant, Akun PIC, Kategori Kas"]
+        I --> J["Kirim Kredensial via WA Fonnte & Email"]
+    end
+
+    subgraph Autentikasi Universal
+        J -.-> D
+        D --> K{"Validasi Kredensial"}
+        K -->|"Staff / Bendahara"| L["/pengurus/dashboard"]
+        K -->|"Anggota (NIM)"| M["/anggota/dashboard"]
+    end
+
+    subgraph Operasional Pengurus
+        L --> N["Kelola Staf & Bendahara"]
+        L --> O["Pantau Metrik Kedisiplinan & Arus Kas"]
+        L --> P["Catat Transaksi & Kunci Buku Kas"]
+    end
+
+    subgraph Keterbukaan Anggota
+        M --> Q["Pantau Tagihan & Kepatuhan Pribadi"]
+        M --> R["Audit Riwayat Saldo & Pengeluaran Ormawa"]
+    end
+```
+
+---
+
+### 8. KEBUTUHAN TEKNIS & ARSITEKTUR SISTEM (TECHNICAL ARCHITECTURE)
+
+#### 8.1 Stack Teknologi
+* **Backend Framework:** Laravel 13.x (PHP 8.3+)
+* **Frontend Framework:** Blade Templating Engine, Tailwind CSS (dengan utility class neumorphic custom), Vite bundler.
+* **Database Management System:** Relational Database (MySQL 8.0+ / MariaDB / SQLite untuk local testing).
+* **Eksternal API & Servis:**
+  * WhatsApp API: Fonnte Gateway (`https://api.fonnte.com/send`) untuk blast instan.
+  * Mail Transport: SMTP / Laravel Mailable (`StaffAccountCreatedMail`).
+
+#### 8.2 Skema Database Relasional Utama
+1. **`organizations`:** Menyimpan entitas tenant (`id`, `code` [unique], `name`, `description`, `status` [active/inactive]).
+2. **`users`:** Menyimpan seluruh pengguna platform (`id`, `name`, `username` [unique], `email` [unique], `phone`, `password`, `is_super_admin`, `admin_role`).
+3. **`members`:** Menyimpan profil anggota spesifik ormawa (`id`, `organization_id`, `user_id` [nullable], `member_number` [NIM], `name`, `phone`, `is_active`).
+4. **`organization_user` (Pivot):** Relasi multi-tenant pengguna ke organisasi (`organization_id`, `user_id`, `role` [admin_organisasi, bendahara, staff, anggota], `is_active`).
+5. **`organization_requests`:** Rekap permohonan ormawa baru (`name`, `code`, `pic_name`, `pic_username`, `pic_email`, `pic_phone`, `status` [pending/approved/rejected], `approved_by`, `approved_at`).
+6. **`cash_categories`:** Kategori transaksi spesifik per tenant (`organization_id`, `name`, `type` [in/out]).
+7. **`transactions`:** Buku kas transaksi mutasi (`organization_id`, `type`, `category_id`, `amount`, `transaction_date`, `description`, `proof_path`, `is_locked`, `reversal_of`).
+8. **`dues_periods`:** Periode penagihan iuran (`organization_id`, `title`, `amount`, `due_date`, `created_by`).
+9. **`dues_bills`:** Tagihan perorangan anggota (`organization_id`, `dues_period_id`, `member_id`, `amount`, `status` [unpaid/paid], `is_on_time`, `paid_at`, `payment_method`).
+10. **`activity_logs`:** Audit trail aktivitas penting sistem (`organization_id`, `user_id`, `action`, `subject_type`, `subject_id`, `payload`).
+
+---
+
+### 9. ASUMSI, KETERGANTUNGAN & MITIGASI RISIKO (ASSUMPTIONS & RISKS)
+
+#### 9.1 Asumsi
+* Seluruh organisasi mahasiswa yang mengajukan pendaftaran memiliki ketua/penanggung jawab dengan nomor WhatsApp aktif yang valid.
+* Mahasiswa anggota memiliki nomor induk mahasiswa (NIM) yang unik di dalam lingkungan ormawa terkait.
+
+#### 9.2 Ketergantungan (Dependencies)
+* **Ketersediaan Fonnte API:** Pengiriman notifikasi WhatsApp bergantung pada kuota token dan uptime server Fonnte. Sistem dirancang dengan mekanisme *graceful fallback* (mencatat log jika token belum diatur atau pengiriman gagal, sehingga sistem tidak mengalami *crash* saat demo).
+* **Konfigurasi Mail Server:** Fitur email notifikasi membutuhkan kredensial SMTP aktif (misal Mailgun, Gmail SMTP, atau Mailtrap).
+
+#### 9.3 Mitigasi Risiko
+* **Risiko Brute-Force Password:** Diminimalisir dengan *Rate Limiter* Laravel (pembatasan 5 percobaan per menit per kombinasi identitas + IP).
+* **Risiko Kebocoran Data Multi-Tenant:** Diminimalisir dengan *scope* query berbasis `current_organization` yang disuntikkan langsung oleh middleware secara terisolasi.
+* **Risiko Manipulasi Kas Masa Lalu:** Seluruh mutasi kas terkunci (`is_locked = true`) dan setiap aksi dicatat ke tabel log audit yang tidak dapat dihapus melalui antarmuka pengguna biasa.
+
+---
+
+### 10. RENCANA PELUNCURAN & ROADMAP PENGEMBANGAN (RELEASE ROADMAP)
+
+* **Fase 1: MVP & Fondasi Inti (Selesai):**
+  * Implementasi skema multi-tenant, autentikasi universal, pendaftaran mandiri publik, persetujuan admin, dashboard pengurus, dashboard anggota, dan integrasi WhatsApp Fonnte.
+* **Fase 2: Stabilisasi & Uji Coba Lomba (Saat Ini):**
+  * Pengujian end-to-end skenario pendaftaran ormawa, pembuatan tagihan iuran masal, verifikasi pembayaran tepat waktu vs terlambat, dan verifikasi UI Neumorphic responsif.
+* **Fase 3: Fitur Lanjutan (Q1 2027):**
+  * Integrasi Payment Gateway (QRIS Otomatis).
+  * Ekspor Laporan Keuangan ke format PDF & Spreadsheet dengan stempel digital.
+  * Fitur Broadcast Pengingat WhatsApp otomatis melalui scheduler terjadwal.

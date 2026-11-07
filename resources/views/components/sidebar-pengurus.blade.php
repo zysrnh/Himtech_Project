@@ -21,30 +21,30 @@
 
 <aside class="w-[260px] neu-sidebar flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-30 select-none">
     <div class="flex flex-col min-h-0 flex-1">
-        <!-- Brand & Organization Code Header -->
-        <div class="h-16 px-5 flex items-center justify-between border-b border-ice-200/70 shrink-0">
-            <a href="{{ route('pengurus.dashboard') }}" class="inline-flex items-center gap-2" title="{{ config('app.name', 'Kasly') }}">
-                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-8 w-auto">
+        <!-- Brand Header (Logo Kasly Lebih Besar & di Tengah) -->
+        <div class="h-20 px-5 flex items-center justify-center border-b border-ice-200/70 shrink-0">
+            <a href="{{ route('pengurus.dashboard') }}" class="inline-flex items-center justify-center" title="{{ config('app.name', 'Kasly') }}">
+                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-12 w-auto max-w-[210px] object-contain">
             </a>
-            @if ($org)
-                <span class="neu-badge-ice" title="Kode Organisasi">
-                    {{ $org->code }}
-                </span>
-            @endif
         </div>
 
-        <!-- Identitas Organisasi Aktif (Neumorphic Inset Card) -->
-        <div class="px-4 pt-3 pb-2 shrink-0">
-            <div class="neu-sidebar-card p-3">
-                <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="text-[10px] font-bold text-navy-500 uppercase tracking-wider">Organisasi Aktif</span>
-                    <span class="neu-badge-pill text-[9.5px] py-0.5 px-2 whitespace-nowrap shrink-0">
-                        {{ $roleName }}
-                    </span>
+        <!-- Identitas Organisasi (Flat Rata Kiri, Tidak Timbul, dengan Ikon Kemahasiswaan) -->
+        <div class="px-5 pt-3.5 pb-3 border-b border-ice-200/60 shrink-0">
+            <div class="flex items-center gap-2 min-w-0">
+                <div class="w-6 h-6 rounded-md bg-ice-200/70 text-navy-700 flex items-center justify-center shrink-0">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
                 </div>
                 <p class="text-xs font-bold text-navy-900 truncate" title="{{ $org->name ?? 'Kasly Ormawa' }}">
                     {{ $org->name ?? 'Kasly Ormawa' }}
                 </p>
+            </div>
+            <div class="mt-1.5 flex items-center pl-8">
+                <span class="inline-flex items-center text-[10px] font-semibold text-navy-600 bg-ice-200/60 px-2 py-0.5 rounded-md border border-ice-200/80 shadow-none">
+                    {{ $roleName }}
+                </span>
             </div>
         </div>
 
@@ -183,14 +183,6 @@
                 <p class="text-xs font-bold text-navy-900 truncate">
                     {{ $user->name ?? 'Pengurus' }}
                 </p>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                    <span class="neu-badge-pill text-[9px] py-0.2 px-1.5 whitespace-nowrap shrink-0">
-                        {{ $roleName }}
-                    </span>
-                    <span class="text-[10px] text-navy-500 truncate" title="{{ $user->email ?? $user->username }}">
-                        {{ '@' . ($user->username ?? Str::before($user->email ?? '', '@')) }}
-                    </span>
-                </div>
             </div>
         </div>
 

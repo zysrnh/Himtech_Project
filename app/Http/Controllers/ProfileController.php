@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\Organization;
+use App\Models\OrganizationRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class ProfileController extends Controller
 
         return view('admin.profile', [
             'user' => Auth::user(),
+            'pendingRequestsCount' => OrganizationRequest::where('status', 'pending')->count(),
         ]);
     }
 

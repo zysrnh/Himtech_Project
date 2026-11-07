@@ -5,7 +5,7 @@
 
 @php
     $user = Auth::user();
-    $pendingCount = $pendingRequestsCount ?? \App\Models\Organization::where('verification_status', 'pending')->count();
+    $pendingCount = $pendingRequestsCount ?? \App\Models\OrganizationRequest::where('status', 'pending')->count();
     $isPlatformActive = in_array($active, ['dashboard', 'organizations', 'admins']);
 @endphp
 

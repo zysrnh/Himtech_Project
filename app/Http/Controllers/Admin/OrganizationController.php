@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\StaffAccountCreatedMail;
 use App\Models\ActivityLog;
 use App\Models\CashCategory;
 use App\Models\Organization;
 use App\Models\User;
+use App\Services\FonnteService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -40,7 +44,7 @@ class OrganizationController extends Controller
     }
 
     /**
-     * Simpan organisasi baru beserta akun staff awalnya.
+     * Simpan organisasi baru beserta akun staff awalnya, lalu blast via WhatsApp (Fonnte) & Email.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -54,13 +58,17 @@ class OrganizationController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
             'staff_name' => ['required', 'string', 'max:255'],
             'staff_email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'staff_phone' => ['required', 'string', 'max:25'],
             'staff_password' => ['nullable', 'string', 'min:6'],
         ]);
 
         $code = Str::upper($validated['code']);
         $password = $validated['staff_password'] ?: 'password';
 
-        DB::transaction(function () use ($validated, $code, $password) {
+        $organization = null;
+        $staff = null;
+
+        DB::transaction(function () use ($validated, $code, $password, &$organization, &$staff) {
             // 1. Simpan Organisasi
             $organization = Organization::create([
                 'name' => $validated['name'],
@@ -69,10 +77,11 @@ class OrganizationController extends Controller
                 'status' => 'active',
             ]);
 
-            // 2. Buat Akun Pengurus / Staff Awal
+            // 2. Buat Akun Pengurus / Staff Awal dengan Nomor WhatsApp
             $staff = User::create([
                 'name' => $validated['staff_name'],
                 'email' => $validated['staff_email'],
+                'phone' => $validated['staff_phone'],
                 'password' => Hash::make($password),
                 'is_super_admin' => false,
             ]);
@@ -113,10 +122,39 @@ class OrganizationController extends Controller
                     'organization_name' => $organization->name,
                     'organization_code' => $organization->code,
                     'staff_email' => $staff->email,
+                    'staff_phone' => $staff->phone,
                 ],
             ]);
         });
 
-        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) dan akun staff berhasil didaftarkan.");
+        // 6. Blast Kredensial via WhatsApp (Fonnte API)
+        if ($staff && !empty($staff->phone)) {
+            FonnteService::sendStaffAccountCreated(
+                phone: $staff->phone,
+                staffName: $staff->name,
+                orgName: $organization->name,
+                orgCode: $organization->code,
+                email: $staff->email,
+                password: $password
+            );
+        }
+
+        // 7. Blast Kredensial via Email
+        if ($staff && !empty($staff->email)) {
+            try {
+                Mail::to($staff->email)->send(new StaffAccountCreatedMail(
+                    staffName: $staff->name,
+                    orgName: $organization->name,
+                    orgCode: $organization->code,
+                    email: $staff->email,
+                    password: $password,
+                    loginUrl: url('/login?role=pengurus')
+                ));
+            } catch (\Throwable $e) {
+                Log::warning("Gagal mengirim email kredensial staff ke [{$staff->email}]: " . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.organizations.index')->with('success', "Organisasi {$validated['name']} ({$code}) berhasil didaftarkan. Kredensial akun staff telah dikirim via WhatsApp dan Email.");
     }
 }

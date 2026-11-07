@@ -283,6 +283,24 @@
                             </div>
 
                             <div>
+                                <label for="staff_phone" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Nomor WhatsApp Staff (Kirim Kredensial via Fonnte)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="staff_phone"
+                                    name="staff_phone"
+                                    value="{{ old('staff_phone') }}"
+                                    required
+                                    placeholder="Contoh: 081234567890"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('staff_phone')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="staff_password" class="block text-[13px] text-navy-500 font-normal mb-2">
                                     Password Awal (Kosongkan jika default: password)
                                 </label>

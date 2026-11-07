@@ -55,11 +55,22 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Widget Status Sistem & Audit Trail (pemantauan status isolasi multi-tenant dan log aktivitas real-time).
 - Halaman 2 - Manajemen Organisasi (/admin/organizations):
   * Tabel Data Lengkap Organisasi: Menampilkan seluruh ormawa terdaftar, kode unik, nama, status badge aktif/nonaktif, dan tanggal pembuatan (dengan paginasi).
-  * Form Onboarding Organisasi Baru: Formulir atomik pendaftaran nama ormawa, kode unik kapital, deskripsi, serta akun Staff 1 (nama, email, password awal).
+  * Form Onboarding Organisasi Baru: Formulir atomik pendaftaran nama ormawa, kode unik kapital, deskripsi, serta akun Staff 1 (nama, email, nomor WhatsApp, password awal).
   * Otomatisasi Kategori Kas: Sistem otomatis membuat 7 kategori kas default (Iuran Wajib, Donasi, Operasional, Konsumsi, ATK, dll) agar ormawa baru siap pakai.
 
 ================================================================================
-5. SISTEM DESAIN & PANDUAN STYLING (ICE & BUTTER V2)
+5. DISPATCH KREDENSIAL OTOMATIS (WHATSAPP GATEWAY FONNTE & EMAIL NOTIFIKASI)
+================================================================================
+- WhatsApp Gateway (Fonnte API):
+  * Pengiriman otomatis pesan resmi rincian akun ke nomor WhatsApp pengurus saat organisasi baru didaftarkan.
+  * Memuat rincian: Nama organisasi, kode unik, peran staff, email login, password sementara, dan tautan login.
+  * Mekanisme Graceful Fallback: Jika token Fonnte belum dikonfigurasi atau koneksi offline, sistem mencatat pesan ke log dan proses pendaftaran tetap berjalan aman tanpa crash.
+- Email Notification (Laravel Mail):
+  * Pengiriman template email resmi bertema Ice & Butter (StaffAccountCreatedMail) ke alamat email pengurus.
+  * Memastikan pengurus memiliki salinan permanen kredensial di kotak masuk email mereka.
+
+================================================================================
+6. SISTEM DESAIN & PANDUAN STYLING (ICE & BUTTER V2)
 ================================================================================
 - Integrasi Tailwind CSS v4 dan kompilasi secepat kilat dengan Vite.
 - Palet warna konsisten:

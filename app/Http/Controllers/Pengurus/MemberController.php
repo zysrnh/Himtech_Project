@@ -43,13 +43,30 @@ class MemberController extends Controller
             ]);
         }
 
-        $members = $organization->members()
-            ->with('user')
-            ->latest('id')
-            ->paginate(15);
+        $search = $request->query('search');
+        $statusFilter = $request->query('status', 'all');
+
+        $query = $organization->members()->with('user');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('member_number', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($statusFilter === 'active') {
+            $query->where('is_active', true);
+        } elseif ($statusFilter === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        $members = $query->latest('id')->paginate(15)->withQueryString();
 
         $totalMembers = $organization->members()->count();
         $activeMembers = $organization->members()->where('is_active', true)->count();
+        $inactiveMembers = $organization->members()->where('is_active', false)->count();
 
         // Bangun URL registrasi resmi untuk disematkan ke dalam QR Code
         $registrationUrl = route('anggota.register.qr', ['token' => $activeToken->token]);
@@ -61,6 +78,9 @@ class MemberController extends Controller
             'registrationUrl' => $registrationUrl,
             'totalMembers' => $totalMembers,
             'activeMembers' => $activeMembers,
+            'inactiveMembers' => $inactiveMembers,
+            'search' => $search,
+            'statusFilter' => $statusFilter,
         ]);
     }
 

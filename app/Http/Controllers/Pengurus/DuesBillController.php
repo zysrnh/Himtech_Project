@@ -7,14 +7,12 @@ use App\Models\ActivityLog;
 use App\Models\DuesBill;
 use App\Models\DuesPeriod;
 use App\Models\Organization;
-use App\Models\OrganizationPaymentMethod;
 use App\Models\Transaction;
 use App\Services\FonnteService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class DuesBillController extends Controller
@@ -306,84 +304,5 @@ class DuesBillController extends Controller
         }
 
         return back()->with('info', "Pesan pengingat telah disiapkan dan dicatat ke log sistem (nomor: {$phone}).");
-    }
-
-    /**
-     * Tambah metode pembayaran mandiri organisasi (Rekening Bank, E-Wallet, atau QRIS Statis).
-     */
-    public function storePaymentMethod(Request $request): RedirectResponse
-    {
-        /** @var Organization $organization */
-        $organization = $request->attributes->get('current_organization') ?? Organization::find(session('active_organization_id'));
-
-        $validated = $request->validate([
-            'type' => ['required', 'string', 'in:bank,ewallet,qris'],
-            'channel_name' => ['required', 'string', 'max:100'],
-            'account_number' => ['nullable', 'string', 'max:100'],
-            'account_holder' => ['nullable', 'string', 'max:150'],
-            'instructions' => ['nullable', 'string', 'max:500'],
-            'qris_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-        ], [
-            'type.required' => 'Pilih jenis metode pembayaran.',
-            'channel_name.required' => 'Nama bank atau e-wallet wajib diisi.',
-            'qris_image.image' => 'File QRIS harus berupa gambar.',
-            'qris_image.max' => 'Ukuran gambar QRIS maksimal 2MB.',
-        ]);
-
-        $qrisPath = null;
-        if ($request->hasFile('qris_image')) {
-            $qrisPath = $request->file('qris_image')->store('qris_methods', 'public');
-        }
-
-        OrganizationPaymentMethod::create([
-            'organization_id' => $organization->id,
-            'type' => $validated['type'],
-            'channel_name' => $validated['channel_name'],
-            'account_number' => $validated['account_number'] ?? null,
-            'account_holder' => $validated['account_holder'] ?? null,
-            'instructions' => $validated['instructions'] ?? null,
-            'qris_image_path' => $qrisPath,
-            'is_active' => true,
-        ]);
-
-        return back()->with('success', "Metode pembayaran \"{$validated['channel_name']}\" berhasil ditambahkan.");
-    }
-
-    /**
-     * Hapus metode pembayaran mandiri organisasi.
-     */
-    public function destroyPaymentMethod(OrganizationPaymentMethod $paymentMethod): RedirectResponse
-    {
-        /** @var Organization $organization */
-        $organization = request()->attributes->get('current_organization') ?? Organization::find(session('active_organization_id'));
-
-        if ($paymentMethod->organization_id !== $organization->id) {
-            abort(403);
-        }
-
-        if ($paymentMethod->qris_image_path && Storage::disk('public')->exists($paymentMethod->qris_image_path)) {
-            Storage::disk('public')->delete($paymentMethod->qris_image_path);
-        }
-
-        $name = $paymentMethod->channel_name;
-        $paymentMethod->delete();
-
-        return back()->with('success', "Metode pembayaran \"{$name}\" berhasil dihapus.");
-    }
-
-    /**
-     * Saklar pengaktifan Midtrans Sandbox ormawa.
-     */
-    public function toggleMidtrans(Request $request): RedirectResponse
-    {
-        /** @var Organization $organization */
-        $organization = $request->attributes->get('current_organization') ?? Organization::find(session('active_organization_id'));
-
-        $organization->is_midtrans_enabled = ! $organization->is_midtrans_enabled;
-        $organization->save();
-
-        $statusText = $organization->is_midtrans_enabled ? 'diaktifkan' : 'dinonaktifkan';
-
-        return back()->with('success', "Pembayaran otomatis via Midtrans Sandbox berhasil {$statusText}.");
     }
 }

@@ -14,8 +14,8 @@
                     <!-- Header -->
                     <tr>
                         <td style="background-color: #2F4862; padding: 24px 32px; color: #FFFFFF;">
-                            <h1 style="margin: 0; font-size: 22px; font-weight: 600;">Kasly</h1>
-                            <p style="margin: 6px 0 0; font-size: 14px; opacity: 0.85;">Pemberitahuan Akun Pengurus Baru</p>
+                            <img src="{{ asset('logo/logo-dark@2x.png') }}" alt="Kasly" height="32" style="height: 32px; width: auto; display: block; border: 0;">
+                            <p style="margin: 8px 0 0; font-size: 14px; opacity: 0.85;">Pemberitahuan Akun Pengurus Baru</p>
                         </td>
                     </tr>
 

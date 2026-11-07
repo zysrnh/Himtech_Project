@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Kasly') }} - Kas Organisasi Transparan</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('logo/icon-kasly.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/icon-32.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo/icon-192.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,8 +20,8 @@
     <!-- Navbar -->
     <header class="w-full bg-white border-b border-ice-200 sticky top-0 z-40">
         <div class="max-w-[1120px] mx-auto px-6 h-18 flex items-center justify-between">
-            <a href="/" class="font-display font-semibold text-2xl text-navy-900 tracking-tight">
-                {{ config('app.name', 'Kasly') }}
+            <a href="/" class="inline-flex items-center gap-2">
+                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-10 w-auto">
             </a>
 
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-navy-500">
@@ -226,8 +230,9 @@
     <!-- Footer -->
     <footer class="w-full bg-white border-t border-ice-200 mt-20">
         <div class="max-w-[1120px] mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-navy-500">
-            <div>
-                © {{ date('Y') }} {{ config('app.name', 'Kasly') }}
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-6 w-auto opacity-70">
+                <span>© {{ date('Y') }} {{ config('app.name', 'Kasly') }}</span>
             </div>
             <div class="flex items-center gap-6">
                 <a href="#kebijakan" class="hover:text-navy-900 transition-colors">Kebijakan Privasi</a>

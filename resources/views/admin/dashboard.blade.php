@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Overview Sistem - {{ config('app.name', 'Kasly') }}</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('logo/icon-kasly.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/icon-32.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo/icon-192.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,8 +22,8 @@
         <div>
             <!-- Brand -->
             <div class="h-18 px-6 flex items-center border-b border-ice-200">
-                <a href="{{ route('admin.dashboard') }}" class="font-display font-semibold text-2xl text-navy-900 tracking-tight">
-                    {{ config('app.name', 'Kasly') }}
+                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center">
+                    <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-9 w-auto">
                 </a>
             </div>
 

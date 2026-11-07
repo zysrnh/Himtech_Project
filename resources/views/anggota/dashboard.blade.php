@@ -341,70 +341,178 @@
                     <!-- STEP 1: PILIH METODE OTOMATIS (VA & QRIS) -->
                     <div id="pay-step-1" class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-navy-900">Pilih Metode Otomatis (Real-Time)</span>
-                            <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">TERVERIFIKASI OTOMATIS</span>
+                            <span class="text-xs font-bold text-navy-900">Pilih Saluran Pembayaran (Real-Time)</span>
+                            <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">VERIFIKASI OTOMATIS</span>
                         </div>
 
-                        <div class="space-y-2">
-                            <!-- BCA VA -->
+                        <!-- DAFTAR LENGKAP 11 METODE PEMBAYARAN MIDTRANS SANDBOX -->
+                        <div class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
+
+                            <!-- 1. QRIS DINAMIS -->
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
-                                    <input type="radio" name="auto_channel" value="bca_va" checked class="text-navy-900 focus:ring-0">
+                                    <input type="radio" name="auto_channel" value="qris" checked class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#EE3124] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        QRIS
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">QRIS Dinamis</p>
+                                        <p class="text-[10px] text-navy-500">GoPay, ShopeePay, DANA, OVO, BCA, Livin, dll</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">SCAN QR</span>
+                            </label>
+
+                            <!-- 2. BCA VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="bca_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#003399] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        BCA
+                                    </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">BCA Virtual Account</p>
-                                        <p class="text-[10px] text-navy-500">Bayar via BCA Mobile, KlikBCA, atau ATM</p>
+                                        <p class="text-[10px] text-navy-500">BCA Mobile, myBCA, KlikBCA, atau ATM</p>
                                     </div>
                                 </div>
-                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">BCA VA</span>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BCA VA</span>
                             </label>
 
-                            <!-- BRI VA -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <input type="radio" name="auto_channel" value="bri_va" class="text-navy-900 focus:ring-0">
-                                    <div>
-                                        <p class="font-bold text-navy-900 text-xs">BRI Virtual Account (BRIVA)</p>
-                                        <p class="text-[10px] text-navy-500">Bayar via BRImo atau ATM BRI</p>
-                                    </div>
-                                </div>
-                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">BRIVA</span>
-                            </label>
-
-                            <!-- BNI VA -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <input type="radio" name="auto_channel" value="bni_va" class="text-navy-900 focus:ring-0">
-                                    <div>
-                                        <p class="font-bold text-navy-900 text-xs">BNI Virtual Account</p>
-                                        <p class="text-[10px] text-navy-500">Bayar via BNI Mobile Banking atau ATM</p>
-                                    </div>
-                                </div>
-                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">BNI VA</span>
-                            </label>
-
-                            <!-- Mandiri Bill -->
+                            <!-- 3. MANDIRI BILL PAYMENT -->
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="mandiri_bill" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#003D79] text-[#F9A825] flex items-center justify-center font-black text-[9px] tracking-tighter shrink-0 shadow-xs">
+                                        MANDIRI
+                                    </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">Mandiri Bill Payment</p>
-                                        <p class="text-[10px] text-navy-500">Bayar via Livin' by Mandiri atau ATM</p>
+                                        <p class="text-[10px] text-navy-500">Livin' by Mandiri atau ATM Mandiri</p>
                                     </div>
                                 </div>
-                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">MANDIRI</span>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">MANDIRI</span>
                             </label>
 
-                            <!-- QRIS Dinamis -->
+                            <!-- 4. BRI VIRTUAL ACCOUNT -->
                             <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
                                 <div class="flex items-center gap-3">
-                                    <input type="radio" name="auto_channel" value="qris" class="text-navy-900 focus:ring-0">
+                                    <input type="radio" name="auto_channel" value="bri_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#00529C] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        BRI
+                                    </div>
                                     <div>
-                                        <p class="font-bold text-navy-900 text-xs">QRIS Dinamis (GoPay / ShopeePay / DANA)</p>
-                                        <p class="text-[10px] text-navy-500">Scan langsung dari aplikasi e-wallet apa saja</p>
+                                        <p class="font-bold text-navy-900 text-xs">BRI Virtual Account (BRIVA)</p>
+                                        <p class="text-[10px] text-navy-500">BRImo atau ATM BRI</p>
                                     </div>
                                 </div>
-                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">QRIS</span>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BRIVA</span>
                             </label>
+
+                            <!-- 5. BNI VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="bni_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#005E6A] text-[#F37023] flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        BNI
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">BNI Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">BNI Mobile Banking atau ATM BNI</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BNI VA</span>
+                            </label>
+
+                            <!-- 6. PERMATA VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="permata_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#008850] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
+                                        PERMATA
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">Permata Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">PermataMobile X atau ATM Permata</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">PERMATA</span>
+                            </label>
+
+                            <!-- 7. CIMB NIAGA VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="cimb_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#ED1B24] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        CIMB
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">CIMB Niaga Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">OCTO Mobile, OCTO Clicks, atau ATM</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">OCTO CIMB</span>
+                            </label>
+
+                            <!-- 8. BANK DANAMON VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="danamon_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#FF6600] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
+                                        DANAMON
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">Bank Danamon Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">D-Bank PRO atau ATM Danamon</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">DANAMON</span>
+                            </label>
+
+                            <!-- 9. BANK SYARIAH INDONESIA (BSI) VA -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="bsi_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#00A39D] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
+                                        BSI
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">BSI Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">BSI Mobile Banking atau ATM BSI</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BSI VA</span>
+                            </label>
+
+                            <!-- 10. SEABANK VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="seabank_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#FF5722] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
+                                        SEABANK
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">SeaBank Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">SeaBank App atau Transfer Bank</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">SEABANK</span>
+                            </label>
+
+                            <!-- 11. BANK SAQU VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="saqu_va" class="text-navy-900 focus:ring-0">
+                                    <div class="w-14 h-7 rounded-md bg-[#6C5CE7] text-white flex items-center justify-center font-black text-[9px] tracking-wider shrink-0 shadow-xs">
+                                        SAQU
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">Bank Saqu Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">Aplikasi Bank Saqu</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">SAQU VA</span>
+                            </label>
+
                         </div>
 
                         <button
@@ -461,6 +569,22 @@
                                 <img id="charge-qris-image" src="" alt="QR Code QRIS" class="w-48 h-48 rounded-xl border border-ice-200 shadow-sm bg-white p-2 object-contain">
                             </div>
                             <p class="text-[11px] text-navy-500">Scan menggunakan aplikasi GoPay, ShopeePay, DANA, OVO, atau m-Banking Anda.</p>
+                            
+                            <!-- Tombol Salin QR String untuk Simulator -->
+                            <div id="row-qr-string" class="pt-1 hidden">
+                                <button
+                                    type="button"
+                                    id="btn-copy-qr-string"
+                                    onclick="copyQrString(this)"
+                                    class="w-full h-8 px-3 rounded-lg bg-ice-200/70 text-navy-900 font-semibold text-xs border border-ice-300/70 hover:bg-ice-300 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>Salin Kode QR String (untuk Simulator)</span>
+                                </button>
+                                <p class="text-[10px] text-navy-500 mt-1">Paste kode ini di menu QRIS simulator Midtrans untuk verifikasi bayar.</p>
+                            </div>
                         </div>
 
                         <!-- Action Controls: Cek Status & Simulasi Lunas -->
@@ -484,10 +608,10 @@
                     </div>
                 @endif
 
-                <!-- Opsi 2: Transfer Bank / E-Wallet / QRIS Statis Ormawa -->
+                @if (false)
+                <!-- Opsi 2: Transfer Bank / E-Wallet / QRIS Statis Ormawa (Disembunyikan Sementara) -->
                 <div class="p-4 rounded-xl bg-ice-100/50 border border-ice-200/70 space-y-3">
                     <span class="text-xs font-bold text-navy-900">2. Transfer Manual ke Rekening Bendahara</span>
-
                     @if ($cashlessMethods->isEmpty())
                         <p class="text-xs text-navy-500 italic">Bendahara belum menambahkan nomor rekening bank ormawa.</p>
                     @else
@@ -503,28 +627,13 @@
                                             <p class="font-mono font-bold text-navy-900 mt-0.5 text-sm select-all">{{ $pm->account_number }}</p>
                                             <p class="text-[11px] text-navy-500">a.n. {{ $pm->account_holder }}</p>
                                         @endif
-                                        @if ($pm->qris_image_path)
-                                            <a href="{{ $pm->qrisUrl() }}" target="_blank" class="inline-block mt-1 text-[11px] text-navy-900 underline font-semibold">
-                                                Lihat Gambar QRIS Ormawa &rarr;
-                                            </a>
-                                        @endif
                                     </div>
-
-                                    @if ($pm->account_number)
-                                        <button
-                                            type="button"
-                                            onclick="copyToClipboard('{{ $pm->account_number }}', this)"
-                                            class="h-7 px-2.5 rounded-lg bg-ice-100 text-navy-900 font-semibold text-[11px] border border-ice-200/70 hover:bg-ice-200 transition-colors cursor-pointer shrink-0"
-                                        >
-                                            Salin
-                                        </button>
-                                    @endif
                                 </div>
                             @endforeach
                         </div>
-                        <p class="text-[11px] text-navy-500">Setelah transfer, silakan konfirmasikan bukti pembayaran ke Bendahara untuk diverifikasi.</p>
                     @endif
                 </div>
+                @endif
             </div>
 
             <!-- KONTEN TAB CASH (TUNAI) -->
@@ -557,6 +666,7 @@
     <script>
         let currentPayingBillId = null;
         let statusPollTimer = null;
+        let currentQrString = null;
 
         function startStatusPolling() {
             stopStatusPolling();
@@ -687,11 +797,17 @@
                     document.getElementById('pay-step-2').classList.remove('hidden');
 
                     const channelMap = {
+                        'qris': 'QRIS Dinamis',
                         'bca_va': 'BCA Virtual Account',
+                        'mandiri_bill': 'Mandiri Bill Payment',
                         'bri_va': 'BRI Virtual Account (BRIVA)',
                         'bni_va': 'BNI Virtual Account',
-                        'mandiri_bill': 'Mandiri Bill Payment',
-                        'qris': 'QRIS Dinamis'
+                        'permata_va': 'Permata Virtual Account',
+                        'cimb_va': 'CIMB Niaga Virtual Account',
+                        'danamon_va': 'Bank Danamon Virtual Account',
+                        'bsi_va': 'BSI Virtual Account',
+                        'seabank_va': 'SeaBank Virtual Account',
+                        'saqu_va': 'Bank Saqu Virtual Account'
                     };
 
                     document.getElementById('charge-channel-label').innerText = channelMap[paymentType] || 'Virtual Account';
@@ -700,6 +816,16 @@
                         document.getElementById('box-va-display').classList.add('hidden');
                         document.getElementById('box-qris-display').classList.remove('hidden');
                         document.getElementById('charge-qris-image').src = data.qr_url;
+
+                        currentQrString = data.qr_string || null;
+                        const rowQrString = document.getElementById('row-qr-string');
+                        if (rowQrString) {
+                            if (currentQrString) {
+                                rowQrString.classList.remove('hidden');
+                            } else {
+                                rowQrString.classList.add('hidden');
+                            }
+                        }
                     } else {
                         document.getElementById('box-va-display').classList.remove('hidden');
                         document.getElementById('box-qris-display').classList.add('hidden');
@@ -732,6 +858,15 @@
                 const orig = btn.innerText;
                 btn.innerText = 'Tersalin!';
                 setTimeout(() => { btn.innerText = orig; }, 2000);
+            });
+        }
+
+        function copyQrString(btn) {
+            if (!currentQrString) return;
+            navigator.clipboard.writeText(currentQrString).then(() => {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<span>Kode QR String Berhasil Disalin!</span>';
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
             });
         }
 

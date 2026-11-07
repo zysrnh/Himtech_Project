@@ -36,7 +36,11 @@ class MidtransController extends Controller
         }
 
         $validated = $request->validate([
-            'payment_type' => ['required', 'string', 'in:bca_va,bri_va,bni_va,mandiri_bill,permata_va,qris'],
+            'payment_type' => [
+                'required',
+                'string',
+                'in:bca_va,bri_va,bni_va,mandiri_bill,permata_va,cimb_va,danamon_va,bsi_va,seabank_va,saqu_va,qris',
+            ],
         ]);
 
         $serverKey = config('services.midtrans.server_key');
@@ -81,6 +85,26 @@ class MidtransController extends Controller
                 $payload['payment_type'] = 'bank_transfer';
                 $payload['bank_transfer'] = ['bank' => 'bni'];
                 break;
+            case 'cimb_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'cimb'];
+                break;
+            case 'bsi_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'bsi'];
+                break;
+            case 'danamon_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'danamon'];
+                break;
+            case 'seabank_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'seabank'];
+                break;
+            case 'saqu_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'saqu'];
+                break;
             case 'permata_va':
                 $payload['payment_type'] = 'permata';
                 break;
@@ -111,6 +135,7 @@ class MidtransController extends Controller
                 $vaNumber = $data['va_numbers'][0]['va_number'] ?? ($data['permata_va_number'] ?? ($data['bill_key'] ?? null));
                 $billerCode = $data['biller_code'] ?? null;
                 $qrUrl = null;
+                $qrString = $data['qr_string'] ?? null;
 
                 if ($validated['payment_type'] === 'qris') {
                     $qrUrl = $data['actions'][0]['url'] ?? "https://api.sandbox.midtrans.com/v2/qris/{$data['transaction_id']}/qr-code";
@@ -128,6 +153,7 @@ class MidtransController extends Controller
                     'va_number' => $vaNumber,
                     'biller_code' => $billerCode,
                     'qr_url' => $qrUrl,
+                    'qr_string' => $qrString,
                     'expiry_time' => $data['expiry_time'] ?? now()->addDay()->format('Y-m-d H:i:s'),
                     'gross_amount' => $grossAmount,
                 ]);
@@ -150,6 +176,7 @@ class MidtransController extends Controller
                 'va_number' => $mockVa,
                 'biller_code' => '70012',
                 'qr_url' => 'https://api.sandbox.midtrans.com/v2/qris/mock-sample/qr-code',
+                'qr_string' => '00020101021226590014ID.LINKAJA.WWW011893600911002247738002150000000000000010303UMI51440014ID.GO-PAY.WWW0215G297001444495210303UMI5204581253033605802ID5911KASLY ORMAWA6007JAKARTA61051293062070703A016304C92E',
                 'expiry_time' => now()->addDay()->format('Y-m-d H:i:s'),
                 'gross_amount' => $grossAmount,
             ]);

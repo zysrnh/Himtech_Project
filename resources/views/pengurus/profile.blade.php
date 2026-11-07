@@ -50,15 +50,22 @@
             </nav>
         </div>
 
-        <!-- User Info & Logout -->
+        <!-- User Info & Logout dengan Avatar -->
         <div class="p-4 border-t border-ice-200">
-            <div class="px-2 mb-3">
-                <p class="text-sm font-medium text-navy-900 truncate">
-                    {{ Auth::user()->name }}
-                </p>
-                <p class="text-[13px] text-navy-500 truncate">
-                    {{ Auth::user()->email ?? Auth::user()->username }}
-                </p>
+            <div class="flex items-center gap-3 mb-3 px-1">
+                <img
+                    src="{{ Auth::user()->avatarUrl() }}"
+                    alt="{{ Auth::user()->name }}"
+                    class="w-10 h-10 rounded-full object-cover border border-ice-200 shrink-0 bg-ice-100"
+                >
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-navy-900 truncate">
+                        {{ Auth::user()->name }}
+                    </p>
+                    <p class="text-[12px] text-navy-500 truncate">
+                        {{ Auth::user()->email ?? Auth::user()->username }}
+                    </p>
+                </div>
             </div>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -82,7 +89,7 @@
                     Pengaturan Profil Pengurus
                 </h1>
                 <p class="text-sm text-navy-500 mt-1">
-                    Kelola data identitas akun pengurus, nomor WhatsApp notifikasi, dan kata sandi login Anda.
+                    Kelola foto profil, data identitas akun pengurus, nomor WhatsApp notifikasi, dan kata sandi login Anda.
                 </p>
             </div>
 
@@ -101,9 +108,48 @@
 
             <!-- Card Formulir Profil -->
             <div class="bg-white rounded-lg p-8 shadow-card border border-ice-200">
-                <form action="{{ route('pengurus.profile.update') }}" method="POST" class="space-y-6">
+                <form action="{{ route('pengurus.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     @method('PUT')
+
+                    <!-- Foto Profil Avatar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-5 p-4 rounded-md bg-ice-100/50 border border-ice-200">
+                        <div class="relative shrink-0">
+                            <img
+                                id="avatar-preview"
+                                src="{{ $user->avatarUrl() }}"
+                                alt="{{ $user->name }}"
+                                class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm bg-ice-100"
+                            >
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <label class="block text-xs font-semibold text-navy-900">
+                                Foto Profil Pengurus
+                            </label>
+                            <p class="text-[11px] text-navy-500">
+                                Unggah foto profil resmi pengurus (JPG, PNG, atau WebP, maks. 2MB).
+                            </p>
+                            <div class="flex flex-wrap items-center gap-2 pt-1">
+                                <label class="inline-flex items-center justify-center h-8 px-3 rounded-md bg-white border border-ice-200 text-navy-900 text-xs font-medium hover:bg-ice-100 transition-colors cursor-pointer shadow-xs">
+                                    Pilih Foto
+                                    <input
+                                        type="file"
+                                        name="avatar"
+                                        id="avatar-input"
+                                        accept="image/png,image/jpeg,image/webp"
+                                        class="hidden"
+                                        onchange="previewAvatar(this)"
+                                    >
+                                </label>
+                                @if ($user->avatar)
+                                    <label class="inline-flex items-center gap-1.5 text-xs text-danger font-medium cursor-pointer ml-2">
+                                        <input type="checkbox" name="remove_avatar" value="1" class="rounded border-ice-200 text-danger focus:ring-danger">
+                                        Hapus Foto Profil
+                                    </label>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
 
                     <div>
                         <label for="name" class="block text-[13px] text-navy-500 font-medium mb-2">
@@ -229,6 +275,18 @@
 
         </div>
     </main>
+
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatar-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 
 </body>
 </html>

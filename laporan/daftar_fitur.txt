@@ -156,13 +156,17 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Tombol "Tolak": Mengarsipkan pengajuan dan mengirimkan pesan penolakan yang sopan ke WhatsApp pemohon.
 
 ================================================================================
-11. MANAJEMEN PROFIL PENGGUNA & KONTAK NOTIFIKASI WHATSAPP
+11. MANAJEMEN PROFIL PENGGUNA, FOTO PROFIL (AVATAR) & KONTAK WHATSAPP [STATUS: OK - SELESAI]
 ================================================================================
-- Endpoint Super Admin: /admin/profile
+- Endpoint Super Admin & Admin Penerima: /admin/profile
 - Endpoint Pengurus Ormawa: /pengurus/profile
-- Fitur Pengaturan Mandiri:
+- Endpoint Anggota Mahasiswa: /anggota/profile
+- Fitur Pengaturan Mandiri Universal:
+  * Pengelolaan Foto Profil (Avatar): Seluruh peran (Super Admin, Admin Penerima, Pengurus, dan Anggota) dapat mengunggah foto profil resmi (JPG, PNG, WebP hingga 2MB) dengan pratinjau instan di browser dan opsi hapus avatar untuk kembali ke avatar inisial resmi Kasly.
+  * Tampilan Avatar di Seluruh Sidebar: Foto profil pengguna otomatis ditampilkan di kartu profil bawah seluruh sidebar web (Admin, Pengurus, dan Anggota).
   * Pengubahan Nama Lengkap, Username, dan Email.
-  * Pengaturan Nomor WhatsApp Aktif: Menjadi nomor tujuan resmi sistem Fonnte untuk menerima alert pengajuan baru dan notifikasi sistem penting.
+  * Penyesuaian NIM / Nomor Anggota Mandiri (khusus anggota, otomatis menyinkronkan username akun login).
+  * Pengaturan Nomor WhatsApp Aktif: Menjadi nomor tujuan resmi sistem Fonnte untuk menerima alert dan notifikasi kas penting.
   * Pembaruan Kata Sandi Mandiri dengan konfirmasi kata sandi.
 
 ================================================================================

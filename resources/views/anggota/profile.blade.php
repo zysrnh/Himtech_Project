@@ -73,19 +73,26 @@
             </nav>
         </div>
 
-        <!-- User Info & Logout -->
+        <!-- User Info & Logout dengan Avatar -->
         <div class="p-4 border-t border-ice-200">
-            <div class="px-2 mb-3">
-                <p class="text-sm font-medium text-navy-900 truncate" title="{{ $member?->name ?? $user->name }}">
-                    {{ $member?->name ?? $user->name }}
-                </p>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                    <span class="inline-block text-[11px] px-2 py-0.5 rounded bg-butter-100 text-navy-900 font-semibold uppercase">
-                        Anggota
-                    </span>
-                    <span class="text-xs text-navy-500 font-mono truncate">
-                        {{ $member?->member_number ?? $user->username }}
-                    </span>
+            <div class="flex items-center gap-3 mb-3 px-1">
+                <img
+                    src="{{ Auth::user()->avatarUrl() }}"
+                    alt="{{ Auth::user()->name }}"
+                    class="w-10 h-10 rounded-full object-cover border border-ice-200 shrink-0 bg-ice-100"
+                >
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-navy-900 truncate" title="{{ $member?->name ?? $user->name }}">
+                        {{ $member?->name ?? $user->name }}
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                        <span class="inline-block text-[10px] px-1.5 py-0.2 rounded bg-butter-100 text-navy-900 font-semibold uppercase">
+                            Anggota
+                        </span>
+                        <span class="text-[11px] text-navy-500 font-mono truncate">
+                            {{ $member?->member_number ?? $user->username }}
+                        </span>
+                    </div>
                 </div>
             </div>
             <form action="{{ route('anggota.logout') }}" method="POST">
@@ -111,7 +118,7 @@
                         Profil & Keamanan Akun
                     </h1>
                     <p class="text-sm text-navy-500 mt-1">
-                        Sesuaikan nama asli, NIM kampus Anda, kontak WhatsApp, atau ubah kata sandi akun.
+                        Sesuaikan foto profil, nama asli, NIM kampus Anda, kontak WhatsApp, atau ubah kata sandi akun.
                     </p>
                 </div>
                 <a
@@ -136,9 +143,48 @@
 
             <!-- Form Edit Profil & Kata Sandi Anggota -->
             <div class="bg-white rounded-lg p-6 sm:p-8 shadow-card border border-ice-200">
-                <form action="{{ route('anggota.profile.update') }}" method="POST" class="space-y-5">
+                <form action="{{ route('anggota.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
                     @method('PUT')
+
+                    <!-- Foto Profil Avatar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-5 p-4 rounded-md bg-ice-100/50 border border-ice-200">
+                        <div class="relative shrink-0">
+                            <img
+                                id="avatar-preview"
+                                src="{{ $user->avatarUrl() }}"
+                                alt="{{ $user->name }}"
+                                class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm bg-ice-100"
+                            >
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <label class="block text-xs font-semibold text-navy-900">
+                                Foto Profil
+                            </label>
+                            <p class="text-[11px] text-navy-500">
+                                Unggah foto profil resmi Anda (JPG, PNG, atau WebP, maks. 2MB).
+                            </p>
+                            <div class="flex flex-wrap items-center gap-2 pt-1">
+                                <label class="inline-flex items-center justify-center h-8 px-3 rounded-md bg-white border border-ice-200 text-navy-900 text-xs font-medium hover:bg-ice-100 transition-colors cursor-pointer shadow-xs">
+                                    Pilih Foto
+                                    <input
+                                        type="file"
+                                        name="avatar"
+                                        id="avatar-input"
+                                        accept="image/png,image/jpeg,image/webp"
+                                        class="hidden"
+                                        onchange="previewAvatar(this)"
+                                    >
+                                </label>
+                                @if ($user->avatar)
+                                    <label class="inline-flex items-center gap-1.5 text-xs text-danger font-medium cursor-pointer ml-2">
+                                        <input type="checkbox" name="remove_avatar" value="1" class="rounded border-ice-200 text-danger focus:ring-danger">
+                                        Hapus Foto Profil
+                                    </label>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- NIM / Nomor Anggota Editable -->
                     <div>
@@ -257,6 +303,18 @@
 
         </div>
     </main>
+
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatar-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 
 </body>
 </html>

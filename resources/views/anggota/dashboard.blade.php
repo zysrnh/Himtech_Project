@@ -73,19 +73,26 @@
             </nav>
         </div>
 
-        <!-- User Info & Logout -->
+        <!-- User Info & Logout dengan Avatar -->
         <div class="p-4 border-t border-ice-200">
-            <div class="px-2 mb-3">
-                <p class="text-sm font-medium text-navy-900 truncate" title="{{ $member->name }}">
-                    {{ $member->name }}
-                </p>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                    <span class="inline-block text-[11px] px-2 py-0.5 rounded bg-butter-100 text-navy-900 font-semibold uppercase">
-                        Anggota
-                    </span>
-                    <span class="text-xs text-navy-500 font-mono truncate">
-                        {{ $member->member_number }}
-                    </span>
+            <div class="flex items-center gap-3 mb-3 px-1">
+                <img
+                    src="{{ Auth::user()->avatarUrl() }}"
+                    alt="{{ Auth::user()->name }}"
+                    class="w-10 h-10 rounded-full object-cover border border-ice-200 shrink-0 bg-ice-100"
+                >
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-navy-900 truncate" title="{{ $member->name }}">
+                        {{ $member->name }}
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                        <span class="inline-block text-[10px] px-1.5 py-0.2 rounded bg-butter-100 text-navy-900 font-semibold uppercase">
+                            Anggota
+                        </span>
+                        <span class="text-[11px] text-navy-500 font-mono truncate">
+                            {{ $member->member_number }}
+                        </span>
+                    </div>
                 </div>
             </div>
             <form action="{{ route('anggota.logout') }}" method="POST">

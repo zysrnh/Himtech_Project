@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -44,11 +46,15 @@ class ProfileController extends Controller
             'username' => ['nullable', 'string', 'max:50', 'alpha_dash', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['required', 'string', 'max:25'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'phone.required' => 'Nomor WhatsApp wajib diisi sebagai nomor penerima alert notifikasi sistem Fonnte.',
+            'avatar.image' => 'File avatar harus berupa gambar.',
+            'avatar.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'avatar.max' => 'Ukuran foto profil maksimal 2MB.',
             'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
             'password.min' => 'Kata sandi baru minimal 8 karakter.',
         ]);
@@ -59,6 +65,8 @@ class ProfileController extends Controller
         }
         $user->email = $validated['email'];
         $user->phone = $validated['phone'];
+
+        $this->handleAvatarUpload($request, $user);
 
         if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
@@ -99,12 +107,16 @@ class ProfileController extends Controller
             'username' => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['required', 'string', 'max:25'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'username.required' => 'Username login wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'phone.required' => 'Nomor WhatsApp wajib diisi.',
+            'avatar.image' => 'File avatar harus berupa gambar.',
+            'avatar.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'avatar.max' => 'Ukuran foto profil maksimal 2MB.',
             'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
             'password.min' => 'Kata sandi baru minimal 8 karakter.',
         ]);
@@ -113,6 +125,8 @@ class ProfileController extends Controller
         $user->username = Str::lower($validated['username']);
         $user->email = $validated['email'];
         $user->phone = $validated['phone'];
+
+        $this->handleAvatarUpload($request, $user);
 
         if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
@@ -172,12 +186,16 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['nullable', 'string', 'max:25'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'password' => ['nullable', 'string', 'min:6', 'confirmed'],
         ], [
             'member_number.required' => 'Nomor Anggota / NIM wajib diisi.',
             'member_number.alpha_dash' => 'NIM / Nomor Anggota hanya boleh huruf, angka, dan tanda strip/garis bawah.',
             'member_number.unique' => 'NIM / Nomor Anggota ini sudah terdaftar di organisasi ini.',
             'name.required' => 'Nama lengkap wajib diisi.',
+            'avatar.image' => 'File avatar harus berupa gambar.',
+            'avatar.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'avatar.max' => 'Ukuran foto profil maksimal 2MB.',
             'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
             'password.min' => 'Kata sandi baru minimal 6 karakter.',
         ]);
@@ -188,6 +206,8 @@ class ProfileController extends Controller
         $user->username = Str::lower($nim);
         $user->email = $validated['email'] ?? null;
         $user->phone = $validated['phone'] ?? null;
+
+        $this->handleAvatarUpload($request, $user);
 
         if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
@@ -205,5 +225,24 @@ class ProfileController extends Controller
         }
 
         return redirect()->route('anggota.profile')->with('success', 'Profil dan identitas akun anggota Anda berhasil diperbarui. Username login Anda telah disesuaikan.');
+    }
+
+    /**
+     * Proses unggah atau hapus foto profil avatar user.
+     */
+    private function handleAvatarUpload(Request $request, User $user): void
+    {
+        if ($request->boolean('remove_avatar')) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $user->avatar = null;
+        } elseif ($request->hasFile('avatar')) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
     }
 }

@@ -110,15 +110,15 @@ body {
     max-width: 44ch;
 }
 
-/* 3. Jarak Vertikal Rapat (Total 64 - 80px) */
+/* 3. Jarak Vertikal Rapat & Seimbang */
 .landing-neu__hero-section {
-    padding-top: clamp(28px, 4vw, 48px);
-    padding-bottom: clamp(32px, 3vw, 40px);
+    padding-top: clamp(20px, 3vw, 36px);
+    padding-bottom: clamp(14px, 1.5vw, 20px);
 }
 
 .landing-neu__access-section {
-    padding-top: clamp(32px, 3vw, 40px);
-    padding-bottom: clamp(48px, 5vw, 64px);
+    padding-top: clamp(14px, 1.5vw, 20px);
+    padding-bottom: clamp(40px, 4vw, 56px);
 }
 
 /* 4. Card & Komponen Neumorphism */

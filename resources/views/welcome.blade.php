@@ -30,7 +30,7 @@
                     <a href="#fitur" class="floating-capsule-nav__link">Fitur</a>
                     <a href="#cara-kerja" class="floating-capsule-nav__link hidden sm:inline-block">Cara Kerja</a>
                     <a href="#faq" class="floating-capsule-nav__link hidden md:inline-block">FAQ</a>
-                    <a href="#pilih-akses" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
+                    <a href="{{ route('ajukan-organisasi') }}" class="floating-capsule-nav__link hidden lg:inline-block">Ajukan Organisasi</a>
                 </div>
 
                 <!-- Right Pill Button with Micro-Animations -->
@@ -64,18 +64,39 @@
         <!-- Hero Section -->
         <section class="landing-neu__container landing-neu__hero-section">
             <div class="landing-neu__hero-grid">
-                <!-- Kolom Kiri: Teks & Tombol Primer -->
+                <!-- Kolom Kiri: Teks, Tombol, & Badge Keunggulan -->
                 <div class="contents lg:block">
                     <h1 class="landing-neu__hero-title font-display font-semibold text-navy-900 tracking-tight order-1">
                         Kas organisasi, rapi tanpa buku tulis.
                     </h1>
-                    <p class="landing-neu__hero-desc mt-2 lg:mt-6 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal order-3">
-                        Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
+                    <p class="landing-neu__hero-desc mt-2 lg:mt-5 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal order-3">
+                        Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota ormawa secara terpusat.
                     </p>
-                    <div class="mt-4 lg:mt-8 flex flex-col sm:flex-row gap-4 order-4">
+                    <div class="mt-4 lg:mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 order-4">
                         <a href="#pilih-akses" class="neu-btn neu-btn--primary">
-                            Masuk ke Sistem Kasly
+                            <span>Masuk ke Sistem Kasly</span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                         </a>
+                        <a href="{{ route('ajukan-organisasi') }}" class="neu-btn neu-btn--secondary">
+                            <span>Ajukan Organisasi Baru</span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- 3 Feature Highlights (Mengisi gap vertikal agar seimbang dengan kartu saldo di kanan) -->
+                    <div class="mt-6 lg:mt-8 pt-5 border-t border-ice-200/60 flex flex-wrap items-center gap-2.5 order-5">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] text-xs font-semibold text-navy-900">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>100% Kas Transparan</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] text-xs font-semibold text-navy-900">
+                            <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            <span>Locked Ledger Anti-Manipulasi</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] text-xs font-semibold text-navy-900">
+                            <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <span>QRIS & Notifikasi WhatsApp</span>
+                        </div>
                     </div>
                 </div>
 

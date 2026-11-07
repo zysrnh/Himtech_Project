@@ -49,21 +49,14 @@
 <aside
     id="sidebar-admin"
     data-app-sidebar
-    class="w-[260px] neu-sidebar hidden md:flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-30 select-none transition-all duration-300 ease-in-out"
+    class="w-[260px] neu-sidebar hidden md:flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-40 select-none transition-all duration-300 ease-in-out"
 >
     <div class="flex flex-col min-h-0 flex-1">
-        <!-- Brand & Platform Header -->
+        <!-- Brand Header (Logo Kasly & Tombol Collapse/Expand) -->
         <div class="h-20 px-3 flex items-center justify-between border-b border-ice-200/70 shrink-0 sidebar-header-box">
             <!-- Full Logo saat expanded -->
             <a href="{{ route('admin.dashboard') }}" class="sidebar-brand-full inline-flex items-center justify-center flex-1 pl-3" title="{{ config('app.name', 'Kasly') }}">
                 <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-11 w-auto max-w-[170px] object-contain">
-            </a>
-
-            <!-- Icon Logo saat collapsed -->
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-brand-icon hidden items-center justify-center w-full py-2" title="{{ config('app.name', 'Kasly') }}">
-                <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center border border-white/90 shadow-[3px_3px_8px_rgba(122,163,214,0.35),-3px_-3px_8px_rgba(255,255,255,0.9)]">
-                    <img src="{{ asset('logo/icon-kasly.svg') }}" onerror="this.onerror=null; this.src='{{ asset('favicon.ico') }}';" alt="Kasly" class="w-5 h-5 object-contain">
-                </div>
             </a>
 
             <!-- Tombol Toggle Collapse/Expand Sidebar -->
@@ -82,24 +75,28 @@
             </button>
         </div>
 
-        <!-- Identitas Sistem Kasly (Neumorphic Inset Card) -->
-        <div class="px-4 pt-3 pb-2 shrink-0 sidebar-identity-box">
-            <div class="neu-sidebar-card p-3">
-                <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="text-[10px] font-bold text-navy-500 uppercase tracking-wider">Pusat Kontrol</span>
-                    <span class="neu-badge-ice text-[9px] py-0.2 px-1.5">
-                        GLOBAL
+        <!-- Identitas Sistem Kasly -->
+        <div class="px-3 pt-3.5 pb-3 border-b border-ice-200/60 shrink-0 sidebar-org-box">
+            <div class="sidebar-org-inner flex items-center gap-2.5 min-w-0">
+                <div class="sidebar-org-icon w-8 h-8 rounded-xl bg-ice-200/70 text-navy-700 flex items-center justify-center shrink-0 transition-all" title="Pusat Kontrol Kasly">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <div class="sidebar-org-text min-w-0 flex-1">
+                    <p class="text-xs font-bold text-navy-900 truncate" title="Pusat Kontrol Kasly">
+                        Pusat Kontrol Kasly
+                    </p>
+                    <span class="text-[11px] font-medium text-navy-500">
+                        {{ $roleName }}
                     </span>
                 </div>
-                <p class="text-xs font-bold text-navy-900 truncate" title="Sistem Manajemen Kasly">
-                    Sistem Multi-Tenant Kasly
-                </p>
             </div>
         </div>
 
         <!-- Navigasi Menu (Scrollable) -->
-        <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 custom-scrollbar">
-            <!-- Group: Manajemen Platform (Dropdown Interaktif) -->
+        <nav class="flex-1 overflow-y-auto px-2.5 py-2 space-y-1.5 custom-scrollbar">
+            <!-- Group: Kelola Platform (Dropdown Interaktif) -->
             <div class="neu-dropdown-group" data-sidebar-dropdown>
                 <button
                     type="button"
@@ -113,16 +110,9 @@
                         </svg>
                         <span class="sidebar-text truncate">Kelola Platform</span>
                     </span>
-                    <div class="flex items-center gap-1.5 shrink-0 sidebar-badge-box">
-                        @if ($pendingCount > 0)
-                            <span class="neu-badge-pill text-[9px] py-0 px-1.5 bg-butter-100">
-                                {{ $pendingCount }}
-                            </span>
-                        @endif
-                        <svg class="w-3.5 h-3.5 text-navy-500 transition-transform duration-200" data-sidebar-icon fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </div>
+                    <svg class="w-3.5 h-3.5 text-navy-500 transition-transform duration-200 shrink-0" data-sidebar-icon fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
                 </button>
                 <div class="neu-dropdown-content space-y-1 mt-1 pl-1" data-sidebar-content>
                     <a
@@ -191,35 +181,27 @@
     <!-- User Profile & Logout Footer -->
     <div class="p-3 border-t border-ice-200/70 bg-white/40 shrink-0">
         <div class="flex items-center gap-2.5 mb-2.5 px-1 sidebar-user-box">
-            <div class="neu-avatar-ring shrink-0">
+            <div class="neu-avatar-ring shrink-0" title="{{ $user->name ?? 'Admin' }}">
                 <img
                     src="{{ $user ? $user->avatarUrl() : asset('logo/logo-light.svg') }}"
                     alt="{{ $user->name ?? 'Admin' }}"
                     class="w-9 h-9 rounded-full object-cover bg-ice-100"
                 >
             </div>
-            <div class="min-w-0 flex-1 sidebar-user-info">
+            <div class="min-w-0 flex-1 sidebar-user-text">
                 <p class="text-xs font-bold text-navy-900 truncate">
-                    {{ $user->name ?? 'Super Admin' }}
+                    {{ $user->name ?? 'Admin' }}
                 </p>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                    <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">
-                        {{ $roleName }}
-                    </span>
-                    <span class="text-[10px] text-navy-500 truncate" title="{{ $user->email ?? 'admin@kasly.id' }}">
-                        {{ $user->email ?? 'admin@kasly.id' }}
-                    </span>
-                </div>
             </div>
         </div>
 
         <button
             type="button"
             onclick="openLogoutModal()"
-            class="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-ice-100/90 text-navy-900 font-semibold text-xs border border-ice-200/80 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),1px_1px_3px_rgba(122,163,214,0.25)] hover:bg-ice-200/70 active:shadow-[inset_2px_2px_4px_rgba(122,163,214,0.35)] transition-all cursor-pointer"
+            class="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-ice-100/90 text-navy-900 font-semibold text-xs border border-ice-200/80 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),1px_1px_3px_rgba(122,163,214,0.25)] hover:bg-red-50 hover:text-danger hover:border-red-200 active:shadow-[inset_2px_2px_4px_rgba(122,163,214,0.35)] transition-all cursor-pointer"
             title="Keluar Sesi"
         >
-            <svg class="w-3.5 h-3.5 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-current shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             <span class="sidebar-btn-text">Keluar Sesi</span>
@@ -315,16 +297,46 @@
 
 <script>
     window.openLogoutModal = function() {
-        const modal = document.getElementById('modal-logout-confirm');
-        if (modal) {
-            modal.style.display = 'flex';
+        const m = document.getElementById('modal-logout-confirm');
+        if (m) {
+            m.style.display = 'flex';
         }
     };
 
     window.closeLogoutModal = function() {
-        const modal = document.getElementById('modal-logout-confirm');
-        if (modal) {
-            modal.style.display = 'none';
+        const m = document.getElementById('modal-logout-confirm');
+        if (m) {
+            m.style.display = 'none';
         }
     };
+
+    window.toggleAppSidebar = function() {
+        const sb = document.querySelector('[data-app-sidebar]') || document.getElementById('sidebar-admin') || document.getElementById('sidebar-pengurus');
+        if (!sb) return;
+        const isCollapsed = sb.classList.toggle('is-collapsed');
+        localStorage.setItem('kasly_sidebar_collapsed', isCollapsed ? '1' : '0');
+        updateSidebarIcons(isCollapsed);
+    };
+
+    function updateSidebarIcons(isCollapsed) {
+        const iconCollapse = document.getElementById('icon-chevron-collapse');
+        const iconExpand = document.getElementById('icon-chevron-expand');
+        if (iconCollapse && iconExpand) {
+            if (isCollapsed) {
+                iconCollapse.classList.add('hidden');
+                iconExpand.classList.remove('hidden');
+            } else {
+                iconCollapse.classList.remove('hidden');
+                iconExpand.classList.add('hidden');
+            }
+        }
+    }
+
+    if (localStorage.getItem('kasly_sidebar_collapsed') === '1') {
+        const sb = document.querySelector('[data-app-sidebar]') || document.getElementById('sidebar-admin') || document.getElementById('sidebar-pengurus');
+        if (sb) {
+            sb.classList.add('is-collapsed');
+            updateSidebarIcons(true);
+        }
+    }
 </script>

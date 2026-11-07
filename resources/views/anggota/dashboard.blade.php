@@ -217,6 +217,10 @@
                                             <svg class="w-2.5 h-2.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                             Lunas
                                         </span>
+                                    @elseif (!empty($bill['is_pending']))
+                                        <span class="inline-flex items-center gap-1 text-[8.5px] font-bold text-amber-800 bg-amber-100/90 px-1.5 py-0.5 rounded border border-amber-300">
+                                            Menunggu ACC
+                                        </span>
                                     @else
                                         <button
                                             type="button"
@@ -296,8 +300,9 @@
                                                     Lunas
                                                 </span>
                                             @elseif ($bill->status === 'pending')
-                                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-ice-200 text-navy-900 font-semibold text-xs">
-                                                    Menunggu Verifikasi
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-semibold text-xs border border-amber-300">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                                                    Menunggu ACC
                                                 </span>
                                             @else
                                                 <span class="inline-block px-2.5 py-0.5 rounded-full bg-danger/10 text-danger font-semibold text-xs">
@@ -335,6 +340,10 @@
                                                     </svg>
                                                     <span>Bayar</span>
                                                 </button>
+                                            @elseif ($bill->status === 'pending')
+                                                <span class="text-xs font-semibold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                                                    Menunggu ACC
+                                                </span>
                                             @else
                                                 <span class="text-xs text-navy-500 italic">Lunas</span>
                                             @endif
@@ -820,8 +829,37 @@
                         <p class="text-navy-700 leading-relaxed">{{ $cashMethod?->instructions ?? 'Silakan serahkan uang tunai langsung ke Bendahara saat pertemuan/kumpul rutin ormawa.' }}</p>
                     </div>
 
-                    <p class="text-[11px] text-navy-500 leading-relaxed">
-                        Bendahara akan langsung memverifikasi pelunasan Anda pada aplikasi Kasly begitu uang tunai diterima secara fisik.
+                    <!-- Form Konfirmasi Bayar Tunai (Checkbox & Tombol Minta ACC Admin) -->
+                    <form id="form-confirm-cash" method="POST" action="" class="space-y-3 pt-2 border-t border-ice-200/70">
+                        @csrf
+                        <label class="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-ice-300 text-xs text-navy-900 cursor-pointer hover:border-navy-500 transition-colors">
+                            <input
+                                type="checkbox"
+                                name="confirm_cash"
+                                id="checkbox-confirm-cash"
+                                value="1"
+                                required
+                                class="mt-0.5 rounded text-navy-900 border-ice-300 focus:ring-0 cursor-pointer"
+                            >
+                            <span class="leading-relaxed text-[11.5px]">
+                                <strong>Saya menyatakan akan / telah membayar tunai</strong> sebesar <span id="cash-bill-amount" class="font-bold text-navy-900">Rp 0</span> secara langsung kepada Bendahara.
+                            </span>
+                        </label>
+
+                        <button
+                            type="submit"
+                            id="btn-submit-cash-confirm"
+                            class="w-full h-10 px-4 rounded-xl bg-navy-900 text-white font-bold text-xs hover:bg-navy-700 active:scale-[0.99] transition-all cursor-pointer shadow-xs flex items-center justify-center gap-2"
+                        >
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Konfirmasi Bayar Tunai (Minta ACC Admin)</span>
+                        </button>
+                    </form>
+
+                    <p class="text-[10.5px] text-navy-500 leading-relaxed italic text-center">
+                        Setelah menekan tombol ini, status tagihan Anda berubah menjadi "Menunggu ACC". Bendahara akan melakukan verifikasi lunas di aplikasi saat menerima uang fisik.
                     </p>
                 </div>
             </div>
@@ -913,6 +951,21 @@
             document.getElementById('pay-bill-title').innerText = title;
             document.getElementById('pay-bill-amount').innerText = 'Rp ' + Number(amount).toLocaleString('id-ID');
             document.getElementById('pay-bill-due').innerText = dueDate;
+
+            // Setup Form Cash
+            const formCash = document.getElementById('form-confirm-cash');
+            if (formCash) {
+                formCash.action = `/anggota/bills/${billId}/confirm-cash`;
+            }
+            const cashAmountSpan = document.getElementById('cash-bill-amount');
+            if (cashAmountSpan) {
+                cashAmountSpan.innerText = 'Rp ' + Number(amount).toLocaleString('id-ID');
+            }
+            const cbConfirm = document.getElementById('checkbox-confirm-cash');
+            if (cbConfirm) {
+                cbConfirm.checked = false;
+            }
+
             backToStep1();
             document.getElementById('modal-pay-bill').classList.remove('hidden');
         }

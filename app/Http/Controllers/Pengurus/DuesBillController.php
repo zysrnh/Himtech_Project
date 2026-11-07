@@ -89,6 +89,8 @@ class DuesBillController extends Controller
             $billsQuery->where('dues_bills.status', 'paid')->where('dues_bills.is_on_time', true);
         } elseif ($statusFilter === 'paid_late') {
             $billsQuery->where('dues_bills.status', 'paid')->where('dues_bills.is_on_time', false);
+        } elseif ($statusFilter === 'pending') {
+            $billsQuery->where('dues_bills.status', 'pending');
         } elseif ($statusFilter === 'unpaid') {
             $billsQuery->where('dues_bills.status', 'unpaid');
         }
@@ -107,6 +109,7 @@ class DuesBillController extends Controller
             'paid_count' => 0,
             'ontime_count' => 0,
             'late_count' => 0,
+            'pending_count' => 0,
             'unpaid_count' => 0,
             'total_amount' => 0,
             'collected_amount' => 0,
@@ -123,10 +126,11 @@ class DuesBillController extends Controller
             $metrics['paid_count'] = $allPeriodBills->where('status', 'paid')->count();
             $metrics['ontime_count'] = $allPeriodBills->where('status', 'paid')->where('is_on_time', true)->count();
             $metrics['late_count'] = $allPeriodBills->where('status', 'paid')->where('is_on_time', false)->count();
+            $metrics['pending_count'] = $allPeriodBills->where('status', 'pending')->count();
             $metrics['unpaid_count'] = $allPeriodBills->where('status', 'unpaid')->count();
             $metrics['total_amount'] = (float) $allPeriodBills->sum('amount');
             $metrics['collected_amount'] = (float) $allPeriodBills->where('status', 'paid')->sum('amount');
-            $metrics['uncollected_amount'] = (float) $allPeriodBills->where('status', 'unpaid')->sum('amount');
+            $metrics['uncollected_amount'] = (float) $allPeriodBills->whereIn('status', ['unpaid', 'pending'])->sum('amount');
             $metrics['ontime_rate'] = $metrics['paid_count'] > 0
                 ? (int) round(($metrics['ontime_count'] / $metrics['paid_count']) * 100)
                 : 100;

@@ -97,11 +97,12 @@ Route::middleware(['auth', 'anggota'])->prefix('anggota')->name('anggota.')->gro
     Route::get('/profile', [ProfileController::class, 'showAnggotaProfile'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'updateAnggotaProfile'])->name('profile.update');
 
-    // Pembayaran Tagihan Kas Anggota (Midtrans Core API, Snap & Simulasi Sandbox)
+    // Pembayaran Tagihan Kas Anggota (Midtrans Core API, Snap, Simulasi Sandbox, & Klaim Tunai)
     Route::post('/bills/{bill}/charge', [MidtransController::class, 'charge'])->name('bills.charge');
     Route::post('/bills/{bill}/check-status', [MidtransController::class, 'checkStatus'])->name('bills.check-status');
     Route::post('/bills/{bill}/snap-token', [MidtransController::class, 'getSnapToken'])->name('bills.snap-token');
     Route::post('/bills/{bill}/simulate-success', [MidtransController::class, 'simulateSuccess'])->name('bills.simulate-success');
+    Route::post('/bills/{bill}/confirm-cash', [AnggotaDashboardController::class, 'confirmCashPayment'])->name('bills.confirm-cash');
 });
 
 // Webhook Midtrans HTTP Notification Callback (Tanpa CSRF)

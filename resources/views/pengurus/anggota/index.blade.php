@@ -14,14 +14,14 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
+<body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col md:flex-row selection:bg-ice-200 selection:text-navy-900">
 
     <!-- Sidebar Pengurus Neumorphic Interaktif -->
     <x-sidebar-pengurus active="anggota" :organization="$organization" />
 
     <!-- Main Content Area: Data Anggota & QR Code Registrasi -->
     <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8">
-        <div class="max-w-[1140px] mx-auto space-y-6">
+        <div class="max-w-7xl mx-auto space-y-6">
 
             <!-- Top Header & Aksi Cepat -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <!-- Notifikasi Sukses / Error -->
+            <!-- Alerts Notifikasi Sukses / Error -->
             @if (session('success'))
                 <div class="p-4 rounded-2xl bg-white/95 border border-ice-200/80 text-navy-900 text-sm font-medium shadow-[4px_4px_16px_rgba(122,163,214,0.18),-4px_-4px_16px_rgba(255,255,255,0.95)] flex items-center justify-between gap-3 animate-fade-in">
                     <div class="flex items-center gap-3">
@@ -67,6 +67,48 @@
                     <button type="button" onclick="this.parentElement.remove()" class="text-danger hover:text-navy-900 text-xs font-bold px-2 py-1 cursor-pointer">&times;</button>
                 </div>
             @endif
+
+            <!-- 3 KARTU METRIK ANGGOTA NEUMORPHIC (SELARAS DENGAN BUKU KAS & OVERVIEW) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- 1. Total Anggota Terdaftar (Dark Navy Hero Card) -->
+                <div class="bg-gradient-to-br from-navy-900 via-navy-700 to-navy-900 text-white rounded-[28px] p-6 sm:p-7 shadow-[6px_6px_20px_rgba(47,72,98,0.28),-4px_-4px_16px_rgba(255,255,255,0.7)] flex flex-col justify-between relative overflow-hidden border border-navy-700/60">
+                    <div class="relative z-10">
+                        <span class="text-xs text-white/70 font-medium">Total Anggota Terdaftar</span>
+                        <p class="font-display font-bold text-3xl sm:text-4xl tabular-nums mt-3 tracking-tight text-white">
+                            {{ $totalMembers }} <span class="text-base font-normal text-white/70">Orang</span>
+                        </p>
+                    </div>
+                    <p class="text-[11px] text-white/60 mt-5 pt-3 border-t border-white/10 relative z-10 leading-relaxed">
+                        Data keanggotaan resmi yang aktif tercatat di {{ $organization->name }}.
+                    </p>
+                </div>
+
+                <!-- 2. Anggota Aktif & Terverifikasi -->
+                <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-navy-500">Anggota Aktif & Terverifikasi</span>
+                        <p class="font-display font-bold text-2xl sm:text-3xl tabular-nums text-navy-900 mt-3 tracking-tight">
+                            {{ $activeMembers }} <span class="text-xs font-normal text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full font-bold ml-1.5">{{ $totalMembers > 0 ? round(($activeMembers / $totalMembers) * 100) : 100 }}%</span>
+                        </p>
+                    </div>
+                    <p class="text-[11px] text-navy-500 mt-5 pt-3 border-t border-ice-200/60 leading-relaxed">
+                        Mahasiswa aktif yang dapat membayar iuran kas dan masuk ke portal.
+                    </p>
+                </div>
+
+                <!-- 3. Sisa Kuota QR Pendaftaran -->
+                <div class="bg-white/90 rounded-[28px] p-6 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-navy-500">Sisa Kuota QR Pendaftaran</span>
+                        <p class="font-display font-bold text-2xl sm:text-3xl tabular-nums text-navy-900 mt-3 tracking-tight">
+                            {{ $activeToken->remainingUses() }} <span class="text-xs font-normal text-navy-500">/ {{ $activeToken->max_uses }} kuota</span>
+                        </p>
+                    </div>
+                    <p class="text-[11px] text-navy-500 mt-5 pt-3 border-t border-ice-200/60 leading-relaxed">
+                        Berlaku s/d {{ $activeToken->expires_at->format('d M Y H:i') }} ({{ $activeToken->expires_at->diffForHumans() }}).
+                    </p>
+                </div>
+            </div>
 
             <!-- KARTU 1: QR CODE REGISTRASI MANDIRI ANGGOTA BERBATAS WAKTU & KUOTA -->
             <div class="bg-white/90 rounded-[28px] p-6 lg:p-7 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-ice-200/80 space-y-6">
@@ -149,7 +191,7 @@
                                 <p class="font-display font-bold text-2xl text-navy-900 mt-1 tabular-nums">
                                     {{ $activeToken->remainingUses() }} <span class="text-xs text-navy-500 font-normal">anggota</span>
                                 </p>
-                                <span class="text-[11px] text-navy-500 block mt-1">Kuota bertambah otomatis</span>
+                                <span class="text-[11px] text-navy-500 block mt-1">Kuota otomatis bertambah tiap pendaftar</span>
                             </div>
                             <div class="p-4 rounded-2xl bg-ice-100/60 border border-ice-200/80 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.15),inset_-1px_-1px_3px_rgba(255,255,255,0.9)]">
                                 <span class="text-xs text-navy-500 block font-medium">Masa Berlaku</span>
@@ -349,17 +391,58 @@
                 </div>
             </div>
 
-            <!-- KARTU 2: TABEL DATA ANGGOTA TERDAFTAR -->
-            <div class="bg-white/90 rounded-[28px] p-6 lg:p-7 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] border border-ice-200/80 space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-ice-200/70">
-                    <div>
-                        <h2 class="font-display font-bold text-lg text-navy-900">
-                            Daftar Seluruh Anggota Mahasiswa
-                        </h2>
-                        <p class="text-xs text-navy-500 mt-1">
-                            Menampilkan seluruh anggota yang terdaftar di ormawa {{ $organization->name }}. Total: <strong class="text-navy-900">{{ $totalMembers }}</strong> anggota ({{ $activeMembers }} aktif).
-                        </p>
+            <!-- KARTU 2: TABEL DATA ANGGOTA TERDAFTAR (SELARAS BUKU KAS DENGAN TOOLBAR FILTER & CARI) -->
+            <div class="bg-white/90 rounded-[28px] p-5 sm:p-7 border border-ice-200/80 shadow-[6px_6px_20px_rgba(122,163,214,0.18),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-6">
+                <!-- Toolbar Atas: Pill Filter Status & Form Cari (Persis Seperti Buku Kas) -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-ice-200/70">
+                    <!-- Filter Status Tab Switcher -->
+                    <div class="flex items-center gap-1.5 p-1.5 bg-ice-100/80 rounded-2xl border border-ice-200/60 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.2)] text-xs overflow-x-auto neu-scroll">
+                        <a
+                            href="{{ route('pengurus.anggota.index', ['status' => 'all', 'search' => $search]) }}"
+                            class="px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all {{ ($statusFilter ?? 'all') === 'all' ? 'bg-white text-navy-900 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                        >
+                            Semua Anggota ({{ $totalMembers }})
+                        </a>
+                        <a
+                            href="{{ route('pengurus.anggota.index', ['status' => 'active', 'search' => $search]) }}"
+                            class="px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all {{ ($statusFilter ?? '') === 'active' ? 'bg-white text-emerald-700 shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                        >
+                            ● Aktif ({{ $activeMembers }})
+                        </a>
+                        <a
+                            href="{{ route('pengurus.anggota.index', ['status' => 'inactive', 'search' => $search]) }}"
+                            class="px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all {{ ($statusFilter ?? '') === 'inactive' ? 'bg-white text-danger shadow-xs' : 'text-navy-500 hover:text-navy-900' }}"
+                        >
+                            ● Nonaktif ({{ $inactiveMembers }})
+                        </a>
                     </div>
+
+                    <!-- Form Pencarian Anggota -->
+                    <form method="GET" action="{{ route('pengurus.anggota.index') }}" class="flex flex-wrap items-center gap-2">
+                        <input type="hidden" name="status" value="{{ $statusFilter ?? 'all' }}">
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ $search ?? '' }}"
+                            placeholder="Cari nama, NIM, atau WA..."
+                            class="h-10 px-4 rounded-xl bg-ice-100/70 text-navy-900 font-medium text-xs border border-ice-200/80 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.2),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] focus:outline-none focus:ring-1.5 focus:ring-navy-900 w-44 sm:w-64"
+                        >
+                        <button
+                            type="submit"
+                            class="h-10 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer"
+                        >
+                            Cari
+                        </button>
+                        @if ($search)
+                            <a
+                                href="{{ route('pengurus.anggota.index', ['status' => $statusFilter ?? 'all']) }}"
+                                class="h-10 px-3 rounded-xl bg-ice-100 text-navy-500 hover:text-navy-900 font-semibold text-xs transition-colors flex items-center justify-center cursor-pointer border border-ice-200/70"
+                                title="Reset Pencarian"
+                            >
+                                &times;
+                            </a>
+                        @endif
+                    </form>
                 </div>
 
                 @if ($members->isEmpty())
@@ -369,8 +452,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </div>
-                        <p class="font-bold text-navy-900">Belum Ada Anggota Terdaftar</p>
-                        <p class="text-xs text-navy-500 mt-1">Bagikan QR Code pendaftaran di atas ke grup WhatsApp atau gunakan formulir tambah manual di bawah.</p>
+                        <p class="font-bold text-navy-900">Tidak Ditemukan Anggota</p>
+                        <p class="text-xs text-navy-500 mt-1">Tidak ada data anggota yang sesuai dengan kata kunci pencarian atau filter status ini.</p>
                     </div>
                 @else
                     <div class="overflow-x-auto custom-scrollbar">

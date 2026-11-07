@@ -23,3 +23,4 @@ class SuperAdminSeeder extends Seeder
         );
     }
 }
+

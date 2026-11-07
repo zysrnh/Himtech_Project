@@ -30,7 +30,13 @@
                 Panel pusat pengelolaan organisasi.
             </p>
 
-            <form action="{{ route('admin.login') }}" method="POST" class="mt-8 space-y-5">
+            @if ($errors->any())
+                <div class="mt-4 p-3 rounded-sm bg-danger/10 text-danger text-sm">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <form action="{{ route('admin.login.submit') }}" method="POST" class="mt-6 space-y-5">
                 @csrf
 
                 <!-- Input Email -->
@@ -42,6 +48,7 @@
                         type="email"
                         id="email"
                         name="email"
+                        value="{{ old('email', 'admin@kasly.id') }}"
                         required
                         autofocus
                         placeholder="admin@kasly.id"
@@ -81,7 +88,7 @@
                 <div class="pt-2">
                     <button
                         type="submit"
-                        class="w-full h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors"
+                        class="w-full h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer"
                     >
                         Masuk ke Panel Pusat
                     </button>
@@ -99,4 +106,3 @@
 
 </body>
 </html>
-

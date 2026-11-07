@@ -42,10 +42,6 @@
 
             <!-- Judul & Pengantar -->
             <div class="space-y-3">
-                <div class="flex items-center gap-2">
-                    <span class="neu-badge-pill text-[10px] py-1 px-3">PENDAFTARAN ORMAWA BARU</span>
-                    <span class="neu-badge-ice text-[10px] py-1 px-3 font-mono">VERIFIKASI ADMIN</span>
-                </div>
                 <h1 class="font-display font-extrabold text-2xl sm:text-3xl text-navy-900 tracking-tight">
                     Formulir Pengajuan Organisasi
                 </h1>

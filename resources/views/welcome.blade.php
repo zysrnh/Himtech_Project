@@ -150,7 +150,7 @@
                             <div class="card-border-line mt-4 pt-3.5 border-t flex items-center justify-between">
                                 <div>
                                     <span class="card-text-muted text-[10px] font-semibold uppercase tracking-wider block">Pengelola Kas</span>
-                                    <span class="card-text-title font-display font-semibold text-sm mt-0.5 block">BEM Fasilkom</span>
+                                    <span class="card-text-title font-display font-semibold text-sm mt-0.5 block">Hima Informatika</span>
                                 </div>
                                 <div class="text-right">
                                     <span class="card-text-muted text-[10px] font-semibold uppercase tracking-wider block">Periode</span>

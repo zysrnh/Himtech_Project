@@ -28,10 +28,6 @@
         </div>
 
         <div class="space-y-2">
-            <div class="inline-flex items-center gap-2">
-                <span class="neu-badge-pill text-[10px] py-1 px-3">PENDAFTARAN DITERIMA</span>
-                <span class="neu-badge-ice text-[10px] py-1 px-3 font-mono">STATUS: MENUNGGU ACC</span>
-            </div>
             <h1 class="font-display font-extrabold text-2xl sm:text-3xl text-navy-900 tracking-tight">
                 Pengajuan Berhasil Dikirim!
             </h1>

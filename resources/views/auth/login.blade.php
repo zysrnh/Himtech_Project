@@ -156,7 +156,7 @@
                     </p>
                 </div>
 
-                <!-- Checkbox Ingat Sesi -->
+                <!-- Checkbox Ingat Sesi & Tautan Lupa Kata Sandi -->
                 <div class="flex items-center justify-between pt-1">
                     <label class="flex items-center gap-2.5 cursor-pointer select-none group">
                         <input
@@ -166,9 +166,16 @@
                             class="neu-checkbox-custom"
                         >
                         <span class="text-xs sm:text-[13px] text-navy-500 group-hover:text-navy-900 transition-colors">
-                            Ingat sesi saya di perangkat ini
+                            Ingat sesi saya
                         </span>
                     </label>
+                    <a
+                        href="{{ route('password.request') }}"
+                        class="text-xs text-navy-500 hover:text-navy-900 font-semibold underline underline-offset-2 transition-colors"
+                        title="Pulihkan kata sandi akun"
+                    >
+                        Lupa kata sandi?
+                    </a>
                 </div>
 
                 <!-- Tombol Submit Primer -->

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationController;
 use App\Http\Controllers\Anggota\DashboardController as AnggotaDashboardController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MemberRegistrationController;
 use App\Http\Controllers\OrganizationRequestController;
@@ -36,6 +37,12 @@ Route::post('/daftar-anggota', [MemberRegistrationController::class, 'register']
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Pemulihan Akun / Lupa Kata Sandi via WhatsApp OTP
+Route::get('/lupa-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetOtp'])->name('password.request.submit');
+Route::get('/lupa-password/verifikasi', [ForgotPasswordController::class, 'showVerifyOtpForm'])->name('password.verify.form');
+Route::post('/lupa-password/verifikasi', [ForgotPasswordController::class, 'updatePassword'])->name('password.verify.submit');
 
 // Redirect cerdas rute 'dashboard' ke panel yang sesuai peran aktif
 Route::middleware('auth')->get('/dashboard', function () {

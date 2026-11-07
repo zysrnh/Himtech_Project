@@ -54,22 +54,24 @@ class FonnteService
         string $orgName,
         string $orgCode,
         string $email,
-        string $password
+        string $password,
+        ?string $username = null
     ): bool {
-        $loginUrl = url('/login?role=pengurus');
+        $loginUrl = url('/login');
+
+        $usernameLine = !empty($username) ? "• Username: *{$username}*\n" : "";
 
         $message = "*PEMBERITAHUAN AKUN PENGURUS KASLY*\n\n"
             . "Halo {$staffName},\n"
             . "Organisasi *{$orgName}* ({$orgCode}) telah resmi didaftarkan di sistem Kasly.\n\n"
             . "Berikut rincian akun Staff Anda:\n"
             . "• Kode Organisasi: *{$orgCode}*\n"
-            . "• Peran: Staff Pengelola Kas\n"
+            . $usernameLine
             . "• Email Login: {$email}\n"
             . "• Password Sementara: {$password}\n"
             . "• Tautan Login: {$loginUrl}\n\n"
-            . "Pada halaman login Kasly, pilih tab *Pengurus / Staff*, masukkan Kode Organisasi di atas beserta email dan password Anda. Terima kasih.";
+            . "Pada halaman login Kasly, masukkan Kode Organisasi di atas beserta username atau email dan password Anda. Terima kasih.";
 
         return self::send($phone, $message);
     }
 }
-

@@ -37,6 +37,7 @@ Keunggulan Pola Perancangan Ini:
    - Kolom:
      * id: BIGINT (Primary Key, Auto Increment)
      * name: VARCHAR(255) - Nama pengguna
+     * username: VARCHAR(255) (Nullable, Unique) - Username identitas pengurus/anggota untuk login multi-tenant
      * email: VARCHAR(255) (Nullable, Unique) - Alamat email pengguna
      * phone: VARCHAR(30) (Nullable) - Nomor WhatsApp pengurus/pengguna untuk blast kredensial via Fonnte
      * password: VARCHAR(255) - Hash kata sandi pengguna (Bcrypt)

@@ -17,9 +17,9 @@ use Illuminate\View\View;
 class LoginController extends Controller
 {
     /**
-     * Tampilkan formulir login terpadu (Pengurus & Anggota).
+     * Tampilkan formulir login tunggal universal (Otomatis deteksi peran).
      */
-    public function showLoginForm(Request $request): View|RedirectResponse
+    public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
             if (session('active_role') === 'anggota') {
@@ -33,45 +33,40 @@ class LoginController extends Controller
             return redirect()->route('pengurus.dashboard');
         }
 
-        $activeRole = $request->query('role', 'pengurus');
-        if (!in_array($activeRole, ['pengurus', 'anggota'])) {
-            $activeRole = 'pengurus';
-        }
-
-        return view('auth.login', compact('activeRole'));
+        return view('auth.login');
     }
 
     /**
-     * Proses autentikasi Pengurus / Staff dengan verifikasi kode organisasi & proteksi rate limiting.
+     * Proses autentikasi tunggal dengan deteksi otomatis peran (Staff vs Anggota).
      */
-    public function loginPengurus(Request $request): RedirectResponse
+    public function login(Request $request): RedirectResponse
     {
         $request->validate([
             'organization_code' => ['required', 'string'],
-            'email' => ['required', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ], [
             'organization_code.required' => 'Kode organisasi wajib diisi.',
-            'email.required' => 'Alamat email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
+            'username.required' => 'Username atau NIM wajib diisi.',
             'password.required' => 'Kata sandi wajib diisi.',
         ]);
 
-        // Proteksi Brute Force (Maksimal 5 percobaan per menit)
-        $throttleKey = 'login.pengurus:'.Str::lower($request->input('email')).'|'.$request->ip();
+        $orgCode = strtoupper(trim($request->organization_code));
+        $inputIdentifier = trim($request->username);
+
+        // Proteksi Brute Force (Maksimal 5 percobaan per menit per IP + Akun)
+        $throttleKey = 'login:'.$orgCode.'|'.Str::lower($inputIdentifier).'|'.$request->ip();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
 
             return back()
-                ->withInput($request->only('organization_code', 'email'))
-                ->with('active_tab', 'pengurus')
+                ->withInput($request->only('organization_code', 'username'))
                 ->withErrors([
-                    'email' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik.",
+                    'username' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik.",
                 ]);
         }
 
         // 1. Verifikasi Keberadaan & Status Organisasi
-        $orgCode = strtoupper(trim($request->organization_code));
         $organization = Organization::where('code', $orgCode)
             ->where('status', 'active')
             ->first();
@@ -80,185 +75,105 @@ class LoginController extends Controller
             RateLimiter::hit($throttleKey, 60);
 
             return back()
-                ->withInput($request->only('organization_code', 'email'))
-                ->with('active_tab', 'pengurus')
+                ->withInput($request->only('organization_code', 'username'))
                 ->withErrors([
                     'organization_code' => 'Kode organisasi tidak ditemukan atau sedang tidak aktif.',
                 ]);
         }
 
-        // 2. Verifikasi Email & Kata Sandi
         $remember = $request->boolean('remember');
-        if (!Auth::attempt($request->only('email', 'password'), $remember)) {
-            RateLimiter::hit($throttleKey, 60);
 
-            return back()
-                ->withInput($request->only('organization_code', 'email'))
-                ->with('active_tab', 'pengurus')
-                ->withErrors([
-                    'email' => 'Email atau kata sandi pengurus salah.',
-                ]);
-        }
-
-        $user = Auth::user();
-
-        // 3. Verifikasi Hak Akses Multi-Tenant (User harus terdaftar di organisasi ini)
-        $orgPivot = $user->organizations()
-            ->where('organizations.id', $organization->id)
+        // 2. Deteksi Otomatis Akun: Cek Apakah Ini Pengurus / Staff
+        $staffUser = $organization->users()
+            ->where(function ($query) use ($inputIdentifier) {
+                $query->where('users.username', $inputIdentifier)
+                    ->orWhere('users.email', $inputIdentifier);
+            })
             ->wherePivotIn('role', ['staff', 'bendahara'])
             ->wherePivot('is_active', true)
             ->first();
 
-        // Izinkan Super Admin memantau organisasi jika diperlukan
-        if (!$orgPivot && !$user->is_super_admin) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            RateLimiter::hit($throttleKey, 60);
+        if ($staffUser && Hash::check($request->password, $staffUser->password)) {
+            RateLimiter::clear($throttleKey);
+            Auth::login($staffUser, $remember);
+            $request->session()->regenerate();
 
-            return back()
-                ->withInput($request->only('organization_code', 'email'))
-                ->with('active_tab', 'pengurus')
-                ->withErrors([
-                    'email' => "Akun Anda tidak memiliki hak akses pengurus pada organisasi {$organization->name} ({$organization->code}).",
-                ]);
+            session([
+                'active_organization_id' => $organization->id,
+                'active_role' => $staffUser->pivot->role ?? 'staff',
+            ]);
+
+            return redirect()->intended(route('pengurus.dashboard'));
         }
 
-        // Bersihkan hitungan percobaan jika login berhasil
-        RateLimiter::clear($throttleKey);
-
-        $request->session()->regenerate();
-        session([
-            'active_organization_id' => $organization->id,
-            'active_role' => $orgPivot?->pivot->role ?? 'staff',
-        ]);
-
-        return redirect()->intended(route('pengurus.dashboard'));
-    }
-
-    /**
-     * Proses autentikasi Anggota dengan verifikasi tenant & proteksi rate limiting.
-     */
-    public function loginAnggota(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'organization_code' => ['required', 'string'],
-            'member_number' => ['required', 'string'],
-            'password' => ['required', 'string'],
-        ], [
-            'organization_code.required' => 'Kode organisasi wajib diisi.',
-            'member_number.required' => 'Nomor Anggota atau NIM wajib diisi.',
-            'password.required' => 'Kata sandi wajib diisi.',
-        ]);
-
-        // Proteksi Brute Force (Maksimal 5 percobaan per menit)
-        $orgCode = strtoupper(trim($request->organization_code));
-        $memberNumber = trim($request->member_number);
-        $throttleKey = 'login.anggota:'.$orgCode.'|'.$memberNumber.'|'.$request->ip();
-
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
-
-            return back()
-                ->withInput($request->only('organization_code', 'member_number'))
-                ->with('active_tab', 'anggota')
-                ->withErrors([
-                    'member_number' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik.",
-                ]);
-        }
-
-        // 1. Verifikasi Keberadaan Organisasi
-        $organization = Organization::where('code', $orgCode)
-            ->where('status', 'active')
-            ->first();
-
-        if (!$organization) {
-            RateLimiter::hit($throttleKey, 60);
-
-            return back()
-                ->withInput($request->only('organization_code', 'member_number'))
-                ->with('active_tab', 'anggota')
-                ->withErrors([
-                    'organization_code' => 'Kode organisasi tidak ditemukan atau sedang tidak aktif.',
-                ]);
-        }
-
-        // 2. Verifikasi Data Anggota Aktif di Organisasi Tersebut
+        // 3. Deteksi Otomatis Akun: Cek Apakah Ini Anggota Ormawa (berdasarkan NIM / Nomor Anggota)
         $member = Member::where('organization_id', $organization->id)
-            ->where('member_number', $memberNumber)
+            ->where('member_number', $inputIdentifier)
             ->where('is_active', true)
             ->first();
 
-        if (!$member) {
-            RateLimiter::hit($throttleKey, 60);
-
-            return back()
-                ->withInput($request->only('organization_code', 'member_number'))
-                ->with('active_tab', 'anggota')
-                ->withErrors([
-                    'member_number' => "Nomor anggota atau NIM tidak terdaftar pada organisasi {$organization->name}.",
-                ]);
-        }
-
-        // 3. Verifikasi Kata Sandi
-        $user = null;
-        if ($member->user_id) {
-            $user = User::find($member->user_id);
-        }
-
-        if ($user) {
-            if (!Hash::check($request->password, $user->password)) {
-                RateLimiter::hit($throttleKey, 60);
-
-                return back()
-                    ->withInput($request->only('organization_code', 'member_number'))
-                    ->with('active_tab', 'anggota')
-                    ->withErrors([
-                        'password' => 'Kata sandi anggota salah.',
-                    ]);
+        if ($member) {
+            $memberUser = null;
+            if ($member->user_id) {
+                $memberUser = User::find($member->user_id);
             }
-        } else {
-            // Jika akun user baru dan memasukkan kata sandi awal (default = nomor anggota)
-            if ($request->password === $member->member_number) {
-                $user = User::create([
+
+            // Jika anggota sudah memiliki user terhubung
+            if ($memberUser && Hash::check($request->password, $memberUser->password)) {
+                RateLimiter::clear($throttleKey);
+                Auth::login($memberUser, $remember);
+                $request->session()->regenerate();
+
+                session([
+                    'active_organization_id' => $organization->id,
+                    'active_member_id' => $member->id,
+                    'active_role' => 'anggota',
+                ]);
+
+                return redirect()->intended(route('anggota.dashboard'));
+            }
+
+            // Jika akun user baru dan memasukkan kata sandi awal default (nomor anggota / NIM)
+            if (!$memberUser && $request->password === $member->member_number) {
+                RateLimiter::clear($throttleKey);
+
+                $memberUser = User::create([
                     'name' => $member->name,
+                    'username' => $member->member_number,
                     'phone' => $member->phone,
                     'password' => Hash::make($request->password),
                     'is_super_admin' => false,
                 ]);
 
-                $member->update(['user_id' => $user->id]);
+                $member->update(['user_id' => $memberUser->id]);
 
-                $organization->users()->attach($user->id, [
+                $organization->users()->attach($memberUser->id, [
                     'role' => 'anggota',
                     'member_id' => $member->id,
                     'is_active' => true,
                 ]);
-            } else {
-                RateLimiter::hit($throttleKey, 60);
 
-                return back()
-                    ->withInput($request->only('organization_code', 'member_number'))
-                    ->with('active_tab', 'anggota')
-                    ->withErrors([
-                        'password' => 'Kata sandi anggota salah.',
-                    ]);
+                Auth::login($memberUser, $remember);
+                $request->session()->regenerate();
+
+                session([
+                    'active_organization_id' => $organization->id,
+                    'active_member_id' => $member->id,
+                    'active_role' => 'anggota',
+                ]);
+
+                return redirect()->intended(route('anggota.dashboard'));
             }
         }
 
-        // Bersihkan rate limiter jika berhasil
-        RateLimiter::clear($throttleKey);
+        // Jika tidak cocok dengan akun pengurus maupun anggota
+        RateLimiter::hit($throttleKey, 60);
 
-        Auth::login($user, $request->boolean('remember'));
-        $request->session()->regenerate();
-
-        session([
-            'active_organization_id' => $organization->id,
-            'active_member_id' => $member->id,
-            'active_role' => 'anggota',
-        ]);
-
-        return redirect()->intended(route('anggota.dashboard'));
+        return back()
+            ->withInput($request->only('organization_code', 'username'))
+            ->withErrors([
+                'username' => "Username/NIM atau kata sandi tidak cocok dengan data organisasi {$organization->name}.",
+            ]);
     }
 
     /**

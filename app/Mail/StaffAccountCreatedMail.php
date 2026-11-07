@@ -21,7 +21,8 @@ class StaffAccountCreatedMail extends Mailable
         public string $orgCode,
         public string $email,
         public string $password,
-        public string $loginUrl
+        public string $loginUrl,
+        public ?string $username = null
     ) {}
 
     /**
@@ -54,4 +55,3 @@ class StaffAccountCreatedMail extends Mailable
         return [];
     }
 }
-

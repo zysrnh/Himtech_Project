@@ -268,6 +268,24 @@
                             </div>
 
                             <div>
+                                <label for="staff_username" class="block text-[13px] text-navy-500 font-normal mb-2">
+                                    Username Staff (Untuk Login Pengurus)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="staff_username"
+                                    name="staff_username"
+                                    value="{{ old('staff_username') }}"
+                                    required
+                                    placeholder="Contoh: zaki atau staff_himtech"
+                                    class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
+                                >
+                                @error('staff_username')
+                                    <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="staff_email" class="block text-[13px] text-navy-500 font-normal mb-2">
                                     Email Staff (Untuk Login Pengurus)
                                 </label>

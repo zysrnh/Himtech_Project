@@ -14,15 +14,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Portal Login Terpadu (Pengurus & Anggota)
+// Portal Login Tunggal Universal (Pengurus & Anggota)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login/pengurus', [LoginController::class, 'loginPengurus'])->name('login.pengurus');
-Route::post('/login/anggota', [LoginController::class, 'loginAnggota'])->name('login.anggota');
+Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Backward compatibility redirect untuk tautan login spesifik
-Route::get('/pengurus/login', fn () => redirect()->route('login', ['role' => 'pengurus']))->name('pengurus.login');
-Route::get('/anggota/login', fn () => redirect()->route('login', ['role' => 'anggota']))->name('anggota.login');
+Route::get('/pengurus/login', fn () => redirect()->route('login'))->name('pengurus.login');
+Route::get('/anggota/login', fn () => redirect()->route('login'))->name('anggota.login');
 Route::post('/pengurus/logout', [LoginController::class, 'logout'])->name('pengurus.logout');
 Route::post('/anggota/logout', [LoginController::class, 'logout'])->name('anggota.logout');
 

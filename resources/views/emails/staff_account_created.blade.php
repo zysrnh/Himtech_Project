@@ -43,6 +43,12 @@
                                                 <td style="color: #4A6583;">Peran:</td>
                                                 <td><strong>Staff Pengelola Kas</strong></td>
                                             </tr>
+                                            @if (!empty($username))
+                                            <tr>
+                                                <td style="color: #4A6583;">Username Login:</td>
+                                                <td><code style="font-family: monospace; font-size: 15px; font-weight: bold; color: #2F4862; background-color: #FFFFFF; padding: 2px 8px; border-radius: 4px;">{{ $username }}</code></td>
+                                            </tr>
+                                            @endif
                                             <tr>
                                                 <td style="color: #4A6583;">Alamat Email:</td>
                                                 <td><strong>{{ $email }}</strong></td>
@@ -53,7 +59,7 @@
                                             </tr>
                                         </table>
                                         <p style="margin: 12px 0 0; font-size: 12px; color: #4A6583;">
-                                            *Pada halaman login Kasly, pilih tab <strong>Pengurus / Staff</strong> lalu masukkan <strong>Kode Organisasi</strong> di atas beserta email dan password Anda.
+                                            *Pada halaman login Kasly, masukkan <strong>Kode Organisasi</strong> di atas beserta username atau email dan password Anda.
                                         </p>
                                     </td>
                                 </tr>

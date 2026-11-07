@@ -51,11 +51,8 @@
                     Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('login', ['role' => 'anggota']) }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
-                        Masuk sebagai Anggota
-                    </a>
-                    <a href="{{ route('login', ['role' => 'pengurus']) }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-white border border-ice-200 text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
-                        Masuk sebagai Pengurus
+                    <a href="{{ route('login') }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                        Masuk ke Sistem Kasly
                     </a>
                 </div>
             </div>
@@ -75,11 +72,11 @@
                             Anggota
                         </h3>
                         <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Login dengan kode organisasi dan ID anggota. Lihat status iuran dan riwayat pembayaranmu.
+                            Login dengan kode organisasi dan NIM kamu. Pantau status iuran dan riwayat keterbukaan kas ormawa.
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ route('login', ['role' => 'anggota']) }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                        <a href="{{ route('login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
                             Masuk sebagai Anggota
                         </a>
                     </div>
@@ -92,11 +89,11 @@
                             Staff dan Bendahara
                         </h3>
                         <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                            Login dengan email dan password. Kelola kas, anggota, dan laporan organisasi.
+                            Login dengan kode organisasi dan username kamu. Kelola pembukuan kas, tagihan, dan laporan bulanan.
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ route('login', ['role' => 'pengurus']) }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+                        <a href="{{ route('login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
                             Masuk sebagai Pengurus
                         </a>
                     </div>

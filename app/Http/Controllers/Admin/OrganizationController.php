@@ -57,10 +57,14 @@ class OrganizationController extends Controller
             'code' => ['required', 'string', 'max:20', 'alpha_dash', 'unique:organizations,code'],
             'description' => ['nullable', 'string', 'max:1000'],
             'staff_name' => ['required', 'string', 'max:255'],
+            'staff_username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users,username'],
             'staff_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'staff_phone' => ['required', 'string', 'max:25'],
             'staff_password' => ['nullable', 'string', 'min:8'],
         ], [
+            'staff_username.required' => 'Username staff awal wajib diisi.',
+            'staff_username.unique' => 'Username staff sudah digunakan akun lain.',
+            'staff_username.alpha_dash' => 'Username hanya boleh berupa huruf, angka, dan strip/garis bawah.',
             'staff_password.min' => 'Kata sandi staff awal minimal 8 karakter kombinasi.',
         ]);
 
@@ -85,9 +89,10 @@ class OrganizationController extends Controller
                 'status' => 'active',
             ]);
 
-            // 2. Buat Akun Pengurus / Staff Awal dengan Nomor WhatsApp
+            // 2. Buat Akun Pengurus / Staff Awal dengan Username & Nomor WhatsApp
             $staff = User::create([
                 'name' => $validated['staff_name'],
+                'username' => Str::lower($validated['staff_username']),
                 'email' => $validated['staff_email'],
                 'phone' => $validated['staff_phone'],
                 'password' => Hash::make($password),
@@ -129,6 +134,7 @@ class OrganizationController extends Controller
                 'payload' => [
                     'organization_name' => $organization->name,
                     'organization_code' => $organization->code,
+                    'staff_username' => $staff->username,
                     'staff_email' => $staff->email,
                     'staff_phone' => $staff->phone,
                 ],
@@ -143,7 +149,8 @@ class OrganizationController extends Controller
                 orgName: $organization->name,
                 orgCode: $organization->code,
                 email: $staff->email,
-                password: $password
+                password: $password,
+                username: $staff->username
             );
         }
 
@@ -156,7 +163,8 @@ class OrganizationController extends Controller
                     orgCode: $organization->code,
                     email: $staff->email,
                     password: $password,
-                    loginUrl: url('/login?role=pengurus')
+                    loginUrl: url('/login'),
+                    username: $staff->username
                 ));
             } catch (\Throwable $e) {
                 Log::warning("Gagal mengirim email kredensial staff ke [{$staff->email}]: " . $e->getMessage());

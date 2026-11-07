@@ -88,17 +88,19 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Desain berprinsip data-first: Menghilangkan elemen dekoratif hampa seperti label uppercase berjarak lebar dan penomoran 01/02.
 
 ================================================================================
-7. PORTAL AUTENTIKASI MULTI-PERAN & SISTEM PROTEKSI KEAMANAN
+7. PORTAL AUTENTIKASI TUNGGAL DENGAN DETEKSI PERAN OTOMATIS & PROTEKSI KEAMANAN
 ================================================================================
 - Portal Login Super Admin: /admin/login (terisolasi mutlak untuk administrator pusat sistem).
-- Portal Login Terpadu Pengguna: /login
-  * Tab 1 - Pengurus / Staff: Akses bendahara & staff ormawa via Kode Organisasi + Email + Kata Sandi.
-  * Tab 2 - Anggota Ormawa: Akses mahasiswa via Kode Organisasi + NIM/Nomor Anggota + Kata Sandi.
-  * Dukungan query parameter otomatis (?role=pengurus atau ?role=anggota).
-  * URL ramah pengguna: /pengurus/login dan /anggota/login otomatis mengarahkan ke tab masing-masing pada /login.
+- Portal Login Tunggal Universal: /login
+  * 1 Formulir Terpadu Tanpa Tab: Menghilangkan kerumitan pemilihan tab atau toggle. Cukup memasukkan Kode Organisasi, Username/NIM, dan Kata Sandi.
+  * Deteksi Otomatis Peran (Role Auto-Detection):
+    - Jika identitas cocok dengan akun Staff/Bendahara pada organisasi tersebut -> otomatis diarahkan ke Panel Pengurus (/pengurus/dashboard).
+    - Jika identitas cocok dengan Nomor Anggota / NIM pada organisasi tersebut -> otomatis diarahkan ke Portal Anggota (/anggota/dashboard).
+  * Pengenalan Fleksibel Kredensial Pengurus: Staff dapat login menggunakan username unik ormawa maupun alamat email resmi.
+  * URL ramah pengguna: /pengurus/login dan /anggota/login otomatis diarahkan ke halaman login tunggal /login.
 - Lapisan Proteksi Keamanan Berlapis (Security Layers):
   * Proteksi Anti-Brute Force (Rate Limiting): Dibatasi maksimal 5 percobaan gagal per menit pada seluruh endpoint login (Admin, Pengurus, Anggota). Jika terlampaui, sistem otomatis mengunci akses sementara selama 60 detik dengan hitungan mundur.
-  * Proteksi Isolasi Antar-Tenant (Cross-Tenant Access Prevention): Pengurus diwajibkan menyertakan Kode Organisasi. Meskipun email & password valid, sistem memverifikasi relasi pivot tabel organization_user secara ketat sehingga staff dari organisasi A tidak dapat menembus atau mengakses organisasi B.
+  * Proteksi Isolasi Antar-Tenant (Cross-Tenant Access Prevention): Pengguna diwajibkan menyertakan Kode Organisasi. Sistem memverifikasi relasi tenant secara ketat sehingga pengguna dari organisasi A tidak dapat menembus atau mengakses organisasi B.
   * Proteksi CSRF (Cross-Site Request Forgery): Seluruh formulir diautentikasi dengan token CSRF unik yang diverifikasi otomatis pada setiap HTTP POST.
   * Proteksi Session Fixation & Hijacking: Regenerasi ID sesi secara dinamis pada saat autentikasi berhasil ($request->session()->regenerate()) serta pembersihan sesi dan token secara menyeluruh pada saat logout.
   * Enkripsi Kata Sandi: Enkripsi Bcrypt dengan cost factor 12 untuk menjamin kata sandi tidak dapat didekripsi bahkan jika terjadi kebocoran basis data.

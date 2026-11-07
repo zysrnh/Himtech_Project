@@ -221,11 +221,16 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Alur Pendaftaran Mandiri Anggota:
   * Calon anggota memindai QR Code menggunakan kamera smartphone/laptop atau mengunggah file foto QR Code dari galeri perangkat.
   * Sistem memvalidasi token registrasi: mengecek keaktifan token, batas waktu kedaluwarsa (expires_at), dan sisa kuota pendaftar (used_count < max_uses).
-  * Pengisian formulir instan: Mahasiswa mengisi NIM/Nomor Anggota, Nama Lengkap, dan Nomor WhatsApp.
-  * Pembuatan Akun Otomatis:
-    - Data Anggota (Member) dibuat dan dihubungkan ke organisasi yang menerbitkan token.
-    - Akun User Login dibuat otomatis dengan username huruf kecil dari NIM dan kata sandi awal default sama dengan NIM.
-    - Sistem langsung melakukan autentikasi otomatis (auto-login) dan mengarahkan anggota baru ke Portal Transparansi Anggota (/anggota/dashboard).
+  * Layar Konfirmasi Organisasi (Cegah Salah Scan QR): Pengguna ditampilkan kartu konfirmasi berisi Nama Organisasi, Kode Organisasi, deskripsi, sisa kuota, dan masa berlaku QR, beserta tombol "Konfirmasi & Masuk sebagai Anggota" dan tombol pembatalan "Bukan Organisasi Saya".
+  * Pembuatan Akun Otomatis dengan Profil Default:
+    - Tidak perlu mengisi form isian panjang saat scan QR.
+    - Sistem otomatis men-generate ID Anggota unik berbasis kode ormawa (misal: HIMTECH-0011).
+    - Nama awal dibuat default (misal: Anggota HIMTECH #0011) dengan username dan password awal sama dengan ID anggota.
+    - Sistem langsung melakukan autentikasi otomatis (auto-login) dan mengarahkan anggota langsung ke Dashboard Anggota (/anggota/dashboard).
+  * Penyesuaian Profil Mandiri (/anggota/profile):
+    - Mahasiswa dapat mengubah ID default ke NIM kampus aslinya (misal: 20240101) kapan saja.
+    - Username akun login otomatis tersinkronisasi mengikuti NIM asli yang baru.
+    - Mahasiswa dapat melengkapi nama lengkap, nomor WhatsApp, dan memperbarui kata sandi.
 - Panel Pengelolaan QR & Anggota oleh Pengurus (/pengurus/anggota):
   * Kartu QR Code Interaktif: Menampilkan barcode visual resmi, token unik, telemetri kuota terpakai vs kuota maksimal, sisa kuota, serta hitungan mundur masa berlaku.
   * Direct Download QR Image: Tombol "Download Gambar QR (PNG)" memicu pengunduhan langsung file gambar QR ke perangkat pengguna melalui header Content-Disposition resmi tanpa membuka tab atau halaman lain.

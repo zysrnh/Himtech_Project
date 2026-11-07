@@ -79,23 +79,14 @@ class MemberRegistrationController extends Controller
     }
 
     /**
-     * Proses submit registrasi anggota mandiri via QR Code dengan validasi kuota & waktu.
+     * Proses konfirmasi registrasi anggota mandiri via QR Code (otomatis membuat profil default).
      */
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'token' => ['required', 'string'],
-            'member_number' => ['required', 'string', 'max:50', 'alpha_num'],
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:25'],
-            'password' => ['nullable', 'string', 'min:6'],
         ], [
             'token.required' => 'Token pendaftaran QR wajib disertakan.',
-            'member_number.required' => 'Nomor Anggota / NIM wajib diisi.',
-            'member_number.alpha_num' => 'Nomor Anggota / NIM hanya boleh berupa kombinasi huruf dan angka.',
-            'name.required' => 'Nama lengkap wajib diisi.',
-            'phone.required' => 'Nomor WhatsApp wajib diisi.',
-            'password.min' => 'Kata sandi minimal 6 karakter jika ingin diubah.',
         ]);
 
         $token = MemberRegistrationToken::with('organization')
@@ -103,62 +94,58 @@ class MemberRegistrationController extends Controller
             ->first();
 
         if (! $token || ! $token->is_active) {
-            return back()->withErrors(['token' => 'QR Code atau token pendaftaran tidak valid atau telah dinonaktifkan.'])->withInput();
+            return back()->withErrors(['token' => 'QR Code atau token pendaftaran tidak valid atau telah dinonaktifkan.']);
         }
 
         if ($token->isExpired()) {
-            return back()->withErrors(['token' => 'Masa berlaku QR Code pendaftaran ini telah habis. Silakan hubungi pengurus ormawa untuk meminta QR terbaru.'])->withInput();
+            return back()->withErrors(['token' => 'Masa berlaku QR Code pendaftaran ini telah habis. Silakan hubungi pengurus ormawa untuk meminta QR terbaru.']);
         }
 
         if ($token->isQuotaFull()) {
-            return back()->withErrors(['token' => 'Batas kuota penggunaan QR Code ini telah tercapai. Silakan hubungi pengurus ormawa untuk membuka kuota pendaftaran baru.'])->withInput();
+            return back()->withErrors(['token' => 'Batas kuota penggunaan QR Code ini telah tercapai. Silakan hubungi pengurus ormawa untuk membuka kuota pendaftaran baru.']);
         }
 
         $organization = $token->organization;
 
         if ($organization->status !== 'active') {
-            return back()->withErrors(['token' => 'Organisasi ini sedang dinonaktifkan sementara oleh Administrator Kasly.'])->withInput();
+            return back()->withErrors(['token' => 'Organisasi ini sedang dinonaktifkan sementara oleh Administrator Kasly.']);
         }
 
-        $nim = trim($validated['member_number']);
+        // Generate ID anggota unik default berdasarkan kode ormawa (contoh: HIMTECH-0011)
+        $orgCode = Str::upper($organization->code);
+        $counter = $organization->members()->count() + 1;
+        do {
+            $defaultNim = $orgCode.'-'.str_pad($counter, 4, '0', STR_PAD_LEFT);
+            $exists = Member::where('organization_id', $organization->id)->where('member_number', $defaultNim)->exists();
+            $counter++;
+        } while ($exists);
 
-        // Cek apakah NIM sudah terdaftar di organisasi ini
-        $existingMember = Member::where('organization_id', $organization->id)
-            ->where('member_number', $nim)
-            ->first();
-
-        if ($existingMember) {
-            return back()->withErrors(['member_number' => "NIM/Nomor Anggota {$nim} sudah terdaftar di organisasi {$organization->name}. Silakan langsung masuk ke sistem."])->withInput();
-        }
-
-        $passwordPlain = ! empty($validated['password']) ? $validated['password'] : $nim;
+        $defaultName = 'Anggota '.$orgCode.' #'.substr($defaultNim, -4);
+        $username = Str::lower($defaultNim);
+        $passwordPlain = $username;
         $member = null;
         $user = null;
 
-        DB::transaction(function () use ($validated, $nim, $passwordPlain, $organization, $token, &$member, &$user) {
+        DB::transaction(function () use ($defaultNim, $defaultName, $username, $passwordPlain, $organization, $token, &$member, &$user) {
             // 1. Tambah kuota terpakai pada token pendaftaran
             $token->increment('used_count');
 
-            // 2. Cek apakah akun user dengan username NIM sudah ada atau buat baru
-            $user = User::where('username', Str::lower($nim))->first();
-
-            if (! $user) {
-                $user = User::create([
-                    'name' => $validated['name'],
-                    'username' => Str::lower($nim),
-                    'phone' => $validated['phone'],
-                    'password' => Hash::make($passwordPlain),
-                    'is_super_admin' => false,
-                ]);
-            }
+            // 2. Buat akun user login
+            $user = User::create([
+                'name' => $defaultName,
+                'username' => $username,
+                'phone' => null,
+                'password' => Hash::make($passwordPlain),
+                'is_super_admin' => false,
+            ]);
 
             // 3. Buat entitas anggota di buku induk ormawa
             $member = Member::create([
                 'organization_id' => $organization->id,
                 'user_id' => $user->id,
-                'member_number' => $nim,
-                'name' => $validated['name'],
-                'phone' => $validated['phone'],
+                'member_number' => $defaultNim,
+                'name' => $defaultName,
+                'phone' => null,
                 'is_active' => true,
             ]);
 
@@ -180,9 +167,8 @@ class MemberRegistrationController extends Controller
                 'subject_id' => $member->id,
                 'payload' => [
                     'token' => $token->token,
-                    'member_number' => $nim,
-                    'name' => $validated['name'],
-                    'phone' => $validated['phone'],
+                    'member_number' => $defaultNim,
+                    'name' => $defaultName,
                 ],
             ]);
         });
@@ -197,6 +183,6 @@ class MemberRegistrationController extends Controller
             'active_role' => 'anggota',
         ]);
 
-        return redirect()->route('anggota.dashboard')->with('success', "Selamat datang di Kasly! Akun Anda berhasil terdaftar sebagai anggota {$organization->name} ({$organization->code}).");
+        return redirect()->route('anggota.dashboard')->with('success', "Selamat bergabung di {$organization->name}! Akun kamu telah dibuat dengan ID: {$defaultNim}. Kamu bisa menyesuaikan nama asli, NIM kampus, dan kata sandi di menu Profil Saya kapan saja.");
     }
 }

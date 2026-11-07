@@ -29,118 +29,75 @@
         <div class="bg-white rounded-lg p-6 sm:p-8 shadow-card border border-ice-200">
 
             @if ($tokenStatus === 'valid')
-                <!-- KONDISI 1: TOKEN / QR CODE VALID -->
-                <div class="space-y-2 text-center pb-4 border-b border-ice-200">
-                    <span class="inline-block px-3 py-1 rounded-full bg-butter-100 text-navy-900 text-xs font-bold">
-                        Pendaftaran Anggota Ormawa
+                <!-- KONDISI 1: TOKEN / QR CODE VALID - KONFIRMASI ORGANISASI -->
+                <div class="space-y-4 text-center">
+                    <span class="inline-block px-3 py-1 rounded bg-butter-100 text-navy-900 text-xs font-bold uppercase tracking-wider">
+                        Konfirmasi Pendaftaran Anggota
                     </span>
-                    <h1 class="font-display font-semibold text-2xl text-navy-900">
-                        {{ $organization->name }}
-                    </h1>
-                    <p class="text-xs text-navy-500 font-mono">
-                        Kode Organisasi: <span class="font-bold text-navy-900">{{ $organization->code }}</span>
-                    </p>
+
+                    <div class="py-2">
+                        <p class="text-xs text-navy-500 uppercase tracking-wider font-medium">Anda akan bergabung ke organisasi:</p>
+                        <h1 class="font-display font-bold text-2xl sm:text-3xl text-navy-900 mt-1">
+                            {{ $organization->name }}
+                        </h1>
+                        <span class="inline-block mt-2 px-2.5 py-1 rounded bg-ice-100 text-navy-900 text-xs font-mono font-bold tracking-wider">
+                            KODE: {{ $organization->code }}
+                        </span>
+                    </div>
+
+                    @if ($organization->description)
+                        <p class="text-xs text-navy-500 max-w-sm mx-auto leading-relaxed">
+                            {{ $organization->description }}
+                        </p>
+                    @endif
+
+                    <!-- Info Ringkas Masa Berlaku & Kuota -->
+                    <div class="p-4 rounded-md bg-ice-100/60 border border-ice-200 grid grid-cols-2 gap-3 text-left text-xs">
+                        <div>
+                            <span class="text-navy-500 block">Sisa Kuota QR:</span>
+                            <span class="text-navy-900 font-display font-semibold text-sm">{{ $token->remainingUses() }} anggota</span>
+                        </div>
+                        <div>
+                            <span class="text-navy-500 block">Masa Berlaku:</span>
+                            <span class="text-navy-900 font-display font-semibold text-sm">{{ $token->expires_at->diffForHumans() }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Kotak Pemberitahuan Akun Default -->
+                    <div class="p-3.5 rounded-md bg-ice-100/30 border border-ice-200 text-left text-xs text-navy-600 space-y-1">
+                        <p class="font-semibold text-navy-900">Informasi Keanggotaan:</p>
+                        <p class="text-navy-500 leading-relaxed">
+                            Akun Anda akan otomatis dibuat dengan ID anggota default. Anda dapat melengkapi nama asli, NIM kampus, dan nomor WhatsApp kapan saja di halaman <strong>Profil Saya</strong>.
+                        </p>
+                    </div>
+
+                    @if ($errors->any())
+                        <div class="p-3 rounded-md bg-danger/10 text-danger text-xs font-medium text-left">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+
+                    <!-- Tombol Konfirmasi & Batal -->
+                    <div class="pt-2 space-y-2">
+                        <form action="{{ route('anggota.register.qr.submit') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="token" value="{{ $token->token }}">
+                            <button
+                                type="submit"
+                                class="w-full h-11 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2"
+                            >
+                                Konfirmasi & Masuk sebagai Anggota
+                            </button>
+                        </form>
+
+                        <a
+                            href="/"
+                            class="w-full inline-flex items-center justify-center h-10 px-4 rounded-md border border-ice-200 bg-white text-navy-500 text-xs font-medium hover:bg-ice-100 hover:text-navy-900 transition-colors"
+                        >
+                            Bukan Organisasi Saya (Batal)
+                        </a>
+                    </div>
                 </div>
-
-                <!-- Info Kuota & Masa Berlaku Token -->
-                <div class="mt-4 p-3.5 rounded-md bg-ice-100/70 border border-ice-200 grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                        <span class="text-navy-500 block">Sisa Kuota:</span>
-                        <strong class="text-navy-900 font-display font-semibold text-sm">{{ $token->remainingUses() }}</strong>
-                        <span class="text-navy-500/70 text-[11px]">/ {{ $token->max_uses }} orang</span>
-                    </div>
-                    <div>
-                        <span class="text-navy-500 block">Berlaku Hingga:</span>
-                        <strong class="text-navy-900 font-display font-semibold text-sm">{{ $token->expires_at->format('d M H:i') }}</strong>
-                        <span class="text-navy-500/70 text-[11px] block">({{ $token->expires_at->diffForHumans() }})</span>
-                    </div>
-                </div>
-
-                @if ($errors->any())
-                    <div class="mt-4 p-3 rounded-md bg-danger/10 text-danger text-xs font-medium">
-                        {{ $errors->first() }}
-                    </div>
-                @endif
-
-                <!-- Formulir Data Anggota -->
-                <form action="{{ route('anggota.register.qr.submit') }}" method="POST" class="mt-5 space-y-4">
-                    @csrf
-                    <input type="hidden" name="token" value="{{ $token->token }}">
-
-                    <!-- NIM / Nomor Anggota -->
-                    <div>
-                        <label for="member_number" class="block text-xs font-medium text-navy-500 mb-1.5">
-                            Nomor Induk Mahasiswa (NIM) *
-                        </label>
-                        <input
-                            type="text"
-                            id="member_number"
-                            name="member_number"
-                            value="{{ old('member_number') }}"
-                            required
-                            autofocus
-                            placeholder="Contoh: 20240101"
-                            class="w-full h-11 px-3.5 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors font-mono"
-                        >
-                    </div>
-
-                    <!-- Nama Lengkap -->
-                    <div>
-                        <label for="name" class="block text-xs font-medium text-navy-500 mb-1.5">
-                            Nama Lengkap Mahasiswa *
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value="{{ old('name') }}"
-                            required
-                            placeholder="Contoh: Muhammad Budi"
-                            class="w-full h-11 px-3.5 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                        >
-                    </div>
-
-                    <!-- Nomor WhatsApp -->
-                    <div>
-                        <label for="phone" class="block text-xs font-medium text-navy-500 mb-1.5">
-                            Nomor WhatsApp Aktif *
-                        </label>
-                        <input
-                            type="text"
-                            id="phone"
-                            name="phone"
-                            value="{{ old('phone') }}"
-                            required
-                            placeholder="Contoh: 081234567890"
-                            class="w-full h-11 px-3.5 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors font-mono"
-                        >
-                        <p class="text-[11px] text-navy-500/70 mt-1">Digunakan untuk pengingat batas waktu kas otomatis.</p>
-                    </div>
-
-                    <!-- Kata Sandi Opsional -->
-                    <div>
-                        <label for="password" class="block text-xs font-medium text-navy-500 mb-1.5">
-                            Kata Sandi (Opsional)
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Biarkan kosong jika ingin default sama dengan NIM"
-                            class="w-full h-11 px-3.5 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
-                        >
-                        <p class="text-[11px] text-navy-500/70 mt-1">Bisa diubah kapan saja di menu profil anggota.</p>
-                    </div>
-
-                    <div class="pt-2">
-                        <button
-                            type="submit"
-                            class="w-full h-11 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer shadow-sm"
-                        >
-                            Daftar & Masuk ke Kasly
-                        </button>
-                    </div>
-                </form>
 
             @elseif ($tokenStatus === 'expired')
                 <!-- KONDISI 2: TOKEN EXPIRED -->

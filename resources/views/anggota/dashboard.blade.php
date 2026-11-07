@@ -58,7 +58,32 @@
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-[1120px] mx-auto p-6 md:p-8 space-y-8">
+    <main class="max-w-[1120px] mx-auto p-6 md:p-8 space-y-6">
+
+        @if (session('success'))
+            <div class="p-4 rounded-md bg-butter-100 text-navy-900 text-sm font-medium shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <span>{{ session('success') }}</span>
+                <a
+                    href="{{ route('anggota.profile') }}"
+                    class="inline-flex items-center justify-center h-8 px-3 rounded bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shrink-0"
+                >
+                    Sesuaikan Profil Saya &rarr;
+                </a>
+            </div>
+        @elseif (str_starts_with($member->member_number, $organization->code.'-'))
+            <div class="p-4 rounded-md bg-white border border-ice-200 text-navy-900 text-xs shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="font-semibold text-navy-900">ID Anggota Default: {{ $member->member_number }}</span>
+                    <p class="text-navy-500 mt-0.5">Anda bergabung menggunakan QR Code. Anda dapat melengkapi nama asli, NIM kampus, dan kata sandi di menu profil.</p>
+                </div>
+                <a
+                    href="{{ route('anggota.profile') }}"
+                    class="inline-flex items-center justify-center h-8 px-3.5 rounded bg-navy-900 text-white font-medium text-xs hover:bg-navy-700 transition-colors shrink-0"
+                >
+                    Lengkapi Profil
+                </a>
+            </div>
+        @endif
 
         <!-- Welcome Header -->
         <div>

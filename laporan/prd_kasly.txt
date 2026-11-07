@@ -173,12 +173,13 @@ US-06: Manajemen Staf & Delegasi Bendahara
   * Admin Organisasi dapat menonaktifkan atau menghapus akun staf jika masa jabatan berakhir.
 
 US-07: Registrasi Mandiri Anggota via QR Code Berbatas Waktu & Kuota
-- Format: Sebagai calon anggota ormawa, saya ingin mendaftar ke organisasi secara mandiri dengan memindai QR Code dari grup WhatsApp agar tidak merepotkan bendahara menginput satu per satu.
+- Format: Sebagai calon anggota ormawa, saya ingin mendaftar ke organisasi secara mandiri dengan memindai QR Code dari grup WhatsApp tanpa mengisi form panjang dan dengan konfirmasi organisasi terlebih dahulu.
 - Kriteria Selesai (Acceptance Criteria):
   * Pengurus dapat mengunduh gambar QR Code resmi (.png) secara direct download dari /pengurus/anggota atau membagikan tautan unik ke grup WhatsApp.
   * Mahasiswa membuka /daftar-anggota dengan token unik, memindai QR lewat kamera perangkat atau mengunggah gambar QR dari galeri.
-  * Sistem memvalidasi kuota dan masa berlaku token. Jika valid, pendaftar menginput NIM, Nama, dan No. WA.
-  * Akun anggota dan akun login dibuat otomatis (username & password default = NIM) lalu sistem melakukan auto-login langsung ke portal anggota.
+  * Sistem memvalidasi kuota dan masa berlaku token, lalu menampilkan layar konfirmasi nama dan kode organisasi agar tidak salah bergabung.
+  * Mahasiswa menekan tombol konfirmasi -> sistem otomatis membuat akun dengan ID default (misal: HIMTECH-0011) dan auto-login langsung ke /anggota/dashboard.
+  * Mahasiswa dapat menyesuaikan ID default ke NIM kampus asli dan melengkapi nama di menu /anggota/profile.
   * Pengurus dapat mengubah batas kuota maksimal dan memperpanjang masa berlaku QR yang sedang aktif tanpa mengubah gambar barcode atau link yang sudah dibagikan di WhatsApp.
   * Pengurus dapat mengoreksi data anggota (NIM, Nama, No. WA) via modal edit di tabel anggota yang otomatis menyinkronkan data login.
 
@@ -225,7 +226,9 @@ B. Diagram Alur Pengguna (User Flows):
    ALUR 4: Registrasi Mandiri Anggota via QR Code
    [Pengurus] -> Klik "Download Gambar QR (PNG)" atau "Bagikan ke Grup WhatsApp" dari /pengurus/anggota
    -> [Mahasiswa di Grup WA] -> Klik link pendaftaran atau scan QR Code via kamera / unggah foto QR di /daftar-anggota
-   -> Masukkan NIM, Nama Lengkap, dan Nomor WhatsApp
-   -> Sistem validasi kuota & waktu kedaluwarsa -> Simpan data anggota & akun login default (NIM)
+   -> Sistem validasi kuota & waktu -> Tampilkan layar konfirmasi organisasi (Nama & Kode Ormawa)
+   -> Mahasiswa klik "Konfirmasi & Masuk sebagai Anggota"
+   -> Sistem auto-create data anggota dengan ID default (contoh: HIMTECH-0011)
    -> Auto-login langsung ke /anggota/dashboard (Mahasiswa langsung dapat melihat saldo kas ormawa & tagihannya)
+   -> Mahasiswa dapat melengkapi nama asli & NIM kampus di /anggota/profile kapan saja.
 ================================================================================

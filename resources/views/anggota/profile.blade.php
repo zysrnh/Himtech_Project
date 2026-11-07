@@ -82,24 +82,26 @@
                 @csrf
                 @method('PUT')
 
-                <!-- NIM / Username Readonly -->
+                <!-- NIM / Username Editable -->
                 <div>
-                    <label class="block text-xs font-medium text-navy-500 mb-1.5">
-                        Nomor Induk Mahasiswa (NIM)
+                    <label for="member_number" class="block text-xs font-medium text-navy-500 mb-1.5">
+                        Nomor Induk Mahasiswa (NIM / No. Anggota) *
                     </label>
                     <input
                         type="text"
-                        readonly
-                        value="{{ $member->member_number ?? $user->username }}"
-                        class="w-full h-11 px-3.5 rounded-sm bg-ice-100/60 text-navy-900/70 font-mono text-sm border border-ice-200 cursor-not-allowed"
+                        id="member_number"
+                        name="member_number"
+                        value="{{ old('member_number', $member->member_number ?? $user->username) }}"
+                        required
+                        class="w-full h-11 px-3.5 rounded-sm bg-ice-100 text-navy-900 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
                     >
-                    <p class="text-[11px] text-navy-500/70 mt-1">NIM terikat ke buku induk organisasi dan tidak dapat diubah sembarangan.</p>
+                    <p class="text-[11px] text-navy-500/70 mt-1">Ubah ID default ini ke NIM asli kampus Anda. Username akun login Anda akan otomatis mengikuti NIM ini.</p>
                 </div>
 
                 <!-- Nama Lengkap -->
                 <div>
                     <label for="name" class="block text-xs font-medium text-navy-500 mb-1.5">
-                        Nama Lengkap *
+                        Nama Lengkap Mahasiswa *
                     </label>
                     <input
                         type="text"
@@ -114,14 +116,14 @@
                 <!-- Nomor WhatsApp -->
                 <div>
                     <label for="phone" class="block text-xs font-medium text-navy-500 mb-1.5">
-                        Nomor WhatsApp Aktif *
+                        Nomor WhatsApp (Opsional)
                     </label>
                     <input
                         type="text"
                         id="phone"
                         name="phone"
                         value="{{ old('phone', $user->phone) }}"
-                        required
+                        placeholder="Contoh: 081234567890"
                         class="w-full h-11 px-3.5 rounded-sm bg-ice-100 text-navy-900 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
                     >
                     <p class="text-[11px] text-navy-500/70 mt-1">Digunakan untuk pengingat batas waktu kas dari bendahara.</p>

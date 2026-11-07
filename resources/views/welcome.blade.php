@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Kasly') }} - Kas Organisasi Transparan</title>
 
-    <link rel="icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('logo/icon-kasly.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/icon-32.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo/icon-192.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,10 +52,10 @@
                     Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                    <a href="#login-anggota" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                    <a href="{{ route('anggota.login') }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
                         Masuk sebagai Anggota
                     </a>
-                    <a href="#login-pengurus" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-white border border-ice-200 text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
+                    <a href="{{ route('pengurus.login') }}" class="inline-flex items-center justify-center h-12 px-6 rounded-md bg-white border border-ice-200 text-navy-900 font-medium text-sm hover:bg-ice-100 transition-colors">
                         Masuk sebagai Pengurus
                     </a>
                 </div>
@@ -78,24 +80,24 @@
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ url('/login?role=anggota') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                        <a href="{{ route('anggota.login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
                             Masuk sebagai Anggota
                         </a>
                     </div>
                 </div>
 
-                <!-- Card Bendahara dan Staff -->
+                <!-- Card Staff dan Bendahara -->
                 <div id="login-pengurus" class="bg-white rounded-lg p-6 shadow-card flex flex-col justify-between">
                     <div>
                         <h3 class="font-display font-medium text-lg text-navy-900">
-                            Bendahara dan Staff
+                            Staff dan Bendahara
                         </h3>
                         <p class="mt-3 text-sm text-navy-500 leading-relaxed">
                             Login dengan email dan password. Kelola kas, anggota, dan laporan organisasi.
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ url('/login?role=pengurus') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+                        <a href="{{ route('pengurus.login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
                             Masuk sebagai Pengurus
                         </a>
                     </div>
@@ -164,7 +166,7 @@
                         Organisasi didaftarkan
                     </h3>
                     <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                        Admin membuat organisasi dan akun Bendahara awal.
+                        Admin membuat organisasi dan akun Staff awal.
                     </p>
                 </div>
 
@@ -173,7 +175,7 @@
                         Anggota ditambahkan
                     </h3>
                     <p class="mt-3 text-sm text-navy-500 leading-relaxed">
-                        Bendahara menambah anggota manual atau lewat CSV. Setiap anggota mendapat ID login.
+                        Pengurus menambah anggota manual atau lewat CSV. Setiap anggota mendapat ID login.
                     </p>
                 </div>
 

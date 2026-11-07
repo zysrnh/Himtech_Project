@@ -6,11 +6,11 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 1. LANDING PAGE FUNGSIONAL (PORTAL UTAMA)
 ================================================================================
 - Halaman depan mandiri dengan identitas merek Kasly berbasis Design System Ice & Butter v2.
-- Navbar navigasi: Menampilkan logo Kasly, tautan bagian (Fitur, Cara Kerja, FAQ), dan tombol Masuk.
-- Hero Section: Judul utama "Kas organisasi, rapi tanpa buku tulis." dilengkapi subjudul dan dua tombol aksi cepat (Akses Anggota dan Akses Pengurus).
+- Navbar navigasi: Menampilkan logo Kasly resmi SVG, tautan bagian (Fitur, Cara Kerja, FAQ), dan tombol Masuk.
+- Hero Section: Judul utama "Kas organisasi, rapi tanpa buku tulis." dilengkapi subjudul dan dua tombol aksi langsung ke portal Anggota dan Pengurus.
 - Segmentasi Akses Pengguna (Pilih Akses Kamu):
-  * Kartu Anggota: Gerbang masuk anggota menggunakan Kode Organisasi dan ID Anggota.
-  * Kartu Pengurus: Gerbang masuk Bendahara/Staff menggunakan Email dan Password.
+  * Kartu Anggota: Gerbang masuk mandiri anggota via /anggota/login.
+  * Kartu Pengurus: Gerbang masuk Staff/Bendahara via /pengurus/login.
   * Kartu Onboarding Organisasi Baru: Tautan terintegrasi WhatsApp untuk pendaftaran ormawa baru ke Super Admin.
 - Showcase Fitur Utama: Paparan 5 pilar keunggulan sistem (Iuran otomatis, perhitungan saldo real-time, laporan bulanan, audit trail anti-hapus, dan isolasi data multi-tenant).
 - Panduan Cara Kerja: Penjelasan 3 tahap operasional sistem kas (Pendaftaran organisasi, penambahan anggota, dan pengelolaan kas transparan).
@@ -67,6 +67,7 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Mekanisme Graceful Fallback: Jika token Fonnte belum dikonfigurasi atau koneksi offline, sistem mencatat pesan ke log dan proses pendaftaran tetap berjalan aman tanpa crash.
 - Email Notification (Laravel Mail):
   * Pengiriman template email resmi bertema Ice & Butter (StaffAccountCreatedMail) ke alamat email pengurus.
+  * Menggunakan SMTP server kasly@hmif-lpkia.my.id (SSL port 465).
   * Memastikan pengurus memiliki salinan permanen kredensial di kotak masuk email mereka.
 
 ================================================================================
@@ -85,3 +86,37 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
 - Tipografi resmi: Outfit (Headings & Saldo) dan Plus Jakarta Sans (Body Text).
 - Desain berprinsip data-first: Menghilangkan elemen dekoratif hampa seperti label uppercase berjarak lebar dan penomoran 01/02.
 
+================================================================================
+7. PORTAL AUTENTIKASI MULTI-PERAN TERISOLASI
+================================================================================
+- Pemisahan portal login spesifik peran:
+  * Super Admin: /admin/login (akses administrator pusat sistem).
+  * Pengurus / Staff: /pengurus/login (akses bendahara & staff ormawa via Email + Kata Sandi).
+  * Anggota: /anggota/login (akses mahasiswa via Kode Organisasi + NIM/Nomor Anggota + Kata Sandi).
+- Endpoint helper /login dengan auto-routing cerdas sesuai kebutuhan role.
+- Middleware Keamanan Multi-Tenant:
+  * EnsureOrganizationStaff: Memastikan hanya pengurus sah yang dapat mengelola kas ormawanya.
+  * EnsureOrganizationMember: Memastikan anggota hanya dapat melihat data kas pada ormawa tempatnya terdaftar.
+
+================================================================================
+8. DASHBOARD PENGURUS ORMAWA DENGAN INDIKATOR KEDISIPLINAN BAYAR KAS
+================================================================================
+- Endpoint: /pengurus/dashboard
+- Kartu Hero Saldo Kas Real-time: Perhitungan otomatis mutasi kas masuk dikurangi kas keluar.
+- Kartu Telemetri Kedisiplinan Iuran Tepat Waktu (Fokus Tema Lomba):
+  * Skor Disiplin (%): Rasio tagihan yang diselesaikan tepat waktu terhadap batas due_date.
+  * Penjelasan transparan jumlah tagihan terbayar on-time vs total tagihan lunas.
+- Widget Pemantauan Tunggakan:
+  * Menampilkan jumlah tagihan yang belum dibayar dan total nominal uang kas yang tertahan.
+- Tabel Mutasi Kas Terkini:
+  * Ringkasan 5 transaksi kas terakhir dengan badge kategori dan indikator kas masuk/keluar.
+- Widget Periode Iuran Aktif:
+  * Status pelunasan iuran per periode tagihan dan tanggal jatuh tempo.
+
+================================================================================
+9. PORTAL TRANSPARANSI KAS ANGGOTA
+================================================================================
+- Endpoint: /anggota/dashboard
+- Keterbukaan Finansial Kas Ormawa: Anggota dapat melihat saldo kas aktual dan ringkasan mutasi secara real-time untuk mencegah penyelewengan kas.
+- Pelacakan Status Tagihan Kas Pribadi: Status Lunas, Menunggu Verifikasi, atau Belum Dibayar dengan penanda apakah pembayaran dilakukan Tepat Waktu atau Terlambat.
+- Riwayat Mutasi Kas Publik: Seluruh pembukuan organisasi ditampilkan transparan bagi anggota.

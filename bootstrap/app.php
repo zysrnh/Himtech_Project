@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureOrganizationMember;
+use App\Http\Middleware\EnsureOrganizationStaff;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,7 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'pengurus' => EnsureOrganizationStaff::class,
+            'anggota' => EnsureOrganizationMember::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

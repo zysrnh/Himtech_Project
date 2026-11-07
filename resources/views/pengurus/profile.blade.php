@@ -20,24 +20,17 @@
     <x-sidebar-pengurus active="profile" />
 
     <!-- Main Content Area: Profil Pengurus -->
-    <main class="flex-1 min-w-0 p-6 sm:p-10 lg:p-12">
-        <div class="max-w-[780px] mx-auto space-y-8">
+    <main class="flex-1 min-w-0 p-6 lg:p-8">
+        <div class="max-w-[1120px] mx-auto space-y-8">
 
             <!-- Top Header -->
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-[18px] bg-ice-100 shadow-[var(--inset-sm)] flex items-center justify-center text-navy-500 shrink-0">
-                    <svg class="w-6 h-6 text-navy-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="font-display font-semibold text-2xl sm:text-[28px] text-navy-900 leading-tight">
-                        Pengaturan Profil Pengurus
-                    </h1>
-                    <p class="text-xs sm:text-sm text-navy-500 mt-1">
-                        Kelola foto profil, data identitas akun pengurus, nomor WhatsApp notifikasi, dan kata sandi login Anda.
-                    </p>
-                </div>
+            <div>
+                <h1 class="font-display font-semibold text-2xl sm:text-[28px] text-navy-900 leading-tight">
+                    Pengaturan Profil Pengurus
+                </h1>
+                <p class="text-xs sm:text-sm text-navy-500 mt-1">
+                    Kelola foto profil, data identitas akun pengurus, nomor WhatsApp notifikasi, dan kata sandi login Anda.
+                </p>
             </div>
 
             <!-- Notifikasi Sukses / Error -->
@@ -69,8 +62,8 @@
                     @csrf
                     @method('PUT')
 
-                    <!-- Foto Profil Avatar (Inset Box Sesuai NEUMORPHISM.md) -->
-                    <div class="neu-card--inset p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+                    <!-- Foto Profil Avatar (Rata dengan Card, Tanpa Sunken Box / Gap) -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-6 pb-6 border-b border-ice-200/60">
                         <div class="relative shrink-0">
                             <div class="neu-avatar-ring p-1 shadow-[var(--raised-xs)] inline-block">
                                 <img
@@ -82,7 +75,7 @@
                             </div>
                         </div>
                         <div class="space-y-2 flex-1 min-w-0">
-                            <h3 class="font-display font-semibold text-sm text-navy-900">
+                            <h3 class="font-display font-semibold text-base text-navy-900">
                                 Foto Profil Pengurus
                             </h3>
                             <p class="text-xs text-navy-500 leading-relaxed">

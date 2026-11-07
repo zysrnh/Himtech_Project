@@ -80,21 +80,21 @@
             <!-- ======================================================== -->
             <!-- KALENDER JADWAL KAS MINGGUAN (INTERACTIVE CALENDAR VIEW)    -->
             <!-- ======================================================== -->
-            <div class="bg-white/85 rounded-2xl p-5 border border-ice-200/80 shadow-[4px_4px_14px_rgba(122,163,214,0.15),-4px_-4px_14px_rgba(255,255,255,0.9)] space-y-4">
+            <div class="bg-white/90 rounded-[28px] p-5 sm:p-6 border border-ice-200/90 shadow-[6px_6px_20px_rgba(122,163,214,0.22),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ice-200/70">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-ice-100 text-navy-900 flex items-center justify-center shadow-xs">
+                        <div class="w-10 h-10 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.25),-3px_-3px_8px_#ffffff] flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-navy-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div>
-                            <h2 class="font-display font-bold text-base text-navy-900">Kalender Jadwal Kas Mingguan</h2>
+                            <h2 class="font-display font-bold text-base sm:text-lg text-navy-900">Kalender Jadwal Kas Mingguan</h2>
                             <p class="text-xs text-navy-500">Penanda tanggal & hari jatuh tempo kas mingguan dalam sebulan</p>
                         </div>
                     </div>
 
-                    <!-- Navigasi Bulan -->
+                    <!-- Navigasi Bulan Neumorphic -->
                     <div class="flex items-center gap-2">
                         @php
                             $prevMonth = $calendarDate->copy()->subMonth()->format('Y-m');
@@ -102,97 +102,135 @@
                         @endphp
                         <a
                             href="{{ route('pengurus.tagihan.index', ['month' => $prevMonth, 'period_id' => $selectedPeriod?->id]) }}"
-                            class="h-8 px-2.5 rounded-lg bg-ice-100 text-navy-900 hover:bg-ice-200 transition-colors flex items-center justify-center text-xs font-semibold cursor-pointer"
+                            class="w-8 h-8 rounded-full bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.2),-2px_-2px_5px_#ffffff] text-navy-700 hover:text-navy-900 hover:scale-105 active:scale-95 flex items-center justify-center transition-all cursor-pointer group"
                             title="Bulan Sebelumnya"
                         >
-                            &larr;
+                            <svg class="w-4 h-4 text-navy-500 group-hover:text-navy-900 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                            </svg>
                         </a>
-                        <span class="px-3 py-1 rounded-lg bg-ice-100 font-bold text-xs text-navy-900 font-display">
-                            {{ $calendarDate->isoFormat('MMMM Y') }}
-                        </span>
+                        <div class="px-4 py-1.5 rounded-full bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.18),-2px_-2px_6px_#ffffff] font-bold text-xs text-navy-900 font-display flex items-center gap-2 select-none">
+                            <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>{{ $calendarDate->isoFormat('MMMM Y') }}</span>
+                        </div>
                         <a
                             href="{{ route('pengurus.tagihan.index', ['month' => $nextMonth, 'period_id' => $selectedPeriod?->id]) }}"
-                            class="h-8 px-2.5 rounded-lg bg-ice-100 text-navy-900 hover:bg-ice-200 transition-colors flex items-center justify-center text-xs font-semibold cursor-pointer"
+                            class="w-8 h-8 rounded-full bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.2),-2px_-2px_5px_#ffffff] text-navy-700 hover:text-navy-900 hover:scale-105 active:scale-95 flex items-center justify-center transition-all cursor-pointer group"
                             title="Bulan Berikutnya"
                         >
-                            &rarr;
+                            <svg class="w-4 h-4 text-navy-500 group-hover:text-navy-900 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Grid Kalender 7 Kolom (Senin s/d Minggu) -->
-                <div class="grid grid-cols-7 gap-1.5 text-center">
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
-                        <div class="py-1.5 text-[11px] font-bold text-navy-500 uppercase tracking-wider bg-ice-100/50 rounded-lg">
-                            {{ $dayName }}
+                <!-- Wrapper Responsif Kalender dengan Horizontal Scroll di HP -->
+                <div class="overflow-x-auto pb-1 -mx-2 px-2 sm:mx-0 sm:px-0 custom-scrollbar">
+                    <div class="min-w-[620px] sm:min-w-0">
+                        <!-- Header Nama Hari (Senin s/d Minggu) -->
+                        <div class="grid grid-cols-7 gap-2 text-center mb-2">
+                            @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
+                                <div class="py-2 text-[11px] font-bold text-navy-500 uppercase tracking-wider rounded-xl bg-ice-100/70 border border-ice-200/50 shadow-[inset_1px_1px_2px_rgba(122,163,214,0.15)]">
+                                    {{ $dayName }}
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
 
-                    @php
-                        $startDayOfWeek = $calendarDate->copy()->startOfMonth()->dayOfWeekIso; // 1 = Senin, 7 = Minggu
-                        $daysInMonth = $calendarDate->daysInMonth;
-                    @endphp
-
-                    <!-- Padding hari kosong sebelum tanggal 1 -->
-                    @for ($i = 1; $i < $startDayOfWeek; $i++)
-                        <div class="min-h-16 rounded-xl bg-ice-100/20 border border-transparent"></div>
-                    @endfor
-
-                    <!-- Tanggal 1 s/d Akhir Bulan -->
-                    @for ($day = 1; $day <= $daysInMonth; $day++)
                         @php
-                            $dateObj = $calendarDate->copy()->day($day);
-                            $dateStr = $dateObj->format('Y-m-d');
-                            $hasKas = isset($calendarPeriodsByDate[$dateStr]);
-                            $kasList = $hasKas ? $calendarPeriodsByDate[$dateStr] : [];
-                            $isToday = $dateObj->isToday();
+                            $startDayOfWeek = $calendarDate->copy()->startOfMonth()->dayOfWeekIso; // 1 = Senin, 7 = Minggu
+                            $daysInMonth = $calendarDate->daysInMonth;
                         @endphp
 
-                        <div class="min-h-20 p-1.5 rounded-xl border text-left transition-all flex flex-col justify-between {{ $hasKas ? 'bg-butter-100/40 border-navy-900/30 shadow-xs' : 'bg-white/60 border-ice-200/60 hover:bg-white' }} {{ $isToday ? 'ring-2 ring-navy-900/40' : '' }}">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold {{ $hasKas ? 'text-navy-900 font-display' : 'text-navy-500' }}">
-                                    {{ $day }}
-                                </span>
-                                @if ($isToday)
-                                    <span class="text-[8px] font-bold bg-navy-900 text-white px-1 py-0.2 rounded font-mono">HARI INI</span>
-                                @endif
-                            </div>
+                        <!-- Grid Kalender Tanggal -->
+                        <div class="grid grid-cols-7 gap-2">
+                            <!-- Padding hari kosong sebelum tanggal 1 -->
+                            @for ($i = 1; $i < $startDayOfWeek; $i++)
+                                <div class="min-h-[100px] rounded-2xl bg-ice-100/25 border border-ice-200/30"></div>
+                            @endfor
 
-                            @if ($hasKas)
-                                <div class="mt-1 space-y-1">
-                                    @foreach ($kasList as $item)
-                                        <a
-                                            href="{{ route('pengurus.tagihan.index', ['period_id' => $item['id'], 'month' => $calendarDate->format('Y-m')]) }}"
-                                            class="block p-1 rounded-md bg-navy-900 text-white text-[9.5px] leading-tight hover:bg-navy-700 transition-colors shadow-2xs {{ $selectedPeriod && $selectedPeriod->id === $item['id'] ? 'ring-2 ring-butter-100' : '' }}"
-                                            title="Klik untuk buka daftar tagihan minggu ini"
-                                        >
-                                            <p class="font-bold truncate">{{ $item['title'] }}</p>
-                                            <div class="flex items-center justify-between mt-0.5 text-[8.5px] text-ice-200">
-                                                <span>Rp {{ number_format($item['amount'], 0, ',', '.') }}</span>
-                                                <span class="{{ $item['is_all_paid'] ? 'text-green-300 font-bold' : 'text-yellow-200' }}">
-                                                    {{ $item['paid_count'] }}/{{ $item['total_count'] }}
-                                                </span>
-                                            </div>
-                                        </a>
-                                    @endforeach
+                            <!-- Tanggal 1 s/d Akhir Bulan -->
+                            @for ($day = 1; $day <= $daysInMonth; $day++)
+                                @php
+                                    $dateObj = $calendarDate->copy()->day($day);
+                                    $dateStr = $dateObj->format('Y-m-d');
+                                    $hasKas = isset($calendarPeriodsByDate[$dateStr]);
+                                    $kasList = $hasKas ? $calendarPeriodsByDate[$dateStr] : [];
+                                    $isToday = $dateObj->isToday();
+                                @endphp
+
+                                <div class="min-h-[100px] p-2 sm:p-2.5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between {{ $hasKas ? 'bg-butter-100/50 border-amber-300 shadow-[3px_3px_8px_rgba(122,163,214,0.18),-2px_-2px_6px_#ffffff]' : 'bg-white/80 border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.1),-2px_-2px_6px_#ffffff] hover:bg-white hover:border-ice-400' }} {{ $isToday ? 'ring-2 ring-navy-900 shadow-md' : '' }}">
+                                    <!-- Baris Atas Cell: Angka Tanggal & Label Hari Ini -->
+                                    <div class="flex items-center justify-between">
+                                        <span class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs {{ $isToday ? 'bg-navy-900 text-white font-mono shadow-xs' : ($hasKas ? 'text-navy-900 font-display font-extrabold text-sm' : 'text-navy-500') }}">
+                                            {{ $day }}
+                                        </span>
+                                        @if ($isToday)
+                                            <span class="text-[8.5px] font-bold bg-navy-900 text-butter-100 px-1.5 py-0.5 rounded-md font-mono tracking-tight shadow-2xs">
+                                                HARI INI
+                                            </span>
+                                        @elseif ($hasKas)
+                                            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse" title="Ada jadwal kas"></span>
+                                        @endif
+                                    </div>
+
+                                    <!-- Daftar Kas / Tagihan pada Tanggal Ini -->
+                                    @if ($hasKas)
+                                        <div class="mt-2 space-y-1.5">
+                                            @foreach ($kasList as $item)
+                                                @php
+                                                    $isSelected = $selectedPeriod && $selectedPeriod->id === $item['id'];
+                                                @endphp
+                                                <a
+                                                    href="{{ route('pengurus.tagihan.index', ['period_id' => $item['id'], 'month' => $calendarDate->format('Y-m')]) }}"
+                                                    class="group/kas block p-1.5 rounded-xl transition-all duration-200 cursor-pointer {{ $isSelected ? 'bg-navy-900 text-white shadow-[0_4px_12px_rgba(47,72,98,0.35)] ring-2 ring-ice-400 ring-offset-1 scale-[1.02]' : 'bg-white text-navy-900 border border-ice-200/90 shadow-[1px_2px_4px_rgba(122,163,214,0.15)] hover:border-navy-500 hover:shadow-md' }}"
+                                                    title="Klik untuk buka daftar tagihan periode ini"
+                                                >
+                                                    <div class="flex items-center justify-between gap-1">
+                                                        <span class="font-bold text-[10px] truncate leading-tight block {{ $isSelected ? 'text-white' : 'text-navy-900' }}">
+                                                            {{ $item['title'] }}
+                                                        </span>
+                                                        @if ($item['is_all_paid'])
+                                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" title="Semua Lunas"></span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center justify-between mt-1 text-[9px] pt-1 border-t {{ $isSelected ? 'border-white/20 text-ice-200' : 'border-ice-200/60 text-navy-500' }}">
+                                                        <span class="tabular-nums font-semibold">Rp {{ number_format($item['amount'], 0, ',', '.') }}</span>
+                                                        <span class="font-mono text-[8.5px] px-1 py-0.2 rounded font-bold {{ $isSelected ? 'bg-white/20 text-white' : ($item['is_all_paid'] ? 'bg-emerald-100 text-emerald-800' : 'bg-butter-100 text-navy-900') }}">
+                                                            {{ $item['paid_count'] }}/{{ $item['total_count'] }}
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="h-4"></div>
+                                    @endif
                                 </div>
-                            @endif
+                            @endfor
                         </div>
-                    @endfor
+                    </div>
                 </div>
 
-                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-[11px] text-navy-500 border-t border-ice-200/60">
-                    <div class="flex items-center gap-3">
+                <!-- Footer Legend Neumorphic -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 text-[11px] text-navy-500 border-t border-ice-200/60">
+                    <div class="flex flex-wrap items-center gap-4">
                         <span class="flex items-center gap-1.5">
-                            <span class="w-3 h-3 rounded bg-butter-100/80 border border-navy-900/30 inline-block"></span>
-                            <span>Jadwal Kas Mingguan</span>
+                            <span class="w-3.5 h-3.5 rounded-md bg-butter-100 border border-amber-300 shadow-2xs inline-block"></span>
+                            <span class="font-medium text-navy-700">Jadwal Kas Mingguan</span>
                         </span>
                         <span class="flex items-center gap-1.5">
-                            <span class="w-3 h-3 rounded bg-navy-900 inline-block"></span>
-                            <span>Badge Tagihan (Klik untuk Buka Tagihan)</span>
+                            <span class="w-3.5 h-3.5 rounded-md bg-navy-900 border border-navy-700 shadow-2xs inline-block"></span>
+                            <span class="font-medium text-navy-700">Tagihan Terpilih</span>
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-navy-900 ring-2 ring-navy-900/30 inline-block"></span>
+                            <span class="font-medium text-navy-700">Hari Ini</span>
                         </span>
                     </div>
-                    <span class="italic">Klik tanggal yang memiliki badge kas untuk membuka rincian tagihan anggota pada periode itu</span>
+                    <span class="italic text-navy-500/80">💡 Klik pada badge tanggal kas untuk memfilter & meninjau status pembayaran anggota</span>
                 </div>
             </div>
 

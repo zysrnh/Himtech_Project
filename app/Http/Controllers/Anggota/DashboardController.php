@@ -54,8 +54,15 @@ class DashboardController extends Controller
         $unpaidBills = $myBills->whereIn('status', ['unpaid', 'pending']);
         $totalUnpaidAmount = (float) $unpaidBills->sum('amount');
 
-        // Data Kalender Kas Mingguan Anggota (Bulan Berjalan)
+        // Data Kalender Kas Mingguan Anggota (Bulan Berjalan / Pilihan)
         $calendarDate = Carbon::now()->startOfMonth();
+        if ($request->filled('month')) {
+            try {
+                $calendarDate = Carbon::createFromFormat('Y-m', (string) $request->query('month'))->startOfMonth();
+            } catch (\Exception $e) {
+                $calendarDate = Carbon::now()->startOfMonth();
+            }
+        }
         $startOfMonth = $calendarDate->copy()->startOfMonth();
         $endOfMonth = $calendarDate->copy()->endOfMonth();
 

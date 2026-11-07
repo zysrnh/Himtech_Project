@@ -136,105 +136,156 @@
             <!-- ======================================================== -->
             <!-- KALENDER JADWAL KAS MINGGUAN SAYA                       -->
             <!-- ======================================================== -->
-            <div id="kalender" class="bg-white rounded-2xl p-6 sm:p-7 shadow-card border border-ice-200 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ice-200">
+            <!-- ======================================================== -->
+            <!-- KALENDER JADWAL KAS MINGGUAN SAYA (NEUMORPHIC VIEW)      -->
+            <!-- ======================================================== -->
+            <div id="kalender" class="bg-white/90 rounded-[28px] p-5 sm:p-6 border border-ice-200/90 shadow-[6px_6px_20px_rgba(122,163,214,0.22),-6px_-6px_20px_rgba(255,255,255,0.95)] space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ice-200/70">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-ice-100 text-navy-900 flex items-center justify-center shadow-xs">
+                        <div class="w-10 h-10 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.25),-3px_-3px_8px_#ffffff] flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-navy-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div>
-                            <h2 class="font-display font-bold text-base text-navy-900">Jadwal Kas Mingguan Saya</h2>
-                            <p class="text-xs text-navy-500">Penanda jadwal kas mingguan ormawa & status pembayaran Anda</p>
+                            <h2 class="font-display font-bold text-base sm:text-lg text-navy-900">Jadwal Kas Mingguan Saya</h2>
+                            <p class="text-xs text-navy-500">Penanda jadwal kas mingguan ormawa & status pelunasan Anda</p>
                         </div>
                     </div>
-                    <span class="px-3 py-1 rounded-lg bg-ice-100 font-bold text-xs text-navy-900 font-display">
-                        {{ $calendarDate->isoFormat('MMMM Y') }}
-                    </span>
+
+                    <!-- Navigasi Bulan Neumorphic -->
+                    <div class="flex items-center gap-2">
+                        @php
+                            $prevMonth = $calendarDate->copy()->subMonth()->format('Y-m');
+                            $nextMonth = $calendarDate->copy()->addMonth()->format('Y-m');
+                        @endphp
+                        <a
+                            href="{{ route('anggota.dashboard', ['month' => $prevMonth]) }}#kalender"
+                            class="w-8 h-8 rounded-full bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.2),-2px_-2px_5px_#ffffff] text-navy-700 hover:text-navy-900 hover:scale-105 active:scale-95 flex items-center justify-center transition-all cursor-pointer group"
+                            title="Bulan Sebelumnya"
+                        >
+                            <svg class="w-4 h-4 text-navy-500 group-hover:text-navy-900 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                        <div class="px-4 py-1.5 rounded-full bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.18),-2px_-2px_6px_#ffffff] font-bold text-xs text-navy-900 font-display flex items-center gap-2 select-none">
+                            <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>{{ $calendarDate->isoFormat('MMMM Y') }}</span>
+                        </div>
+                        <a
+                            href="{{ route('anggota.dashboard', ['month' => $nextMonth]) }}#kalender"
+                            class="w-8 h-8 rounded-full bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.2),-2px_-2px_5px_#ffffff] text-navy-700 hover:text-navy-900 hover:scale-105 active:scale-95 flex items-center justify-center transition-all cursor-pointer group"
+                            title="Bulan Berikutnya"
+                        >
+                            <svg class="w-4 h-4 text-navy-500 group-hover:text-navy-900 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Grid Kalender 7 Kolom (Senin s/d Minggu) -->
-                <div class="grid grid-cols-7 gap-1.5 text-center">
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
-                        <div class="py-1.5 text-[11px] font-bold text-navy-500 uppercase tracking-wider bg-ice-100/50 rounded-lg">
-                            {{ $dayName }}
+                <!-- Responsive Wrapper for Mobile -->
+                <div class="overflow-x-auto neu-scroll pb-1 -mx-2 px-2">
+                    <div class="min-w-[620px] sm:min-w-0">
+                        <!-- Grid Header Hari (Senin s/d Minggu) -->
+                        <div class="grid grid-cols-7 gap-2 text-center mb-2">
+                            @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
+                                <div class="py-2 text-[11px] font-bold text-navy-600 uppercase tracking-wider bg-ice-100/60 rounded-xl border border-ice-200/60 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.15)]">
+                                    {{ $dayName }}
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
 
-                    @php
-                        $startDayOfWeek = $calendarDate->copy()->startOfMonth()->dayOfWeekIso; // 1 = Senin, 7 = Minggu
-                        $daysInMonth = $calendarDate->daysInMonth;
-                    @endphp
-
-                    <!-- Padding hari kosong sebelum tanggal 1 -->
-                    @for ($i = 1; $i < $startDayOfWeek; $i++)
-                        <div class="min-h-16 rounded-xl bg-ice-100/20 border border-transparent"></div>
-                    @endfor
-
-                    <!-- Tanggal 1 s/d Akhir Bulan -->
-                    @for ($day = 1; $day <= $daysInMonth; $day++)
                         @php
-                            $dateObj = $calendarDate->copy()->day($day);
-                            $dateStr = $dateObj->format('Y-m-d');
-                            $bill = $billsByDate[$dateStr] ?? null;
-                            $isToday = $dateObj->isToday();
+                            $startDayOfWeek = $calendarDate->copy()->startOfMonth()->dayOfWeekIso; // 1 = Senin, 7 = Minggu
+                            $daysInMonth = $calendarDate->daysInMonth;
                         @endphp
 
-                        <div class="min-h-20 p-2 rounded-xl border text-left transition-all flex flex-col justify-between {{ $bill ? ($bill['is_paid'] ? 'bg-emerald-50/70 border-emerald-300 shadow-2xs' : 'bg-butter-100/50 border-amber-300 shadow-2xs') : 'bg-white/60 border-ice-200/60 hover:bg-white' }} {{ $isToday ? 'ring-2 ring-navy-900/40' : '' }}">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold {{ $bill ? 'text-navy-900 font-display' : 'text-navy-500' }}">
-                                    {{ $day }}
-                                </span>
-                                @if ($isToday)
-                                    <span class="text-[8px] font-bold bg-navy-900 text-white px-1 py-0.2 rounded font-mono">HARI INI</span>
-                                @endif
-                            </div>
+                        <!-- Grid Tanggal -->
+                        <div class="grid grid-cols-7 gap-2">
+                            <!-- Padding hari kosong sebelum tanggal 1 -->
+                            @for ($i = 1; $i < $startDayOfWeek; $i++)
+                                <div class="min-h-[100px] rounded-2xl bg-ice-100/20 border border-transparent/40"></div>
+                            @endfor
 
-                            @if ($bill)
-                                <div class="mt-1 space-y-1">
-                                    <p class="text-[9.5px] font-bold text-navy-900 leading-tight truncate" title="{{ $bill['period_title'] }}">
-                                        {{ $bill['period_title'] }}
-                                    </p>
-                                    <p class="text-[9px] text-navy-600 font-medium">
-                                        Rp {{ number_format($bill['amount'], 0, ',', '.') }}
-                                    </p>
-                                    @if ($bill['is_paid'])
-                                        <span class="inline-flex items-center gap-1 text-[8.5px] font-bold text-emerald-700 bg-emerald-100/80 px-1.5 py-0.5 rounded">
-                                            <svg class="w-2.5 h-2.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                            Lunas
+                            <!-- Tanggal 1 s/d Akhir Bulan -->
+                            @for ($day = 1; $day <= $daysInMonth; $day++)
+                                @php
+                                    $dateObj = $calendarDate->copy()->day($day);
+                                    $dateStr = $dateObj->format('Y-m-d');
+                                    $bill = $billsByDate[$dateStr] ?? null;
+                                    $isToday = $dateObj->isToday();
+                                @endphp
+
+                                <div class="min-h-[100px] p-2.5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between {{ $bill ? ($bill['is_paid'] ? 'bg-emerald-50/70 border-emerald-300 shadow-[2px_2px_8px_rgba(16,185,129,0.15),-2px_-2px_8px_#ffffff]' : 'bg-butter-100/60 border-amber-300 shadow-[2px_2px_8px_rgba(245,158,11,0.15),-2px_-2px_8px_#ffffff]') : 'bg-white/70 border-ice-200/70 shadow-[2px_2px_6px_rgba(122,163,214,0.08),-2px_-2px_6px_#ffffff] hover:bg-white hover:border-ice-300' }} {{ $isToday ? 'ring-2 ring-navy-900 ring-offset-1' : '' }}">
+                                    <!-- Nomor Tanggal & Indikator Hari Ini -->
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold font-display {{ $isToday ? 'text-navy-900 font-extrabold' : ($bill ? 'text-navy-900' : 'text-navy-500') }}">
+                                            {{ $day }}
                                         </span>
-                                    @elseif (!empty($bill['is_pending']))
-                                        <span class="inline-flex items-center gap-1 text-[8.5px] font-bold text-amber-800 bg-amber-100/90 px-1.5 py-0.5 rounded border border-amber-300">
-                                            Menunggu ACC
-                                        </span>
+                                        @if ($isToday)
+                                            <span class="text-[8px] font-bold bg-navy-900 text-white px-1.5 py-0.5 rounded-full font-mono tracking-wider shadow-xs">HARI INI</span>
+                                        @endif
+                                    </div>
+
+                                    @if ($bill)
+                                        <div class="mt-1 space-y-1.5">
+                                            <p class="text-[10px] font-bold text-navy-900 leading-tight truncate" title="{{ $bill['period_title'] }}">
+                                                {{ $bill['period_title'] }}
+                                            </p>
+                                            <p class="text-[9.5px] text-navy-600 font-semibold tabular-nums">
+                                                Rp {{ number_format($bill['amount'], 0, ',', '.') }}
+                                            </p>
+
+                                            @if ($bill['is_paid'])
+                                                <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-300/80 px-2 py-0.5 rounded-lg shadow-2xs">
+                                                    <svg class="w-2.5 h-2.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                    Lunas
+                                                </span>
+                                            @elseif (!empty($bill['is_pending']))
+                                                <span class="inline-flex items-center gap-1 text-[9px] font-bold text-amber-900 bg-amber-100/90 px-2 py-0.5 rounded-lg border border-amber-300 shadow-2xs">
+                                                    <svg class="w-2.5 h-2.5 text-amber-700 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v2m0 12v2m8-8h-2M6 12H4m15.364-6.364l-1.414 1.414M6.05 17.95l-1.414 1.414M17.95 17.95l-1.414-1.414M6.05 6.05L4.636 7.464"/></svg>
+                                                    Menunggu ACC
+                                                </span>
+                                            @else
+                                                <button
+                                                    type="button"
+                                                    onclick="openPaymentModal('{{ $bill['id'] }}', '{{ addslashes($bill['period_title']) }}', '{{ $bill['amount'] }}', '{{ $bill['due_date'] }}')"
+                                                    class="w-full text-[9.5px] font-bold text-white neu-btn-primary py-1 px-2 rounded-lg shadow-xs hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1"
+                                                >
+                                                    <span>Bayar</span>
+                                                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                                </button>
+                                            @endif
+                                        </div>
                                     @else
-                                        <button
-                                            type="button"
-                                            onclick="openPaymentModal('{{ $bill['id'] }}', '{{ addslashes($bill['period_title']) }}', '{{ $bill['amount'] }}', '{{ $bill['due_date'] }}')"
-                                            class="inline-block text-[8.5px] font-bold text-navy-900 bg-butter-100 border border-navy-900/20 px-1.5 py-0.5 rounded hover:bg-navy-900 hover:text-white transition-colors cursor-pointer"
-                                        >
-                                            Bayar Kas &rarr;
-                                        </button>
+                                        <div class="h-4"></div>
                                     @endif
                                 </div>
-                            @endif
+                            @endfor
                         </div>
-                    @endfor
+                    </div>
                 </div>
 
-                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-[11px] text-navy-500 border-t border-ice-200">
-                    <div class="flex items-center gap-3">
+                <!-- Footer Legend Neumorphic -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 text-[11px] text-navy-500 border-t border-ice-200/60">
+                    <div class="flex flex-wrap items-center gap-4">
                         <span class="flex items-center gap-1.5">
-                            <span class="w-3 h-3 rounded bg-emerald-100 border border-emerald-300 inline-block"></span>
-                            <span>Kas Terbayar (Lunas)</span>
+                            <span class="w-3.5 h-3.5 rounded-md bg-emerald-100 border border-emerald-300 shadow-2xs inline-block"></span>
+                            <span class="font-medium text-navy-700">Kas Terbayar (Lunas)</span>
                         </span>
                         <span class="flex items-center gap-1.5">
-                            <span class="w-3 h-3 rounded bg-butter-100 border border-amber-300 inline-block"></span>
-                            <span>Jadwal Kas Belum Dibayar</span>
+                            <span class="w-3.5 h-3.5 rounded-md bg-butter-100 border border-amber-300 shadow-2xs inline-block"></span>
+                            <span class="font-medium text-navy-700">Jadwal Kas Belum Dibayar</span>
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-navy-900 ring-2 ring-navy-900/30 inline-block"></span>
+                            <span class="font-medium text-navy-700">Hari Ini</span>
                         </span>
                     </div>
-                    <span class="italic">Klik "Bayar Kas" pada tanggal jadwal kas untuk langsung memilih metode pembayaran</span>
+                    <span class="italic text-navy-500/80">💡 Klik "Bayar" pada tanggal jadwal kas untuk membuka rincian pembayaran</span>
                 </div>
             </div>
 
@@ -511,15 +562,15 @@
                             <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">VERIFIKASI OTOMATIS</span>
                         </div>
 
-                        <!-- DAFTAR LENGKAP 11 METODE PEMBAYARAN MIDTRANS SANDBOX -->
-                        <div class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
+                        <!-- DAFTAR LENGKAP 12 METODE PEMBAYARAN MIDTRANS SANDBOX -->
+                        <div class="space-y-2.5 max-h-80 overflow-y-auto pr-1 neu-scroll">
 
                             <!-- 1. GOPAY E-WALLET -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="gopay" checked class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#00AED6] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                        GOPAY
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/gopaylogo.svg') }}" alt="GoPay" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">GoPay Deeplink / QR</p>
@@ -530,10 +581,10 @@
                             </label>
 
                             <!-- 2. QRIS DINAMIS -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="qris" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/qrislogo-removebg-preview.png') }}" alt="QRIS" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -544,11 +595,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">SCAN QR</span>
                             </label>
 
-                            <!-- 2. BCA VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 3. BCA VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bca_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/bcalogo-removebg-preview.png') }}" alt="BCA" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -559,11 +610,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BCA VA</span>
                             </label>
 
-                            <!-- 3. MANDIRI BILL PAYMENT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 4. MANDIRI BILL PAYMENT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="mandiri_bill" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/mandirilogo-removebg-preview.png') }}" alt="Mandiri" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -574,11 +625,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">MANDIRI</span>
                             </label>
 
-                            <!-- 4. BRI VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 5. BRI VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bri_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/brivalogo-removebg-preview.png') }}" alt="BRI" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -589,11 +640,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BRIVA</span>
                             </label>
 
-                            <!-- 5. BNI VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 6. BNI VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bni_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/bnilogo-removebg-preview.png') }}" alt="BNI" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -604,12 +655,12 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BNI VA</span>
                             </label>
 
-                            <!-- 6. PERMATA VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 7. PERMATA VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="permata_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-[#008850] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
-                                        PERMATA
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                                        <img src="{{ asset('logobank/permatalogo.svg') }}" alt="Permata Bank" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
                                         <p class="font-bold text-navy-900 text-xs">Permata Virtual Account</p>
@@ -619,11 +670,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">PERMATA</span>
                             </label>
 
-                            <!-- 7. CIMB NIAGA VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 8. CIMB NIAGA VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="cimb_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/niagalogo-removebg-preview.png') }}" alt="CIMB Niaga" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -634,11 +685,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">OCTO CIMB</span>
                             </label>
 
-                            <!-- 8. BANK DANAMON VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 9. BANK DANAMON VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="danamon_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/danamonlogo-removebg-preview.png') }}" alt="Danamon" class="h-4.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -649,11 +700,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">DANAMON</span>
                             </label>
 
-                            <!-- 9. BANK SYARIAH INDONESIA (BSI) VA -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 10. BANK SYARIAH INDONESIA (BSI) VA -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="bsi_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/bsilogo-removebg-preview.png') }}" alt="BSI" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -664,11 +715,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">BSI VA</span>
                             </label>
 
-                            <!-- 10. SEABANK VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 11. SEABANK VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="seabank_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/seabank_logo-removebg-preview.png') }}" alt="SeaBank" class="h-5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>
@@ -679,11 +730,11 @@
                                 <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono shrink-0">SEABANK</span>
                             </label>
 
-                            <!-- 11. BANK SAQU VIRTUAL ACCOUNT -->
-                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                            <!-- 12. BANK SAQU VIRTUAL ACCOUNT -->
+                            <label class="flex items-center justify-between p-3 rounded-2xl bg-white border border-ice-200/80 shadow-[3px_3px_8px_rgba(122,163,214,0.12),-3px_-3px_8px_#ffffff] hover:shadow-[4px_4px_12px_rgba(122,163,214,0.2),-4px_-4px_12px_#ffffff] hover:border-ice-300 transition-all cursor-pointer">
                                 <div class="flex items-center gap-3">
                                     <input type="radio" name="auto_channel" value="saqu_va" class="text-navy-900 focus:ring-0">
-                                    <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                    <div class="w-14 h-8 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1 shrink-0 overflow-hidden">
                                         <img src="{{ asset('logobank/banksaqulogo-removebg-preview.png') }}" alt="Bank Saqu" class="h-5.5 w-auto max-w-full object-contain">
                                     </div>
                                     <div>

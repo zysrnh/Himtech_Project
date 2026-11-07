@@ -219,9 +219,9 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                             <!-- GOPAY -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-[#00AED6] text-white flex items-center justify-center font-black text-[10px] tracking-wider shrink-0 shadow-xs">
-                                    GOPAY
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                                    <img src="{{ asset('logobank/gopaylogo.svg') }}" alt="GoPay" class="h-4.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
                                     <p class="font-bold text-navy-900 truncate">GoPay E-Wallet</p>
@@ -230,8 +230,8 @@
                             </div>
 
                             <!-- QRIS -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/qrislogo-removebg-preview.png') }}" alt="QRIS" class="h-4.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -241,8 +241,8 @@
                             </div>
 
                             <!-- BCA -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/bcalogo-removebg-preview.png') }}" alt="BCA" class="h-5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -252,8 +252,8 @@
                             </div>
 
                             <!-- MANDIRI -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/mandirilogo-removebg-preview.png') }}" alt="Mandiri" class="h-5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -263,8 +263,8 @@
                             </div>
 
                             <!-- BRI -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/brivalogo-removebg-preview.png') }}" alt="BRI" class="h-4.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -274,8 +274,8 @@
                             </div>
 
                             <!-- BNI -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/bnilogo-removebg-preview.png') }}" alt="BNI" class="h-4.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -285,9 +285,9 @@
                             </div>
 
                             <!-- PERMATA -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-[#008850] text-white flex items-center justify-center font-black text-[8px] tracking-tighter shrink-0 shadow-xs">
-                                    PERMATA
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                                    <img src="{{ asset('logobank/permatalogo.svg') }}" alt="Permata Bank" class="h-4.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
                                     <p class="font-bold text-navy-900 truncate">Permata Virtual Account</p>
@@ -296,8 +296,8 @@
                             </div>
 
                             <!-- CIMB -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/niagalogo-removebg-preview.png') }}" alt="CIMB Niaga" class="h-5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -307,8 +307,8 @@
                             </div>
 
                             <!-- DANAMON -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/danamonlogo-removebg-preview.png') }}" alt="Danamon" class="h-4.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -318,8 +318,8 @@
                             </div>
 
                             <!-- BSI -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/bsilogo-removebg-preview.png') }}" alt="BSI" class="h-5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -329,8 +329,8 @@
                             </div>
 
                             <!-- SEABANK -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/seabank_logo-removebg-preview.png') }}" alt="SeaBank" class="h-5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">
@@ -340,8 +340,8 @@
                             </div>
 
                             <!-- SAQU -->
-                            <div class="p-3 rounded-xl bg-ice-100/60 border border-ice-200/70 flex items-center gap-3 sm:col-span-2">
-                                <div class="w-14 h-7 rounded-md bg-white border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            <div class="p-3 rounded-2xl bg-white/80 border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12),-2px_-2px_6px_#ffffff] hover:shadow-[3px_3px_10px_rgba(122,163,214,0.2),-3px_-3px_10px_#ffffff] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-3 sm:col-span-2">
+                                <div class="w-14 h-8.5 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_5px_rgba(122,163,214,0.18),-2px_-2px_5px_#ffffff] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                                     <img src="{{ asset('logobank/banksaqulogo-removebg-preview.png') }}" alt="Bank Saqu" class="h-5.5 w-auto max-w-full object-contain">
                                 </div>
                                 <div class="min-w-0">

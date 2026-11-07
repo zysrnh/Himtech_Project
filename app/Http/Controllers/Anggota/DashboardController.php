@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Payment\MidtransController;
 use App\Models\Member;
 use App\Models\Organization;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -49,6 +50,30 @@ class DashboardController extends Controller
         $unpaidBills = $myBills->where('status', 'unpaid');
         $totalUnpaidAmount = (float) $unpaidBills->sum('amount');
 
+        // Data Kalender Kas Mingguan Anggota (Bulan Berjalan)
+        $calendarDate = Carbon::now()->startOfMonth();
+        $startOfMonth = $calendarDate->copy()->startOfMonth();
+        $endOfMonth = $calendarDate->copy()->endOfMonth();
+
+        $monthlyBills = $myBills->filter(function ($bill) use ($startOfMonth, $endOfMonth) {
+            $dueDate = $bill->duesPeriod?->due_date;
+
+            return $dueDate && $dueDate->gte($startOfMonth) && $dueDate->lte($endOfMonth);
+        });
+
+        $billsByDate = [];
+        foreach ($monthlyBills as $bill) {
+            $dateStr = $bill->duesPeriod->due_date->format('Y-m-d');
+            $billsByDate[$dateStr] = [
+                'id' => $bill->id,
+                'period_title' => $bill->duesPeriod->title,
+                'amount' => (float) $bill->amount,
+                'status' => $bill->status,
+                'due_date' => $bill->duesPeriod->due_date->format('d M Y'),
+                'is_paid' => $bill->status === 'paid',
+            ];
+        }
+
         // 5 Mutasi Kas Organisasi Terbaru (Transparansi untuk Anggota)
         $publicTransactions = $organization->transactions()
             ->with(['category', 'creator'])
@@ -70,7 +95,9 @@ class DashboardController extends Controller
             'unpaidBills',
             'totalUnpaidAmount',
             'publicTransactions',
-            'paymentMethods'
+            'paymentMethods',
+            'calendarDate',
+            'billsByDate'
         ));
     }
 }

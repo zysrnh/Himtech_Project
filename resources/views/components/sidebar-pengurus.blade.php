@@ -19,13 +19,28 @@
     $isOrmawaActive = in_array($active, ['anggota', 'staff']);
 @endphp
 
-<aside class="w-[260px] neu-sidebar flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-30 select-none">
+<aside
+    id="sidebar-pengurus"
+    data-app-sidebar
+    class="w-[260px] neu-sidebar flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-40 select-none transition-all duration-300 ease-in-out"
+>
     <div class="flex flex-col min-h-0 flex-1">
-        <!-- Brand Header (Logo Kasly Lebih Besar & di Tengah) -->
-        <div class="h-20 px-5 flex items-center justify-center border-b border-ice-200/70 shrink-0">
-            <a href="{{ route('pengurus.dashboard') }}" class="inline-flex items-center justify-center" title="{{ config('app.name', 'Kasly') }}">
-                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-12 w-auto max-w-[210px] object-contain">
+        <!-- Brand Header (Logo Kasly & Tombol Tutup Sidebar) -->
+        <div class="h-20 px-4 flex items-center justify-between border-b border-ice-200/70 shrink-0">
+            <a href="{{ route('pengurus.dashboard') }}" class="inline-flex items-center justify-center flex-1 pl-4" title="{{ config('app.name', 'Kasly') }}">
+                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-11 w-auto max-w-[190px] object-contain">
             </a>
+            <!-- Tombol Tutup / Collapse Sidebar Cepat -->
+            <button
+                type="button"
+                onclick="toggleAppSidebar()"
+                class="p-1.5 rounded-lg text-navy-500 hover:text-navy-900 hover:bg-ice-200/70 cursor-pointer transition-colors shrink-0"
+                title="Tutup / Sembunyikan Sidebar"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+            </button>
         </div>
 
         <!-- Identitas Organisasi (Flat Rata Kiri, Tidak Timbul, dengan Ikon Kemahasiswaan) -->
@@ -207,4 +222,14 @@
         </form>
     </div>
 </aside>
+
+<script>
+    if (typeof window.toggleAppSidebar === 'undefined') {
+        window.toggleAppSidebar = function() {
+            const sb = document.querySelector('[data-app-sidebar]') || document.getElementById('sidebar-pengurus') || document.getElementById('sidebar-anggota');
+            if (!sb) return;
+            sb.classList.toggle('-ml-[260px]');
+        };
+    }
+</script>
 

@@ -43,13 +43,26 @@
 
             <!-- Top Header & Aksi Cepat -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-display font-semibold text-2xl lg:text-[28px] text-navy-900">
-                        Tagihan Iuran Kas
-                    </h1>
-                    <p class="text-sm text-navy-500 mt-1">
-                        Kelola periode kas, verifikasi pelunasan anggota, dan pengaturan metode pembayaran.
-                    </p>
+                <div class="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onclick="toggleAppSidebar()"
+                        class="h-10 px-3.5 rounded-xl bg-white border border-ice-200/80 text-navy-900 font-semibold text-xs shadow-xs hover:bg-ice-100 cursor-pointer transition-all flex items-center gap-2 shrink-0"
+                        title="Buka / Tutup Sidebar"
+                    >
+                        <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                        <span>Menu</span>
+                    </button>
+                    <div>
+                        <h1 class="font-display font-semibold text-2xl lg:text-[28px] text-navy-900 leading-tight">
+                            Tagihan Iuran Kas
+                        </h1>
+                        <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                            Kelola periode kas, verifikasi pelunasan anggota, dan pengaturan metode pembayaran.
+                        </p>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-2.5 shrink-0">
@@ -74,6 +87,125 @@
                         </svg>
                         <span>Buat Periode Kas</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- KALENDER JADWAL KAS MINGGUAN (INTERACTIVE CALENDAR VIEW)    -->
+            <!-- ======================================================== -->
+            <div class="bg-white/85 rounded-2xl p-5 border border-ice-200/80 shadow-[4px_4px_14px_rgba(122,163,214,0.15),-4px_-4px_14px_rgba(255,255,255,0.9)] space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ice-200/70">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-ice-100 text-navy-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-5 h-5 text-navy-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="font-display font-bold text-base text-navy-900">Kalender Jadwal Kas Mingguan</h2>
+                            <p class="text-xs text-navy-500">Penanda tanggal & hari jatuh tempo kas mingguan dalam sebulan</p>
+                        </div>
+                    </div>
+
+                    <!-- Navigasi Bulan -->
+                    <div class="flex items-center gap-2">
+                        @php
+                            $prevMonth = $calendarDate->copy()->subMonth()->format('Y-m');
+                            $nextMonth = $calendarDate->copy()->addMonth()->format('Y-m');
+                        @endphp
+                        <a
+                            href="{{ route('pengurus.tagihan.index', ['month' => $prevMonth, 'period_id' => $selectedPeriod?->id]) }}"
+                            class="h-8 px-2.5 rounded-lg bg-ice-100 text-navy-900 hover:bg-ice-200 transition-colors flex items-center justify-center text-xs font-semibold cursor-pointer"
+                            title="Bulan Sebelumnya"
+                        >
+                            &larr;
+                        </a>
+                        <span class="px-3 py-1 rounded-lg bg-ice-100 font-bold text-xs text-navy-900 font-display">
+                            {{ $calendarDate->isoFormat('MMMM Y') }}
+                        </span>
+                        <a
+                            href="{{ route('pengurus.tagihan.index', ['month' => $nextMonth, 'period_id' => $selectedPeriod?->id]) }}"
+                            class="h-8 px-2.5 rounded-lg bg-ice-100 text-navy-900 hover:bg-ice-200 transition-colors flex items-center justify-center text-xs font-semibold cursor-pointer"
+                            title="Bulan Berikutnya"
+                        >
+                            &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Grid Kalender 7 Kolom (Senin s/d Minggu) -->
+                <div class="grid grid-cols-7 gap-1.5 text-center">
+                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
+                        <div class="py-1.5 text-[11px] font-bold text-navy-500 uppercase tracking-wider bg-ice-100/50 rounded-lg">
+                            {{ $dayName }}
+                        </div>
+                    @endforeach
+
+                    @php
+                        $startDayOfWeek = $calendarDate->copy()->startOfMonth()->dayOfWeekIso; // 1 = Senin, 7 = Minggu
+                        $daysInMonth = $calendarDate->daysInMonth;
+                    @endphp
+
+                    <!-- Padding hari kosong sebelum tanggal 1 -->
+                    @for ($i = 1; $i < $startDayOfWeek; $i++)
+                        <div class="min-h-16 rounded-xl bg-ice-100/20 border border-transparent"></div>
+                    @endfor
+
+                    <!-- Tanggal 1 s/d Akhir Bulan -->
+                    @for ($day = 1; $day <= $daysInMonth; $day++)
+                        @php
+                            $dateObj = $calendarDate->copy()->day($day);
+                            $dateStr = $dateObj->format('Y-m-d');
+                            $hasKas = isset($calendarPeriodsByDate[$dateStr]);
+                            $kasList = $hasKas ? $calendarPeriodsByDate[$dateStr] : [];
+                            $isToday = $dateObj->isToday();
+                        @endphp
+
+                        <div class="min-h-20 p-1.5 rounded-xl border text-left transition-all flex flex-col justify-between {{ $hasKas ? 'bg-butter-100/40 border-navy-900/30 shadow-xs' : 'bg-white/60 border-ice-200/60 hover:bg-white' }} {{ $isToday ? 'ring-2 ring-navy-900/40' : '' }}">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold {{ $hasKas ? 'text-navy-900 font-display' : 'text-navy-500' }}">
+                                    {{ $day }}
+                                </span>
+                                @if ($isToday)
+                                    <span class="text-[8px] font-bold bg-navy-900 text-white px-1 py-0.2 rounded font-mono">HARI INI</span>
+                                @endif
+                            </div>
+
+                            @if ($hasKas)
+                                <div class="mt-1 space-y-1">
+                                    @foreach ($kasList as $item)
+                                        <a
+                                            href="{{ route('pengurus.tagihan.index', ['period_id' => $item['id'], 'month' => $calendarDate->format('Y-m')]) }}"
+                                            class="block p-1 rounded-md bg-navy-900 text-white text-[9.5px] leading-tight hover:bg-navy-700 transition-colors shadow-2xs {{ $selectedPeriod && $selectedPeriod->id === $item['id'] ? 'ring-2 ring-butter-100' : '' }}"
+                                            title="Klik untuk buka daftar tagihan minggu ini"
+                                        >
+                                            <p class="font-bold truncate">{{ $item['title'] }}</p>
+                                            <div class="flex items-center justify-between mt-0.5 text-[8.5px] text-ice-200">
+                                                <span>Rp {{ number_format($item['amount'], 0, ',', '.') }}</span>
+                                                <span class="{{ $item['is_all_paid'] ? 'text-green-300 font-bold' : 'text-yellow-200' }}">
+                                                    {{ $item['paid_count'] }}/{{ $item['total_count'] }}
+                                                </span>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endfor
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-[11px] text-navy-500 border-t border-ice-200/60">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-butter-100/80 border border-navy-900/30 inline-block"></span>
+                            <span>Jadwal Kas Mingguan</span>
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-navy-900 inline-block"></span>
+                            <span>Badge Tagihan (Klik untuk Buka Tagihan)</span>
+                        </span>
+                    </div>
+                    <span class="italic">Klik tanggal yang memiliki badge kas untuk membuka rincian tagihan anggota pada periode itu</span>
                 </div>
             </div>
 
@@ -292,55 +424,147 @@
         </div>
     </main>
 
-    <!-- Modal 1: Buat Periode Tagihan Kas Baru -->
-    <div id="modal-create-period" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-ice-200/80 space-y-5 animate-scale-up">
+    <!-- Modal 1: Buat Jadwal Periode Tagihan Kas Baru (Mendukung Mingguan & Tunggal) -->
+    <div id="modal-create-period" style="display: none;" onclick="if(event.target === this) closeModal('modal-create-period')" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-ice-200/80 space-y-4 animate-scale-up">
             <div class="flex items-center justify-between pb-3 border-b border-ice-200/70">
-                <h3 class="font-display font-semibold text-lg text-navy-900">Buat Periode Tagihan Baru</h3>
+                <div>
+                    <h3 class="font-display font-semibold text-lg text-navy-900">Buat Jadwal Tagihan Kas</h3>
+                    <p class="text-xs text-navy-500">Pilih mode kas mingguan rutin atau periode tunggal</p>
+                </div>
                 <button type="button" onclick="closeModal('modal-create-period')" class="text-navy-500 hover:text-navy-900 font-bold text-lg cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Tab Switcher Mode Jadwal -->
+            <div class="grid grid-cols-2 p-1 bg-ice-100 rounded-xl gap-1">
+                <button
+                    type="button"
+                    id="btn-tab-weekly"
+                    onclick="switchScheduleMode('weekly')"
+                    class="py-2 rounded-lg text-xs font-bold transition-all bg-white text-navy-900 shadow-xs cursor-pointer text-center"
+                >
+                    Jadwal Mingguan (Rutin)
+                </button>
+                <button
+                    type="button"
+                    id="btn-tab-single"
+                    onclick="switchScheduleMode('single')"
+                    class="py-2 rounded-lg text-xs font-bold transition-all text-navy-500 hover:text-navy-900 cursor-pointer text-center"
+                >
+                    Periode Tunggal
+                </button>
             </div>
 
             <form action="{{ route('pengurus.tagihan.period.store') }}" method="POST" class="space-y-4">
                 @csrf
-                <div>
-                    <label class="block text-xs font-semibold text-navy-700 mb-1">Nama Periode Tagihan</label>
-                    <input
-                        type="text"
-                        name="title"
-                        required
-                        placeholder="Contoh: Iuran Kas Desember 2026"
-                        class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
-                    >
-                </div>
+                <input type="hidden" name="schedule_type" id="input-schedule-type" value="weekly">
 
-                <div class="grid grid-cols-2 gap-3">
+                <!-- Mode 1: Weekly Fields -->
+                <div id="container-weekly" class="space-y-3.5">
                     <div>
-                        <label class="block text-xs font-semibold text-navy-700 mb-1">Nominal per Anggota</label>
+                        <label class="block text-xs font-semibold text-navy-700 mb-1">Nama / Label Kas Mingguan</label>
+                        <input
+                            type="text"
+                            name="title"
+                            id="field-weekly-title"
+                            required
+                            value="Kas Mingguan Ormawa"
+                            placeholder="Contoh: Kas Rutin Mingguan"
+                            class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
+                        >
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-navy-700 mb-1">Pilih Bulan</label>
+                            <input
+                                type="month"
+                                name="month"
+                                id="field-weekly-month"
+                                required
+                                value="{{ $calendarDate->format('Y-m') }}"
+                                class="w-full h-10 px-3 rounded-xl bg-ice-100 text-navy-900 font-medium text-xs border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-navy-700 mb-1">Hari Rutin Tiap Minggu</label>
+                            <select
+                                name="day_of_week"
+                                id="field-weekly-day"
+                                required
+                                class="w-full h-10 px-3 rounded-xl bg-ice-100 text-navy-900 font-medium text-xs border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none"
+                            >
+                                <option value="5">Setiap Hari Jumat</option>
+                                <option value="6">Setiap Hari Sabtu</option>
+                                <option value="7">Setiap Hari Minggu</option>
+                                <option value="1">Setiap Hari Senin</option>
+                                <option value="2">Setiap Hari Selasa</option>
+                                <option value="3">Setiap Hari Rabu</option>
+                                <option value="4">Setiap Hari Kamis</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-700 mb-1">Nominal Kas per Minggu (Rp)</label>
                         <input
                             type="number"
                             name="amount"
+                            id="field-weekly-amount"
                             required
                             min="1000"
                             step="1000"
-                            placeholder="Contoh: 20000"
+                            value="5000"
+                            placeholder="Contoh: 5000"
                             class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
                         >
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-700 mb-1">Batas Jatuh Tempo</label>
-                        <input
-                            type="date"
-                            name="due_date"
-                            required
-                            value="{{ now()->addDays(14)->format('Y-m-d') }}"
-                            class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
-                        >
+
+                    <div class="text-[11px] text-navy-700 bg-butter-100/50 p-3 rounded-xl border border-butter-200 leading-relaxed">
+                        <p class="font-bold text-navy-900 mb-0.5">Otomatis Terbit Sekaligus Sebulan:</p>
+                        Sistem otomatis mencari semua hari yang dipilih dalam bulan tersebut (4-5 minggu), membuat jadwal periode terpisah per minggu, dan menerbitkan tagihan ke semua anggota aktif.
                     </div>
                 </div>
 
-                <p class="text-[11px] text-navy-500 leading-relaxed bg-ice-100/60 p-3 rounded-xl border border-ice-200/60">
-                    Sistem otomatis menerbitkan tagihan ke seluruh anggota aktif organisasi saat periode dibuat. Anggota yang membayar sebelum atau pada tanggal jatuh tempo akan dinilai <strong>Tepat Waktu</strong>.
-                </p>
+                <!-- Mode 2: Single Period Fields -->
+                <div id="container-single" class="space-y-3.5 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-700 mb-1">Nama Periode Tunggal</label>
+                        <input
+                            type="text"
+                            id="field-single-title"
+                            placeholder="Contoh: Iuran Kas Khusus / Acara"
+                            class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
+                        >
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-navy-700 mb-1">Nominal per Anggota</label>
+                            <input
+                                type="number"
+                                id="field-single-amount"
+                                min="1000"
+                                step="1000"
+                                placeholder="Contoh: 20000"
+                                class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-navy-700 mb-1">Batas Jatuh Tempo</label>
+                            <input
+                                type="date"
+                                id="field-single-date"
+                                value="{{ now()->addDays(14)->format('Y-m-d') }}"
+                                class="w-full h-10 px-3.5 rounded-xl bg-ice-100 text-navy-900 font-medium text-sm border border-ice-200 shadow-[inset_1px_1px_3px_rgba(122,163,214,0.25)] focus:outline-none focus:ring-1 focus:ring-ice-400"
+                            >
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-navy-500 leading-relaxed bg-ice-100/60 p-3 rounded-xl border border-ice-200/60">
+                        Membuat satu periode tagihan tunggal dengan tenggat waktu jatuh tempo spesifik.
+                    </p>
+                </div>
 
                 <div class="flex items-center justify-end gap-2.5 pt-2">
                     <button
@@ -354,7 +578,7 @@
                         type="submit"
                         class="h-9 px-5 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer"
                     >
-                        Simpan & Terbitkan
+                        Simpan & Terbitkan Tagihan
                     </button>
                 </div>
             </form>
@@ -362,7 +586,7 @@
     </div>
 
     <!-- Modal 2: Quick Verify Pembayaran Kas Manual (Cash & Cashless) -->
-    <div id="modal-verify-payment" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs hidden">
+    <div id="modal-verify-payment" style="display: none;" onclick="if(event.target === this) closeModal('modal-verify-payment')" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-xs">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-ice-200/80 space-y-4 animate-scale-up">
             <div class="flex items-center justify-between pb-2 border-b border-ice-200/70">
                 <h3 class="font-display font-semibold text-base text-navy-900">Verifikasi Pelunasan</h3>
@@ -396,24 +620,81 @@
         </div>
     </div>
 
-    <!-- Script Modal -->
+    <!-- Script Modal & Switcher -->
     <script>
-        function openModal(id) {
+        window.openModal = function(id) {
             const el = document.getElementById(id);
-            if (el) el.classList.remove('hidden');
-        }
+            if (el) {
+                el.classList.remove('hidden');
+                el.style.display = 'flex';
+            }
+        };
 
-        function closeModal(id) {
+        window.closeModal = function(id) {
             const el = document.getElementById(id);
-            if (el) el.classList.add('hidden');
-        }
+            if (el) {
+                el.classList.add('hidden');
+                el.style.display = 'none';
+            }
+        };
 
-        function openVerifyModal(billId, memberName, amount) {
+        window.openVerifyModal = function(billId, memberName, amount) {
             document.getElementById('verify-member-name').innerText = memberName;
             document.getElementById('verify-amount').innerText = 'Rp ' + Number(amount).toLocaleString('id-ID');
             document.getElementById('verify-form').action = '/pengurus/tagihan/bills/' + billId + '/verify';
             openModal('modal-verify-payment');
-        }
+        };
+
+        window.switchScheduleMode = function(mode) {
+            const inputType = document.getElementById('input-schedule-type');
+            const contWeekly = document.getElementById('container-weekly');
+            const contSingle = document.getElementById('container-single');
+            const btnWeekly = document.getElementById('btn-tab-weekly');
+            const btnSingle = document.getElementById('btn-tab-single');
+
+            const fWeeklyTitle = document.getElementById('field-weekly-title');
+            const fWeeklyMonth = document.getElementById('field-weekly-month');
+            const fWeeklyDay = document.getElementById('field-weekly-day');
+            const fWeeklyAmount = document.getElementById('field-weekly-amount');
+
+            const fSingleTitle = document.getElementById('field-single-title');
+            const fSingleAmount = document.getElementById('field-single-amount');
+            const fSingleDate = document.getElementById('field-single-date');
+
+            if (mode === 'weekly') {
+                inputType.value = 'weekly';
+                contWeekly.classList.remove('hidden');
+                contSingle.classList.add('hidden');
+
+                btnWeekly.className = 'py-2 rounded-lg text-xs font-bold transition-all bg-white text-navy-900 shadow-xs cursor-pointer text-center';
+                btnSingle.className = 'py-2 rounded-lg text-xs font-bold transition-all text-navy-500 hover:text-navy-900 cursor-pointer text-center';
+
+                if (fWeeklyTitle) { fWeeklyTitle.setAttribute('name', 'title'); fWeeklyTitle.setAttribute('required', 'required'); }
+                if (fWeeklyMonth) { fWeeklyMonth.setAttribute('name', 'month'); fWeeklyMonth.setAttribute('required', 'required'); }
+                if (fWeeklyDay) { fWeeklyDay.setAttribute('name', 'day_of_week'); fWeeklyDay.setAttribute('required', 'required'); }
+                if (fWeeklyAmount) { fWeeklyAmount.setAttribute('name', 'amount'); fWeeklyAmount.setAttribute('required', 'required'); }
+
+                if (fSingleTitle) { fSingleTitle.removeAttribute('name'); fSingleTitle.removeAttribute('required'); }
+                if (fSingleAmount) { fSingleAmount.removeAttribute('name'); fSingleAmount.removeAttribute('required'); }
+                if (fSingleDate) { fSingleDate.removeAttribute('name'); fSingleDate.removeAttribute('required'); }
+            } else {
+                inputType.value = 'single';
+                contWeekly.classList.add('hidden');
+                contSingle.classList.remove('hidden');
+
+                btnSingle.className = 'py-2 rounded-lg text-xs font-bold transition-all bg-white text-navy-900 shadow-xs cursor-pointer text-center';
+                btnWeekly.className = 'py-2 rounded-lg text-xs font-bold transition-all text-navy-500 hover:text-navy-900 cursor-pointer text-center';
+
+                if (fWeeklyTitle) { fWeeklyTitle.removeAttribute('name'); fWeeklyTitle.removeAttribute('required'); }
+                if (fWeeklyMonth) { fWeeklyMonth.removeAttribute('name'); fWeeklyMonth.removeAttribute('required'); }
+                if (fWeeklyDay) { fWeeklyDay.removeAttribute('name'); fWeeklyDay.removeAttribute('required'); }
+                if (fWeeklyAmount) { fWeeklyAmount.removeAttribute('name'); fWeeklyAmount.removeAttribute('required'); }
+
+                if (fSingleTitle) { fSingleTitle.setAttribute('name', 'title'); fSingleTitle.setAttribute('required', 'required'); }
+                if (fSingleAmount) { fSingleAmount.setAttribute('name', 'amount'); fSingleAmount.setAttribute('required', 'required'); }
+                if (fSingleDate) { fSingleDate.setAttribute('name', 'due_date'); fSingleDate.setAttribute('required', 'required'); }
+            }
+        };
     </script>
 
 </body>

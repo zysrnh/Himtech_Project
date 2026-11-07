@@ -13,8 +13,213 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Critical Splash Screen Styles (Referensi VN20261107_184805.mp4) -->
+    <style>
+        #kasly-splash {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #EEF4FB;
+            overflow: hidden;
+            user-select: none;
+            transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .splash-ripple-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .splash-ripple {
+            position: absolute;
+            border-radius: 9999px;
+            border: 1.5px solid rgba(122, 163, 214, 0.38);
+            box-shadow: 0 0 25px rgba(122, 163, 214, 0.12), inset 0 0 15px rgba(255, 255, 255, 0.7);
+            animation: ripplePulse 2.6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+        }
+        .splash-ripple.r1 { width: 140px; height: 140px; animation-delay: 0s; }
+        .splash-ripple.r2 { width: 280px; height: 280px; animation-delay: 0.4s; }
+        .splash-ripple.r3 { width: 440px; height: 440px; animation-delay: 0.8s; }
+        .splash-ripple.r4 { width: 620px; height: 620px; animation-delay: 1.2s; }
+
+        @keyframes ripplePulse {
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.85;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .splash-logo-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(210px, 50vw, 290px);
+            max-width: 90vw;
+        }
+
+        .splash-logo-svg {
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        /* Animasi Pop Ikon K */
+        .splash-part-k {
+            transform-origin: 90px 90px;
+            animation: splashPopK 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+        }
+        @keyframes splashPopK {
+            0% {
+                opacity: 0;
+                transform: scale(0.4) rotate(-6deg);
+            }
+            70% {
+                transform: scale(1.08) rotate(2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Animasi Text "as" */
+        .splash-part-as {
+            transform-origin: 160px 100px;
+            animation: splashSlideAs 0.65s cubic-bezier(0.2, 0, 0, 1) 0.35s both;
+        }
+        @keyframes splashSlideAs {
+            0% {
+                opacity: 0;
+                transform: translateX(-18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Animasi Text "ly" */
+        .splash-part-ly {
+            transform-origin: 250px 100px;
+            animation: splashSlideLy 0.65s cubic-bezier(0.2, 0, 0, 1) 0.55s both;
+        }
+        @keyframes splashSlideLy {
+            0% {
+                opacity: 0;
+                transform: translateX(-18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Animasi Dot "." */
+        .splash-part-dot {
+            transform-origin: 302px 134px;
+            animation: splashPopDot 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both;
+        }
+        @keyframes splashPopDot {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            60% {
+                transform: scale(1.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
 <body class="landing-neu bg-ice-100 text-navy-900 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Splash Screen Intro Kasly (Sesuai Referensi Video VN20261107_184805.mp4) -->
+    <div id="kasly-splash" aria-hidden="true">
+        <!-- Ripple Circles Gelombang Konsentris -->
+        <div class="splash-ripple-wrap">
+            <div class="splash-ripple r1"></div>
+            <div class="splash-ripple r2"></div>
+            <div class="splash-ripple r3"></div>
+            <div class="splash-ripple r4"></div>
+        </div>
+
+        <!-- Center Animated Kasly Logo Assembly -->
+        <div class="splash-logo-container">
+            <svg class="splash-logo-svg" viewBox="0 0 358 190" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Part 1: Ikon K Kasly (Pop-in) -->
+                <g class="splash-part-k">
+                    <path d="M74.552 46.552H106.552C113.978 46.552 121.1 49.502 126.351 54.753C131.602 60.004 134.552 67.1259 134.552 74.552V106.552C134.552 113.978 131.602 121.1 126.351 126.351C121.1 131.602 113.978 134.552 106.552 134.552H54.552C52.4303 134.552 50.3954 133.709 48.8951 132.209C47.3949 130.709 46.552 128.674 46.552 126.552V74.552C46.552 67.1259 49.502 60.004 54.753 54.753C60.004 49.502 67.1259 46.552 74.552 46.552Z" fill="#2F4862"/>
+                    <path d="M76.552 68.552V92.552M76.552 92.552V112.552M76.552 92.552L104.552 68.552M84.552 88.552L106.552 114.552" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" stroke="#DDEBFC"/>
+                </g>
+
+                <!-- Part 2: Huruf "as" (Slide-in) -->
+                <g class="splash-part-as">
+                    <!-- a -->
+                    <path d="M162.196 123.472C158.087 123.472 154.407 122.46 151.156 120.436C147.967 118.412 145.421 115.652 143.52 112.156C141.68 108.66 140.76 104.673 140.76 100.196C140.76 95.7187 141.68 91.732 143.52 88.236C145.421 84.74 147.967 81.98 151.156 79.956C154.407 77.932 158.087 76.92 162.196 76.92C165.201 76.92 167.9 77.5027 170.292 78.668C172.745 79.8333 174.739 81.4587 176.272 83.544C177.805 85.568 178.664 87.8987 178.848 90.536V109.856C178.664 112.493 177.805 114.855 176.272 116.94C174.8 118.964 172.837 120.559 170.384 121.724C167.931 122.889 165.201 123.472 162.196 123.472ZM165.048 110.776C168.053 110.776 170.476 109.795 172.316 107.832C174.156 105.808 175.076 103.263 175.076 100.196C175.076 98.1107 174.647 96.2707 173.788 94.676C172.991 93.0813 171.825 91.8547 170.292 90.996C168.82 90.076 167.103 89.616 165.14 89.616C163.177 89.616 161.429 90.076 159.896 90.996C158.424 91.8547 157.228 93.0813 156.308 94.676C155.449 96.2707 155.02 98.1107 155.02 100.196C155.02 102.22 155.449 104.029 156.308 105.624C157.167 107.219 158.363 108.476 159.896 109.396C161.429 110.316 163.147 110.776 165.048 110.776ZM174.524 122.552V110.5L176.64 99.644L174.524 88.788V77.84H188.324V122.552H174.524Z" fill="#2F4862"/>
+                    <!-- s -->
+                    <path d="M214.519 123.656C211.882 123.656 209.275 123.319 206.699 122.644C204.184 121.969 201.823 121.019 199.615 119.792C197.468 118.504 195.628 117.032 194.095 115.376L202.099 107.28C203.571 108.875 205.319 110.132 207.343 111.052C209.367 111.911 211.575 112.34 213.967 112.34C215.623 112.34 216.88 112.095 217.739 111.604C218.659 111.113 219.119 110.439 219.119 109.58C219.119 108.476 218.567 107.648 217.463 107.096C216.42 106.483 215.071 105.961 213.415 105.532C211.759 105.041 210.011 104.52 208.171 103.968C206.331 103.416 204.583 102.649 202.927 101.668C201.271 100.687 199.922 99.3373 198.879 97.62C197.836 95.8413 197.315 93.6027 197.315 90.904C197.315 88.0213 198.051 85.5373 199.523 83.452C200.995 81.3053 203.08 79.6187 205.779 78.392C208.478 77.1653 211.636 76.552 215.255 76.552C219.058 76.552 222.554 77.2267 225.743 78.576C228.993 79.864 231.631 81.796 233.655 84.372L225.651 92.468C224.24 90.812 222.646 89.6467 220.867 88.972C219.15 88.2973 217.463 87.96 215.807 87.96C214.212 87.96 213.016 88.2053 212.219 88.696C211.422 89.1253 211.023 89.7693 211.023 90.628C211.023 91.548 211.544 92.284 212.587 92.836C213.63 93.388 214.979 93.8787 216.635 94.308C218.291 94.7373 220.039 95.2587 221.879 95.872C223.719 96.4853 225.467 97.3133 227.123 98.356C228.779 99.3987 230.128 100.809 231.171 102.588C232.214 104.305 232.735 106.575 232.735 109.396C232.735 113.751 231.079 117.216 227.767 119.792C224.516 122.368 220.1 123.656 214.519 123.656Z" fill="#2F4862"/>
+                </g>
+
+                <!-- Part 3: Huruf "ly" (Slide-in) -->
+                <g class="splash-part-ly">
+                    <!-- l -->
+                    <path d="M240.372 122.552V55.76H254.448V122.552H240.372Z" fill="#2F4862"/>
+                    <!-- y -->
+                    <path d="M278.16 122.736L259.76 77.84H274.94L286.624 113.444H281.012L292.972 77.84H308.152L289.016 122.736H278.16ZM266.66 141.412L280.092 112.432L289.016 122.736L281.104 141.412H266.66Z" fill="#2F4862"/>
+                </g>
+
+                <!-- Part 4: Titik "." (Pop-in) -->
+                <g class="splash-part-dot">
+                    <path d="M302.352 142.564C299.96 142.564 297.967 141.736 296.372 140.08C294.777 138.424 293.98 136.431 293.98 134.1C293.98 131.647 294.777 129.623 296.372 128.028C297.967 126.372 299.96 125.544 302.352 125.544C304.805 125.544 306.799 126.372 308.332 128.028C309.927 129.623 310.724 131.647 310.724 134.1C310.724 136.431 309.927 138.424 308.332 140.08C306.799 141.736 304.805 142.564 302.352 142.564Z" fill="#2F4862"/>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const splash = document.getElementById('kasly-splash');
+            if (!splash) return;
+
+            // Kunci scroll saat intro splash aktif
+            document.body.style.overflow = 'hidden';
+
+            const dismissSplash = () => {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 650);
+            };
+
+            // Beri durasi animasi intro ~1.85 detik sesuai video referensi VN20261107_184805.mp4
+            const timer = setTimeout(dismissSplash, 1850);
+
+            // Pengguna bisa tap/klik layar untuk skip langsung kapan saja
+            splash.addEventListener('click', () => {
+                clearTimeout(timer);
+                dismissSplash();
+            });
+        })();
+    </script>
 
     <!-- Floating Capsule Navbar (Desktop & Tablet >= 768px: NEUMORPHISM.md) -->
     <header class="hidden md:block floating-capsule-wrapper">

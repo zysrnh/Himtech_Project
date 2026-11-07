@@ -77,21 +77,21 @@
                 <!-- Kolom Kanan: Pratinjau Kas Digital Model Stacked Card Interaktif -->
                 <div class="w-full order-2 lg:order-none">
                     <div class="tabbed-wallet-card">
-                        <!-- The 3-Tab Bar across the top: Exact Match to media_1794038706460_3d4b4e58.png (Berdekatan) -->
+                        <!-- The 3-Tab Bar across the top: Pengeluaran, Pemasukan, Saldo -->
                         <div class="wallet-tabs-bar" role="tablist">
-                            <!-- Tab 1: Kas Cadangan (Left - Deep Midnight) -->
+                            <!-- Tab 1: Pengeluaran (Left - Deep Midnight) -->
                             <button type="button" class="wallet-tab-btn tab-btn--cadangan" id="tab-cadangan" onclick="switchKasCard('cadangan')" role="tab" aria-selected="false">
-                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                                <span>Kas Cadangan</span>
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                                <span>Pengeluaran</span>
                             </button>
 
-                            <!-- Tab 2: Iuran Wajib (Middle - Butter) -->
+                            <!-- Tab 2: Pemasukan (Middle - Butter) -->
                             <button type="button" class="wallet-tab-btn tab-btn--iuran" id="tab-iuran" onclick="switchKasCard('iuran')" role="tab" aria-selected="false">
-                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                <span>Iuran Wajib</span>
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                                <span>Pemasukan</span>
                             </button>
 
-                            <!-- Tab 3: Kas Utama (Right Front Tab) -->
+                            <!-- Tab 3: Kasly Saldo (Right Front Tab) -->
                             <button type="button" class="wallet-tab-btn tab-btn--kas is-active" id="tab-kas" onclick="switchKasCard('kas')" role="tab" aria-selected="true">
                                 <span id="tab-kas-text">AKTIF</span>
                                 <span class="active-dot" id="active-dot"></span>
@@ -588,25 +588,25 @@
             },
             iuran: {
                 themeClass: 'theme--iuran',
-                tag: 'Iuran',
-                label: 'Total Iuran Terkumpul',
-                amount: 'Rp 18.200.000',
-                detail: '142 Anggota Lunas (94%) • 8 Tagihan Berjalan',
+                tag: 'Pemasukan',
+                label: 'Total Pemasukan Kas',
+                amount: '+Rp 18.200.000',
+                detail: '142 Iuran Terverifikasi • 100% Transparan',
                 filletColor: '#FFF9D9',
                 kasTabBg: '#FFF9D9',
                 kasTabColor: '#2F4862',
-                kasLabel: 'Kas Utama'
+                kasLabel: 'Saldo'
             },
             cadangan: {
                 themeClass: 'theme--cadangan',
-                tag: 'Cadangan',
-                label: 'Total Kas Cadangan',
-                amount: 'Rp 3.350.000',
-                detail: 'Dana Darurat & Alokasi Khusus Ormawa',
+                tag: 'Pengeluaran',
+                label: 'Total Pengeluaran Kas',
+                amount: '-Rp 3.350.000',
+                detail: '24 Transaksi Operasional • Bukti Nota Lengkap',
                 filletColor: '#182635',
                 kasTabBg: '#182635',
                 kasTabColor: '#FFFFFF',
-                kasLabel: 'Kas Utama'
+                kasLabel: 'Saldo'
             }
         };
 
@@ -653,7 +653,7 @@
                     kasTab.appendChild(dot);
                 }
             } else {
-                if (kasTabText) kasTabText.textContent = 'Kas Utama';
+                if (kasTabText) kasTabText.textContent = 'Saldo';
                 if (activeBtn && !activeBtn.querySelector('.active-dot')) {
                     const dot = document.createElement('span');
                     dot.className = 'active-dot';

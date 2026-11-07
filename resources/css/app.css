@@ -37,10 +37,11 @@ body {
     background-color: var(--color-ice-100);
 }
 
-/* Scoped Neumorphism untuk Card "Pilih Akses Kamu" */
-.access-neu {
+/* Scoped Neumorphism untuk Landing Page (.landing-neu) */
+.landing-neu, .access-neu {
     /* Palet Ice & Butter */
     --navy-900: #2F4862;
+    --navy-700: #243A50;
     --navy-500: #4A6583;
     --white: #FFFFFF;
     --ice-400: #7AA3D6;
@@ -51,7 +52,7 @@ body {
 
     /* Turunan neumorphism */
     --neu-bg: var(--ice-100);
-    --neu-surface-1: color-mix(in srgb, var(--ice-100) 40%, #fff);
+    --neu-surface-1: color-mix(in srgb, var(--ice-100) 40%, #ffffff);
     --neu-surface-2: color-mix(in srgb, var(--ice-100) 85%, var(--ice-200));
     --neu-surface: linear-gradient(145deg, var(--neu-surface-1), var(--neu-surface-2));
     --neu-dark: rgba(122, 163, 214, 0.55);
@@ -74,17 +75,79 @@ body {
     --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
-.access-neu .neu-card {
+/* 1. Container Universal Landing (1440px & clamp padding) */
+.landing-neu__container {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 48px);
+    box-sizing: border-box;
+}
+
+/* 2. Layout Grid Hero 2-Kolom (>= 1024px) */
+.landing-neu__hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .landing-neu__hero-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+        gap: clamp(48px, 4vw, 56px);
+    }
+}
+
+.landing-neu__hero-title {
+    font-size: clamp(32px, 4.5vw, 56px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.landing-neu__hero-desc {
+    max-width: 44ch;
+}
+
+/* 3. Jarak Vertikal Rapat (Total 64 - 80px) */
+.landing-neu__hero-section {
+    padding-top: clamp(28px, 4vw, 48px);
+    padding-bottom: clamp(32px, 3vw, 40px);
+}
+
+.landing-neu__access-section {
+    padding-top: clamp(32px, 3vw, 40px);
+    padding-bottom: clamp(48px, 5vw, 64px);
+}
+
+/* 4. Card & Komponen Neumorphism */
+.landing-neu .neu-card, .access-neu .neu-card {
     background: var(--neu-surface);
     border-radius: var(--radius-lg);
     box-shadow: var(--raised);
-    padding: 28px;
+    padding: clamp(24px, 3vw, 32px);
+    box-sizing: border-box;
 }
 
-.access-neu .neu-btn {
+.landing-neu .neu-card--preview {
+    border-radius: var(--radius-xl);
+    box-shadow: var(--raised-lg);
+    width: 100%;
+}
+
+.landing-neu .neu-inset-panel {
+    background: var(--neu-bg);
+    box-shadow: var(--inset-sm);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+}
+
+/* 5. Tombol Neumorphism */
+.landing-neu .neu-btn, .access-neu .neu-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-height: 48px;
     gap: 12px;
     padding: 14px 28px;
     border: 0;
@@ -101,42 +164,51 @@ body {
     transition: box-shadow 200ms var(--ease), transform 200ms var(--ease);
 }
 
-.access-neu .neu-btn:hover {
+.landing-neu .neu-btn:hover, .access-neu .neu-btn:hover {
     box-shadow: var(--raised);
     transform: translateY(-1px);
+    color: var(--navy-900);
 }
 
-.access-neu .neu-btn:active,
-.access-neu .neu-btn.is-active {
+.landing-neu .neu-btn:active, .access-neu .neu-btn:active,
+.landing-neu .neu-btn.is-active, .access-neu .neu-btn.is-active {
     box-shadow: var(--inset-sm);
     transform: none;
 }
 
-.access-neu .neu-btn:disabled {
+.landing-neu .neu-btn:disabled, .access-neu .neu-btn:disabled {
     box-shadow: none;
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.access-neu .neu-btn:focus-visible {
+.landing-neu .neu-btn:focus-visible, .access-neu .neu-btn:focus-visible {
     outline: 2px solid var(--ice-400);
     outline-offset: 3px;
 }
 
-.access-neu .neu-btn--primary {
+/* HANYA TOMBOL PRIMER: Masuk ke Sistem Kasly di Hero */
+.landing-neu .neu-btn--primary, .access-neu .neu-btn--primary {
     background: var(--grad-primary);
-    color: var(--white);
+    color: var(--white) !important;
     box-shadow: var(--glow-btn);
-    padding: 16px 40px;
-    font-size: 16px;
+    min-height: 52px;
+    padding: 16px 36px;
+    font-size: 15px;
 }
 
-.access-neu .neu-btn--primary:active {
-    box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.3);
+.landing-neu .neu-btn--primary:hover, .access-neu .neu-btn--primary:hover {
+    box-shadow: 8px 12px 24px rgba(47, 72, 98, 0.36), -4px -4px 14px var(--neu-light);
+    transform: translateY(-1px);
+}
+
+.landing-neu .neu-btn--primary:active, .access-neu .neu-btn--primary:active {
+    box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.35);
+    transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .access-neu .neu-btn {
+    .landing-neu .neu-btn, .access-neu .neu-btn {
         transition: none;
         transform: none;
     }

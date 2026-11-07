@@ -135,7 +135,7 @@ class MidtransController extends Controller
 
             Log::warning('Midtrans Core Charge Error: '.$response->body());
 
-            // Fallback simulasi jika offline
+            // Fallback simulasi jika sandbox mock
             $mockVa = '29700'.rand(1000000000, 9999999999);
             $bill->midtrans_order_id = $orderId;
             $bill->midtrans_payment_type = $validated['payment_type'];
@@ -266,6 +266,132 @@ class MidtransController extends Controller
     }
 
     /**
+     * Sinkronkan status tagihan kas dengan status transaksi terkini dari Midtrans API.
+     * Mengembalikan true jika tagihan berstatus lunas (settlement / capture accept).
+     */
+    public static function syncBillStatus(DuesBill $bill): bool
+    {
+        if ($bill->status === 'paid') {
+            return true;
+        }
+
+        if (empty($bill->midtrans_order_id)) {
+            return false;
+        }
+
+        $serverKey = config('services.midtrans.server_key');
+        if (empty($serverKey)) {
+            return false;
+        }
+
+        $isProduction = config('services.midtrans.is_production', false);
+        $statusEndpoint = $isProduction
+            ? "https://api.midtrans.com/v2/{$bill->midtrans_order_id}/status"
+            : "https://api.sandbox.midtrans.com/v2/{$bill->midtrans_order_id}/status";
+
+        try {
+            $response = Http::withBasicAuth($serverKey, '')
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ])
+                ->timeout(6)
+                ->get($statusEndpoint);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $transactionStatus = $data['transaction_status'] ?? null;
+                $fraudStatus = $data['fraud_status'] ?? null;
+                $paymentType = $data['payment_type'] ?? ($bill->midtrans_payment_type ?? 'qris');
+
+                if ($transactionStatus === 'settlement' || ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
+                    DB::beginTransaction();
+                    try {
+                        $dueDate = $bill->duesPeriod->due_date->endOfDay();
+                        $isOnTime = now()->lte($dueDate);
+
+                        $bill->status = 'paid';
+                        $bill->is_on_time = $isOnTime;
+                        $bill->paid_at = now();
+                        $bill->payment_method = 'midtrans';
+                        $bill->midtrans_payment_type = $paymentType;
+                        $bill->payment_channel = 'midtrans_'.$paymentType;
+                        $bill->save();
+
+                        // Otomatis catat mutasi kas masuk ke Buku Kas jika belum pernah dicatat
+                        $organization = $bill->organization;
+                        $category = $organization->cashCategories()
+                            ->where('type', 'in')
+                            ->where('name', 'Iuran Wajib')
+                            ->first()
+                            ?? $organization->cashCategories()->where('type', 'in')->first();
+
+                        $desc = "Pembayaran Otomatis Midtrans ({$paymentType}) {$bill->duesPeriod->title} - {$bill->member->name}";
+                        $alreadyExists = Transaction::where('organization_id', $organization->id)
+                            ->where('description', $desc)
+                            ->exists();
+
+                        if (! $alreadyExists) {
+                            Transaction::create([
+                                'organization_id' => $organization->id,
+                                'type' => 'in',
+                                'category_id' => $category?->id,
+                                'amount' => $bill->amount,
+                                'transaction_date' => now()->toDateString(),
+                                'description' => $desc,
+                                'is_locked' => true,
+                            ]);
+                        }
+
+                        ActivityLog::create([
+                            'organization_id' => $organization->id,
+                            'action' => 'midtrans_payment_settled',
+                            'subject_type' => DuesBill::class,
+                            'subject_id' => $bill->id,
+                            'payload' => [
+                                'order_id' => $bill->midtrans_order_id,
+                                'payment_type' => $paymentType,
+                                'amount' => $bill->amount,
+                                'is_on_time' => $isOnTime,
+                            ],
+                        ]);
+
+                        DB::commit();
+                        Log::info("Midtrans Status Synced: Tagihan #{$bill->id} berhasil diupdate ke lunas ({$transactionStatus})");
+
+                        return true;
+                    } catch (\Throwable $e) {
+                        DB::rollBack();
+                        Log::error('Gagal update bill status saat sync: '.$e->getMessage());
+
+                        return false;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning("Gagal koneksi status check Midtrans untuk order {$bill->midtrans_order_id}: ".$e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Endpoint API JSON untuk pengecekan status tagihan kas real-time oleh frontend.
+     */
+    public function checkStatus(Request $request, DuesBill $bill): JsonResponse
+    {
+        self::syncBillStatus($bill);
+        $bill->refresh();
+
+        return response()->json([
+            'status' => 'success',
+            'is_paid' => $bill->status === 'paid',
+            'bill_status' => $bill->status,
+            'paid_at' => $bill->paid_at?->format('d M Y H:i'),
+        ]);
+    }
+
+    /**
      * Webhook HTTP Notification Callback dari Midtrans.
      */
     public function handleWebhook(Request $request): JsonResponse
@@ -307,7 +433,6 @@ class MidtransController extends Controller
             $expectedSignature = hash('sha512', $orderId.$statusCode.$grossAmount.$serverKey);
             if ($signatureKey !== $expectedSignature) {
                 Log::warning("Midtrans Webhook Signature Mismatch: {$signatureKey} vs {$expectedSignature}");
-                // Tetap lanjut jika sandbox test, tapi log warning
             }
         }
 
@@ -335,15 +460,22 @@ class MidtransController extends Controller
                         ->first()
                         ?? $organization->cashCategories()->where('type', 'in')->first();
 
-                    Transaction::create([
-                        'organization_id' => $organization->id,
-                        'type' => 'in',
-                        'category_id' => $category?->id,
-                        'amount' => $bill->amount,
-                        'transaction_date' => now()->toDateString(),
-                        'description' => "Pembayaran Otomatis Midtrans ({$paymentType}) {$bill->duesPeriod->title} - {$bill->member->name}",
-                        'is_locked' => true,
-                    ]);
+                    $desc = "Pembayaran Otomatis Midtrans ({$paymentType}) {$bill->duesPeriod->title} - {$bill->member->name}";
+                    $alreadyExists = Transaction::where('organization_id', $organization->id)
+                        ->where('description', $desc)
+                        ->exists();
+
+                    if (! $alreadyExists) {
+                        Transaction::create([
+                            'organization_id' => $organization->id,
+                            'type' => 'in',
+                            'category_id' => $category?->id,
+                            'amount' => $bill->amount,
+                            'transaction_date' => now()->toDateString(),
+                            'description' => $desc,
+                            'is_locked' => true,
+                        ]);
+                    }
 
                     ActivityLog::create([
                         'organization_id' => $organization->id,
@@ -401,15 +533,22 @@ class MidtransController extends Controller
                 ->first()
                 ?? $organization->cashCategories()->where('type', 'in')->first();
 
-            Transaction::create([
-                'organization_id' => $organization->id,
-                'type' => 'in',
-                'category_id' => $category?->id,
-                'amount' => $bill->amount,
-                'transaction_date' => now()->toDateString(),
-                'description' => "Pembayaran Otomatis Midtrans (QRIS Sandbox) {$bill->duesPeriod->title} - {$bill->member->name}",
-                'is_locked' => true,
-            ]);
+            $desc = "Pembayaran Otomatis Midtrans (QRIS Sandbox) {$bill->duesPeriod->title} - {$bill->member->name}";
+            $alreadyExists = Transaction::where('organization_id', $organization->id)
+                ->where('description', $desc)
+                ->exists();
+
+            if (! $alreadyExists) {
+                Transaction::create([
+                    'organization_id' => $organization->id,
+                    'type' => 'in',
+                    'category_id' => $category?->id,
+                    'amount' => $bill->amount,
+                    'transaction_date' => now()->toDateString(),
+                    'description' => $desc,
+                    'is_locked' => true,
+                ]);
+            }
 
             DB::commit();
 

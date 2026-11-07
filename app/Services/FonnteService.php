@@ -71,3 +71,4 @@ class FonnteService
         return self::send($phone, $message);
     }
 }
+

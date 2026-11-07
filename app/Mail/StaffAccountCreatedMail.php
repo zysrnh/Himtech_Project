@@ -54,3 +54,4 @@ class StaffAccountCreatedMail extends Mailable
         return [];
     }
 }
+

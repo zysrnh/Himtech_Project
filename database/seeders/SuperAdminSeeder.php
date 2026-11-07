@@ -13,6 +13,7 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1. Akun Super Admin Kasly (Master Platform - Akses Penuh)
         User::updateOrCreate(
             ['email' => 'admin@kasly.id'],
             [
@@ -21,6 +22,20 @@ class SuperAdminSeeder extends Seeder
                 'phone' => '081234567890',
                 'password' => Hash::make('password'),
                 'is_super_admin' => true,
+                'admin_role' => 'super_admin',
+            ]
+        );
+
+        // 2. Akun Admin Penerima Organisasi (Khusus Review & ACC Pengajuan Ormawa dari Landing Page)
+        User::updateOrCreate(
+            ['email' => 'admin.organisasi@kasly.id'],
+            [
+                'name' => 'Admin Penerima Organisasi',
+                'username' => 'admin_organisasi',
+                'phone' => '081299887766',
+                'password' => Hash::make('password'),
+                'is_super_admin' => true,
+                'admin_role' => 'admin_penerima',
             ]
         );
     }

@@ -23,6 +23,11 @@ class EnsureOrganizationStaff
 
         $user = Auth::user();
 
+        // Admin Penerima hanya bertugas memproses pengajuan organisasi di panel admin pusat
+        if ($user->isAdminPenerima()) {
+            return redirect()->route('admin.organizations.index', ['tab' => 'requests']);
+        }
+
         $orgId = session('active_organization_id');
         $organization = null;
 
@@ -46,7 +51,7 @@ class EnsureOrganizationStaff
                     'active_organization_id' => $orgUser->id,
                     'active_role' => $orgUser->pivot->role,
                 ]);
-            } elseif ($user->is_super_admin) {
+            } elseif ($user->isSuperAdmin()) {
                 // Akses Super Admin untuk memantau portal organisasi
                 $organization = Organization::where('status', 'active')->first();
                 if ($organization) {

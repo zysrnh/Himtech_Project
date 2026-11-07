@@ -33,7 +33,11 @@ class OrganizationController extends Controller
             ]);
         }
 
-        $activeTab = $request->query('tab', 'organizations');
+        if (Auth::user()->isAdminPenerima()) {
+            $activeTab = 'requests';
+        } else {
+            $activeTab = $request->query('tab', 'organizations');
+        }
 
         $totalOrganizations = Organization::count();
         $activeOrganizations = Organization::where('status', 'active')->count();
@@ -65,6 +69,11 @@ class OrganizationController extends Controller
             ]);
         }
 
+        if (Auth::user()->isAdminPenerima()) {
+            return redirect()->route('admin.organizations.index', ['tab' => 'requests'])
+                ->withErrors(['error' => 'Akses dibatasi: Akun Admin Penerima hanya bertugas memproses pengajuan pendaftaran ormawa.']);
+        }
+
         return view('admin.organizations.create');
     }
 
@@ -75,6 +84,10 @@ class OrganizationController extends Controller
     {
         if (! Auth::check() || ! Auth::user()->is_super_admin) {
             abort(403, 'Akses ditolak.');
+        }
+
+        if (Auth::user()->isAdminPenerima()) {
+            abort(403, 'Akses dibatasi: Akun Admin Penerima hanya bertugas memproses pengajuan pendaftaran ormawa.');
         }
 
         $validated = $request->validate([
@@ -360,6 +373,10 @@ class OrganizationController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
+        if (Auth::user()->isAdminPenerima()) {
+            abort(403, 'Akses dibatasi: Akun Admin Penerima tidak memiliki izin mengubah status organisasi.');
+        }
+
         $newStatus = $organization->status === 'active' ? 'inactive' : 'active';
         $organization->update(['status' => $newStatus]);
 
@@ -389,6 +406,10 @@ class OrganizationController extends Controller
     {
         if (! Auth::check() || ! Auth::user()->is_super_admin) {
             abort(403, 'Akses ditolak.');
+        }
+
+        if (Auth::user()->isAdminPenerima()) {
+            abort(403, 'Akses dibatasi: Akun Admin Penerima tidak memiliki izin menghapus organisasi.');
         }
 
         $orgName = $organization->name;

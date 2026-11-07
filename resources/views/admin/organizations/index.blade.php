@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Manajemen Organisasi - {{ config('app.name', 'Kasly') }}</title>
+    <title>{{ Auth::user()->isAdminPenerima() ? 'Pengajuan Organisasi' : 'Manajemen Organisasi' }} - {{ config('app.name', 'Kasly') }}</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
@@ -21,35 +21,58 @@
         <div>
             <!-- Brand -->
             <div class="h-18 px-6 flex items-center border-b border-ice-200">
-                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center">
+                <a href="{{ Auth::user()->isAdminPenerima() ? route('admin.organizations.index', ['tab' => 'requests']) : route('admin.dashboard') }}" class="inline-flex items-center">
                     <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-9 w-auto">
                 </a>
             </div>
 
-            <!-- Nav Items -->
+            <!-- Nav Items Disesuaikan Peran -->
             <nav class="p-4 space-y-1">
-                <a
-                    href="{{ route('admin.dashboard') }}"
-                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
-                >
-                    Overview
-                </a>
-                <a
-                    href="{{ route('admin.organizations.index') }}"
-                    class="flex items-center justify-between h-11 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm transition-colors"
-                >
-                    <span>Organisasi</span>
-                    @if ($pendingRequestsCount > 0)
-                        <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-butter-100 text-navy-900 text-xs font-bold font-display">
-                            {{ $pendingRequestsCount }}
-                        </span>
-                    @endif
-                </a>
+                @if (Auth::user()->isAdminPenerima())
+                    <!-- Menu Khusus Admin Penerima Organisasi -->
+                    <a
+                        href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
+                        class="flex items-center justify-between h-11 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm transition-colors"
+                    >
+                        <span>Pengajuan Masuk</span>
+                        @if ($pendingRequestsCount > 0)
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-butter-100 text-navy-900 text-xs font-bold font-display">
+                                {{ $pendingRequestsCount }}
+                            </span>
+                        @endif
+                    </a>
+                @else
+                    <!-- Menu Lengkap Super Admin Kasly -->
+                    <a
+                        href="{{ route('admin.dashboard') }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Overview
+                    </a>
+                    <a
+                        href="{{ route('admin.organizations.index') }}"
+                        class="flex items-center justify-between h-11 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm transition-colors"
+                    >
+                        <span>Organisasi</span>
+                        @if ($pendingRequestsCount > 0)
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-butter-100 text-navy-900 text-xs font-bold font-display">
+                                {{ $pendingRequestsCount }}
+                            </span>
+                        @endif
+                    </a>
+                    <a
+                        href="{{ route('admin.admins.index') }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Kelola Admin
+                    </a>
+                @endif
+
                 <a
                     href="{{ route('admin.profile') }}"
                     class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
                 >
-                    Profil Admin
+                    Profil Saya
                 </a>
                 <a
                     href="/"
@@ -65,10 +88,21 @@
         <div class="p-4 border-t border-ice-200">
             <div class="px-2 mb-3">
                 <p class="text-sm font-medium text-navy-900 truncate">
-                    {{ Auth::user()->name ?? 'Super Admin' }}
+                    {{ Auth::user()->name }}
                 </p>
-                <p class="text-[13px] text-navy-500 truncate">
-                    {{ Auth::user()->email ?? 'admin@kasly.id' }}
+                <div class="flex items-center gap-1.5 mt-0.5">
+                    @if (Auth::user()->isAdminPenerima())
+                        <span class="inline-block px-2 py-0.5 rounded bg-butter-100 text-navy-900 text-[11px] font-semibold">
+                            Admin Penerima
+                        </span>
+                    @else
+                        <span class="inline-block px-2 py-0.5 rounded bg-ice-200 text-navy-900 text-[11px] font-semibold">
+                            Super Admin
+                        </span>
+                    @endif
+                </div>
+                <p class="text-[13px] text-navy-500 truncate mt-1">
+                    {{ Auth::user()->email }}
                 </p>
                 @if (Auth::user()->phone)
                     <p class="text-xs text-navy-500/70 truncate mt-0.5 font-mono">
@@ -88,7 +122,7 @@
         </div>
     </aside>
 
-    <!-- Main Content Area: Manajemen Organisasi -->
+    <!-- Main Content Area -->
     <main class="flex-1 min-w-0 p-8">
         <div class="max-w-[1120px] mx-auto space-y-8">
 
@@ -96,48 +130,73 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="font-display font-semibold text-[28px] text-navy-900">
-                        Manajemen Organisasi
+                        {{ Auth::user()->isAdminPenerima() ? 'Pengajuan Organisasi Masuk' : 'Manajemen Organisasi' }}
                     </h1>
                     <p class="text-sm text-navy-500 mt-1">
-                        Daftar seluruh entitas ormawa yang terdaftar dan persetujuan pengajuan baru.
+                        {{ Auth::user()->isAdminPenerima()
+                            ? 'Tinjau identitas pendaftar ormawa dan lakukan persetujuan (ACC) pengajuan yang masuk dari landing page.'
+                            : 'Daftar seluruh entitas ormawa yang terdaftar dan persetujuan pengajuan baru.' }}
                     </p>
                 </div>
-                <div>
-                    <a
-                        href="{{ route('admin.organizations.create') }}"
-                        class="inline-flex items-center justify-center h-11 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors shadow-sm"
-                    >
-                        + Tambah Organisasi Manual
-                    </a>
-                </div>
+                @if (Auth::user()->isSuperAdmin())
+                    <div>
+                        <a
+                            href="{{ route('admin.organizations.create') }}"
+                            class="inline-flex items-center justify-center h-11 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors shadow-sm"
+                        >
+                            + Tambah Organisasi Manual
+                        </a>
+                    </div>
+                @endif
             </div>
 
-            <!-- Ringkasan Statistik Status Organisasi -->
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
-                    <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Total Organisasi</p>
-                    <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">{{ $totalOrganizations }}</p>
-                </div>
-                <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
-                    <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Organisasi Aktif</p>
-                    <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">{{ $activeOrganizations }}</p>
-                </div>
-                <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
-                    <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Organisasi Nonaktif</p>
-                    <p class="font-display font-semibold text-2xl text-danger mt-1 tabular-nums">{{ $inactiveOrganizations }}</p>
-                </div>
-                <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
-                    <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Pengajuan Masuk (Pending)</p>
-                    <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums flex items-center gap-2">
-                        <span>{{ $pendingRequestsCount }}</span>
+            <!-- Ringkasan Statistik -->
+            @if (Auth::user()->isAdminPenerima())
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Pengajuan Masuk Butuh ACC</p>
+                            <p class="font-display font-semibold text-3xl text-navy-900 mt-1 tabular-nums">{{ $pendingRequestsCount }}</p>
+                        </div>
                         @if ($pendingRequestsCount > 0)
-                            <span class="text-xs font-sans font-semibold px-2 py-0.5 rounded-full bg-butter-100 text-navy-900">
-                                Butuh ACC
+                            <span class="px-3 py-1 rounded-full bg-butter-100 text-navy-900 text-xs font-bold">
+                                Perlu Ditinjau
                             </span>
                         @endif
-                    </p>
+                    </div>
+                    <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
+                        <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Peran Anda</p>
+                        <p class="font-display font-semibold text-lg text-navy-900 mt-1">Admin Penerima Organisasi</p>
+                        <p class="text-xs text-navy-500 mt-0.5">Fokus menerima & memvalidasi ormawa baru</p>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
+                        <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Total Organisasi</p>
+                        <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">{{ $totalOrganizations }}</p>
+                    </div>
+                    <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
+                        <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Organisasi Aktif</p>
+                        <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">{{ $activeOrganizations }}</p>
+                    </div>
+                    <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
+                        <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Organisasi Nonaktif</p>
+                        <p class="font-display font-semibold text-2xl text-danger mt-1 tabular-nums">{{ $inactiveOrganizations }}</p>
+                    </div>
+                    <div class="p-5 rounded-lg bg-white border border-ice-200 shadow-sm">
+                        <p class="text-xs font-medium text-navy-500 uppercase tracking-wider">Pengajuan Masuk (Pending)</p>
+                        <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums flex items-center gap-2">
+                            <span>{{ $pendingRequestsCount }}</span>
+                            @if ($pendingRequestsCount > 0)
+                                <span class="text-xs font-sans font-semibold px-2 py-0.5 rounded-full bg-butter-100 text-navy-900">
+                                    Butuh ACC
+                                </span>
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            @endif
 
             <!-- Notifikasi Sukses / Error -->
             @if (session('success'))
@@ -152,44 +211,46 @@
                 </div>
             @endif
 
-            <!-- Tab Navigasi: Organisasi Terdaftar vs Pengajuan Masuk -->
-            <div class="flex items-center gap-2 border-b border-ice-200 pb-3">
-                <a
-                    href="{{ route('admin.organizations.index', ['tab' => 'organizations']) }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors {{ $activeTab === 'organizations' ? 'bg-navy-900 text-white' : 'text-navy-500 hover:text-navy-900 hover:bg-white' }}"
-                >
-                    <span>Organisasi Terdaftar</span>
-                    <span class="px-2 py-0.5 rounded-full text-xs {{ $activeTab === 'organizations' ? 'bg-white/20 text-white' : 'bg-ice-100 text-navy-900' }}">
-                        {{ $totalOrganizations }}
-                    </span>
-                </a>
-                <a
-                    href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors {{ $activeTab === 'requests' ? 'bg-navy-900 text-white' : 'text-navy-500 hover:text-navy-900 hover:bg-white' }}"
-                >
-                    <span>Pengajuan Masuk (Pending)</span>
-                    @if ($pendingRequestsCount > 0)
-                        <span class="px-2 py-0.5 rounded-full text-xs bg-butter-100 text-navy-900 font-bold">
-                            {{ $pendingRequestsCount }}
+            <!-- Tab Navigasi (Hanya ditampilkan untuk Super Admin) -->
+            @if (Auth::user()->isSuperAdmin())
+                <div class="flex items-center gap-2 border-b border-ice-200 pb-3">
+                    <a
+                        href="{{ route('admin.organizations.index', ['tab' => 'organizations']) }}"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors {{ $activeTab === 'organizations' ? 'bg-navy-900 text-white' : 'text-navy-500 hover:text-navy-900 hover:bg-white' }}"
+                    >
+                        <span>Organisasi Terdaftar</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs {{ $activeTab === 'organizations' ? 'bg-white/20 text-white' : 'bg-ice-100 text-navy-900' }}">
+                            {{ $totalOrganizations }}
                         </span>
-                    @else
-                        <span class="px-2 py-0.5 rounded-full text-xs {{ $activeTab === 'requests' ? 'bg-white/20 text-white' : 'bg-ice-100 text-navy-900' }}">
-                            0
-                        </span>
-                    @endif
-                </a>
-            </div>
+                    </a>
+                    <a
+                        href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors {{ $activeTab === 'requests' ? 'bg-navy-900 text-white' : 'text-navy-500 hover:text-navy-900 hover:bg-white' }}"
+                    >
+                        <span>Pengajuan Masuk (Pending)</span>
+                        @if ($pendingRequestsCount > 0)
+                            <span class="px-2 py-0.5 rounded-full text-xs bg-butter-100 text-navy-900 font-bold">
+                                {{ $pendingRequestsCount }}
+                            </span>
+                        @else
+                            <span class="px-2 py-0.5 rounded-full text-xs {{ $activeTab === 'requests' ? 'bg-white/20 text-white' : 'bg-ice-100 text-navy-900' }}">
+                                0
+                            </span>
+                        @endif
+                    </a>
+                </div>
+            @endif
 
-            @if ($activeTab === 'requests')
-                <!-- TAB 2: PENGAJUAN MASUK (PENDING) -->
+            <!-- TAMPILAN TABEL PENGAJUAN (Default untuk Admin Penerima atau tab=requests) -->
+            @if (Auth::user()->isAdminPenerima() || $activeTab === 'requests')
                 <div class="bg-white rounded-lg shadow-card overflow-hidden border border-ice-200">
                     <div class="p-6 border-b border-ice-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
                             <h2 class="font-display font-medium text-lg text-navy-900">
-                                Pengajuan Pendaftaran Organisasi
+                                Daftar Pengajuan Pendaftaran Masuk
                             </h2>
                             <p class="text-sm text-navy-500 mt-0.5">
-                                Formulir yang diajukan oleh calon pengelola ormawa melalui halaman publik. Setujui untuk mengaktifkan ormawa dan akun pengelolanya.
+                                Formulir pengajuan dari calon pengelola ormawa. Klik tombol <strong>Setujui (ACC)</strong> untuk mengaktifkan organisasi dan mengirimkan kredensial akun ke ketua/pemohon.
                             </p>
                         </div>
                     </div>
@@ -200,7 +261,7 @@
                                 Tidak ada pengajuan organisasi yang menunggu persetujuan.
                             </p>
                             <p class="text-xs text-navy-500">
-                                Seluruh pengajuan yang masuk telah diproses oleh Administrator.
+                                Semua pengajuan yang masuk telah diproses. Formulir pengajuan baru yang diisi di landing page akan otomatis muncul di sini.
                             </p>
                         </div>
                     @else
@@ -235,8 +296,8 @@
                                                 <div class="text-navy-500 font-mono mt-0.5">{{ '@' . $req->pic_username }}</div>
                                             </td>
                                             <td class="py-4 px-6 text-xs text-navy-500">
-                                                <div class="font-mono text-navy-900">{{ $req->pic_phone }}</div>
-                                                <div>{{ $req->pic_email }}</div>
+                                                <div class="font-mono text-navy-900 font-medium">{{ $req->pic_phone }}</div>
+                                                <div class="text-navy-500">{{ $req->pic_email }}</div>
                                             </td>
                                             <td class="py-4 px-6 text-navy-500 tabular-nums text-xs">
                                                 {{ $req->created_at->format('d M Y H:i') }}
@@ -248,7 +309,7 @@
                                                         action="{{ route('admin.organizations.requests.approve', $req) }}"
                                                         method="POST"
                                                         class="inline-block"
-                                                        onsubmit="return confirm('SETUJUI (ACC) pengajuan organisasi {{ $req->name }} ({{ $req->code }})?\n\nSistem akan otomatis membuat organisasi, membuat akun pengelola, dan mengirimkan kredensial login via WhatsApp dan Email.');"
+                                                        onsubmit="return confirm('SETUJUI (ACC) pengajuan organisasi {{ $req->name }} ({{ $req->code }})?\n\nSistem akan otomatis mengaktifkan organisasi, membuat akun pengelola, dan mengirimkan password via WhatsApp ke {{ $req->pic_phone }}.');"
                                                     >
                                                         @csrf
                                                         <button
@@ -293,7 +354,7 @@
                 </div>
 
             @else
-                <!-- TAB 1: ORGANISASI TERDAFTAR -->
+                <!-- TAB 1: ORGANISASI TERDAFTAR (HANYA SUPER ADMIN) -->
                 <div class="bg-white rounded-lg shadow-card overflow-hidden border border-ice-200">
                     <div class="p-6 border-b border-ice-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>

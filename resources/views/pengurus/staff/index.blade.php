@@ -39,6 +39,14 @@
 
             <!-- Nav Items -->
             <nav class="p-4 space-y-1">
+                @if (Auth::user()->is_super_admin)
+                    <a
+                        href="{{ Auth::user()->isAdminPenerima() ? route('admin.organizations.index', ['tab' => 'requests']) : route('admin.dashboard') }}"
+                        class="flex items-center h-11 px-4 rounded-md bg-butter-100 text-navy-900 font-semibold text-sm transition-colors mb-2"
+                    >
+                        &larr; Ke Panel Admin Kasly
+                    </a>
+                @endif
                 <a
                     href="{{ route('pengurus.dashboard') }}"
                     class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
@@ -402,3 +410,4 @@
     </script>
 </body>
 </html>
+

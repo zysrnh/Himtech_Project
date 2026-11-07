@@ -24,6 +24,11 @@ class DashboardController extends Controller
             ]);
         }
 
+        // Admin Penerima hanya memiliki akses ke review & ACC pengajuan ormawa
+        if (Auth::user()->isAdminPenerima()) {
+            return redirect()->route('admin.organizations.index', ['tab' => 'requests']);
+        }
+
         $totalOrganizations = Organization::count();
         $activeOrganizations = Organization::where('status', 'active')->count();
         $totalMembers = Member::count();

@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Super Admin - {{ config('app.name', 'Kasly') }}</title>
+    <title>Login Administrator Kasly - {{ config('app.name', 'Kasly') }}</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -24,14 +24,20 @@
             </a>
         </div>
 
-        <!-- Card Login Super Admin -->
+        <!-- Card Login Administrator Kasly -->
         <div class="bg-white rounded-lg p-8 shadow-card">
             <h1 class="font-display font-semibold text-2xl text-navy-900">
-                Login Super Admin
+                Login Administrator Kasly
             </h1>
             <p class="mt-2 text-sm text-navy-500 font-normal">
-                Panel pusat pengelolaan organisasi.
+                Panel penerima pengajuan & pengelolaan organisasi.
             </p>
+
+            @if (session('success'))
+                <div class="mt-4 p-3 rounded-sm bg-butter-100 text-navy-900 text-sm font-medium">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             @if ($errors->any())
                 <div class="mt-4 p-3 rounded-sm bg-danger/10 text-danger text-sm">
@@ -42,19 +48,19 @@
             <form action="{{ route('admin.login.submit') }}" method="POST" class="mt-6 space-y-5">
                 @csrf
 
-                <!-- Input Email -->
+                <!-- Input Email atau Username -->
                 <div>
-                    <label for="email" class="block text-[13px] text-navy-500 font-normal mb-2">
-                        Email
+                    <label for="login" class="block text-[13px] text-navy-500 font-normal mb-2">
+                        Email atau Username
                     </label>
                     <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email', 'admin@kasly.id') }}"
+                        type="text"
+                        id="login"
+                        name="login"
+                        value="{{ old('login', 'admin_organisasi') }}"
                         required
                         autofocus
-                        placeholder="admin@kasly.id"
+                        placeholder="admin_organisasi atau admin@kasly.id"
                         class="w-full h-12 px-4 rounded-sm bg-ice-100 text-navy-900 placeholder:text-navy-500/50 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 transition-colors"
                     >
                 </div>
@@ -93,7 +99,7 @@
                         type="submit"
                         class="w-full h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors cursor-pointer"
                     >
-                        Masuk ke Panel Pusat
+                        Masuk ke Panel Admin
                     </button>
                 </div>
             </form>

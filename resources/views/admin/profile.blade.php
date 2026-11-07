@@ -28,23 +28,38 @@
 
             <!-- Nav Items -->
             <nav class="p-4 space-y-1">
-                <a
-                    href="{{ route('admin.dashboard') }}"
-                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
-                >
-                    Overview
-                </a>
-                <a
-                    href="{{ route('admin.organizations.index') }}"
-                    class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
-                >
-                    Organisasi
-                </a>
+                @if (Auth::user()->isAdminPenerima())
+                    <a
+                        href="{{ route('admin.organizations.index', ['tab' => 'requests']) }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Pengajuan Masuk
+                    </a>
+                @else
+                    <a
+                        href="{{ route('admin.dashboard') }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Overview
+                    </a>
+                    <a
+                        href="{{ route('admin.organizations.index') }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Organisasi
+                    </a>
+                    <a
+                        href="{{ route('admin.admins.index') }}"
+                        class="flex items-center h-11 px-4 rounded-md text-navy-500 hover:text-navy-900 hover:bg-ice-100 font-medium text-sm transition-colors"
+                    >
+                        Kelola Admin
+                    </a>
+                @endif
                 <a
                     href="{{ route('admin.profile') }}"
                     class="flex items-center h-11 px-4 rounded-md bg-ice-100 text-navy-900 font-medium text-sm transition-colors"
                 >
-                    Profil Admin
+                    Profil Saya
                 </a>
                 <a
                     href="/"
@@ -60,10 +75,21 @@
         <div class="p-4 border-t border-ice-200">
             <div class="px-2 mb-3">
                 <p class="text-sm font-medium text-navy-900 truncate">
-                    {{ Auth::user()->name ?? 'Super Admin' }}
+                    {{ Auth::user()->name }}
                 </p>
-                <p class="text-[13px] text-navy-500 truncate">
-                    {{ Auth::user()->email ?? 'admin@kasly.id' }}
+                <div class="flex items-center gap-1.5 mt-0.5">
+                    @if (Auth::user()->isAdminPenerima())
+                        <span class="inline-block px-2 py-0.5 rounded bg-butter-100 text-navy-900 text-[11px] font-semibold">
+                            Admin Penerima
+                        </span>
+                    @else
+                        <span class="inline-block px-2 py-0.5 rounded bg-ice-200 text-navy-900 text-[11px] font-semibold">
+                            Super Admin
+                        </span>
+                    @endif
+                </div>
+                <p class="text-[13px] text-navy-500 truncate mt-1">
+                    {{ Auth::user()->email }}
                 </p>
             </div>
             <form action="{{ route('admin.logout') }}" method="POST">

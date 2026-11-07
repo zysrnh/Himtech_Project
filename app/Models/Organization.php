@@ -16,7 +16,15 @@ class Organization extends Model
         'name',
         'description',
         'status',
+        'is_midtrans_enabled',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_midtrans_enabled' => 'boolean',
+        ];
+    }
 
     public function users(): BelongsToMany
     {
@@ -48,6 +56,11 @@ class Organization extends Model
     public function duesBills(): HasMany
     {
         return $this->hasMany(DuesBill::class);
+    }
+
+    public function paymentMethods(): HasMany
+    {
+        return $this->hasMany(OrganizationPaymentMethod::class);
     }
 
     public function activityLogs(): HasMany

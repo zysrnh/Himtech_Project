@@ -380,10 +380,11 @@ body {
     }
 }
 
-/* 3-Tab Bar across the top: Natural Compact Sizes */
+/* 3-Tab Bar across the top: Exact Match to media_1794038706460_3d4b4e58.png (Berdekatan) */
 .wallet-tabs-bar {
     display: flex;
     align-items: flex-end;
+    justify-content: flex-end;
     height: 38px;
     position: relative;
     margin-bottom: -1px;
@@ -402,7 +403,7 @@ body {
     font-family: var(--font-sans);
     font-size: 11.5px;
     font-weight: 700;
-    padding: 0 16px;
+    padding: 0 15px;
     position: relative;
     transition: all 200ms var(--ease);
     user-select: none;
@@ -411,65 +412,53 @@ body {
 
 /* Tab 1: Kas Cadangan (Left - Deep Midnight) */
 .tab-btn--cadangan {
-    height: 38px;
+    height: 32px;
     background: #182635;
-    color: rgba(255, 255, 255, 0.7);
-    border-top-left-radius: 18px;
-    border-top-right-radius: 16px;
+    color: rgba(255, 255, 255, 0.75);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.25);
     z-index: 1;
 }
 .tab-btn--cadangan.is-active {
     color: #FFFFFF;
-    z-index: 4;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.35);
     transform: translateY(-2px);
 }
 
 /* Tab 2: Iuran Wajib (Middle - Butter) */
 .tab-btn--iuran {
-    height: 34px;
+    height: 32px;
     background: var(--butter-100);
     color: var(--navy-900);
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
-    margin-left: -4px;
+    margin-left: -3px;
+    box-shadow: 0 -3px 8px rgba(47, 72, 98, 0.15);
     z-index: 2;
-    opacity: 0.85;
 }
 .tab-btn--iuran.is-active {
-    opacity: 1;
-    z-index: 4;
-    box-shadow: 0 -2px 10px rgba(47, 72, 98, 0.15);
+    z-index: 5;
+    box-shadow: 0 -4px 12px rgba(47, 72, 98, 0.25);
     transform: translateY(-2px);
 }
 
-/* Tab 3: Kas Utama (Right - S-curve Fillet) */
-.tab-btn--kas-wrapper {
-    margin-left: auto;
-    display: flex;
-    align-items: flex-end;
-    height: 38px;
-    z-index: 3;
-}
-
-.tab-fillet-svg {
-    width: 20px;
-    height: 28px;
-    display: block;
-    transition: fill 250ms var(--ease);
-}
-
+/* Tab 3: Kas Utama / AKTIF (Right Front Tab - Taller with Shadow onto Tab 2, Berdekatan) */
 .tab-btn--kas {
-    height: 28px;
+    height: 38px;
     background: #34506E;
-    color: var(--ice-200);
+    color: #FFFFFF;
+    border-top-left-radius: 18px;
     border-top-right-radius: 24px;
-    padding: 0 14px;
-    transition: all 250ms var(--ease);
+    margin-left: -3px;
+    padding: 0 16px;
+    box-shadow: -4px -2px 10px rgba(0, 0, 0, 0.16);
+    z-index: 4;
+    transition: background 300ms var(--ease), color 300ms var(--ease);
 }
 .tab-btn--kas.is-active {
     color: #FFFFFF;
-    z-index: 4;
 }
 
 /* Active Indicator Dot */
@@ -491,11 +480,12 @@ body {
 
 /* Main Card Body with Dynamic Color Themes */
 .card-main-body {
-    border-radius: 20px 0 28px 28px;
+    border-radius: 18px 0 28px 28px;
     padding: clamp(22px, 4vw, 28px);
     position: relative;
     overflow: hidden;
-    z-index: 1;
+    z-index: 3;
+    margin-top: -1px;
     transition: background 300ms var(--ease), color 300ms var(--ease), opacity 150ms var(--ease);
 }
 

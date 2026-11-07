@@ -65,7 +65,7 @@
                 <!-- Kolom Kanan: Pratinjau Kas Digital Model Stacked Card Interaktif -->
                 <div class="w-full">
                     <div class="tabbed-wallet-card">
-                        <!-- The 3-Tab Bar across the top -->
+                        <!-- The 3-Tab Bar across the top: Exact Match to media_1794038706460_3d4b4e58.png (Berdekatan) -->
                         <div class="wallet-tabs-bar" role="tablist">
                             <!-- Tab 1: Kas Cadangan (Left - Deep Midnight) -->
                             <button type="button" class="wallet-tab-btn tab-btn--cadangan" id="tab-cadangan" onclick="switchKasCard('cadangan')" role="tab" aria-selected="false">
@@ -79,16 +79,11 @@
                                 <span>Iuran Wajib</span>
                             </button>
 
-                            <!-- Tab 3: Kas Utama (Right with S-curve fillet) -->
-                            <div class="tab-btn--kas-wrapper">
-                                <svg class="tab-fillet-svg" id="tab-fillet" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path d="M0 28 C12 28 20 16 20 0 V28 H0 Z" fill="#34506E"/>
-                                </svg>
-                                <button type="button" class="wallet-tab-btn tab-btn--kas is-active" id="tab-kas" onclick="switchKasCard('kas')" role="tab" aria-selected="true">
-                                    <span id="tab-kas-text">AKTIF</span>
-                                    <span class="active-dot" id="active-dot"></span>
-                                </button>
-                            </div>
+                            <!-- Tab 3: Kas Utama (Right Front Tab) -->
+                            <button type="button" class="wallet-tab-btn tab-btn--kas is-active" id="tab-kas" onclick="switchKasCard('kas')" role="tab" aria-selected="true">
+                                <span id="tab-kas-text">AKTIF</span>
+                                <span class="active-dot" id="active-dot"></span>
+                            </button>
                         </div>
 
                         <!-- Main Card Body with Dynamic Content -->

@@ -159,39 +159,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Activity Cards underneath (Pemasukan & Pengeluaran) -->
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('iuran')">
-                            <div class="w-9 h-9 rounded-full bg-butter-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                                ↑
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pemasukan</span>
-                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">+Rp 18.200.000</span>
-                            </div>
-                        </div>
-                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('cadangan')">
-                            <div class="w-9 h-9 rounded-full bg-ice-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-inner">
-                                ↓
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pengeluaran</span>
-                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">-Rp 3.350.000</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status Kepatuhan Iuran Bulanan -->
-                    <div class="neu-card !p-4 mt-3">
-                        <div class="flex items-center justify-between text-xs font-medium text-navy-500 mb-2">
-                            <span>Kepatuhan Iuran Bulanan</span>
-                            <span class="text-navy-900 font-semibold tabular-nums">94% Lunas (142/150)</span>
-                        </div>
-                        <div class="w-full h-2.5 rounded-full bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.55),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] overflow-hidden p-0.5">
-                            <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500 transition-all duration-500 progress-animated-glow" style="width: 94%;"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

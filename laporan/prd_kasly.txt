@@ -293,3 +293,4 @@ B. Diagram Alur Pengguna Utama (User Flows):
 3. Integritas Audit Kas:
    - Audit trail activity_logs mencatat setiap aksi persetujuan, verifikasi pembayaran, pencatatan mutasi, dan pengubahan anggota secara permanen.
 ================================================================================
+JSJ

@@ -338,34 +338,145 @@
             <!-- KONTEN TAB CASHLESS -->
             <div id="tab-content-cashless" class="space-y-4">
                 @if ($organization->is_midtrans_enabled)
-                    <!-- Opsi 1: Pembayaran Instan Otomatis (Midtrans Sandbox) -->
-                    <div class="p-4 rounded-xl bg-white border border-ice-200/80 shadow-[3px_3px_10px_rgba(122,163,214,0.12)] space-y-3">
+                    <!-- STEP 1: PILIH METODE OTOMATIS (VA & QRIS) -->
+                    <div id="pay-step-1" class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-navy-900">1. Pembayaran Instan Otomatis</span>
-                            <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">QRIS & VA</span>
+                            <span class="text-xs font-bold text-navy-900">Pilih Metode Otomatis (Real-Time)</span>
+                            <span class="neu-badge-pill text-[9px] py-0.2 px-1.5">TERVERIFIKASI OTOMATIS</span>
                         </div>
-                        <p class="text-xs text-navy-500 leading-relaxed">
-                            Bayar instan via QRIS Dinamis (GoPay, ShopeePay, DANA) atau Virtual Account. Status otomatis diverifikasi lunas seketika.
-                        </p>
 
-                        <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                        <div class="space-y-2">
+                            <!-- BCA VA -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="bca_va" checked class="text-navy-900 focus:ring-0">
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">BCA Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">Bayar via BCA Mobile, KlikBCA, atau ATM</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">BCA VA</span>
+                            </label>
+
+                            <!-- BRI VA -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="bri_va" class="text-navy-900 focus:ring-0">
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">BRI Virtual Account (BRIVA)</p>
+                                        <p class="text-[10px] text-navy-500">Bayar via BRImo atau ATM BRI</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">BRIVA</span>
+                            </label>
+
+                            <!-- BNI VA -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="bni_va" class="text-navy-900 focus:ring-0">
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">BNI Virtual Account</p>
+                                        <p class="text-[10px] text-navy-500">Bayar via BNI Mobile Banking atau ATM</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">BNI VA</span>
+                            </label>
+
+                            <!-- Mandiri Bill -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="mandiri_bill" class="text-navy-900 focus:ring-0">
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">Mandiri Bill Payment</p>
+                                        <p class="text-[10px] text-navy-500">Bayar via Livin' by Mandiri atau ATM</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">MANDIRI</span>
+                            </label>
+
+                            <!-- QRIS Dinamis -->
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white border border-ice-200/80 shadow-[2px_2px_6px_rgba(122,163,214,0.12)] cursor-pointer hover:border-navy-500 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="auto_channel" value="qris" class="text-navy-900 focus:ring-0">
+                                    <div>
+                                        <p class="font-bold text-navy-900 text-xs">QRIS Dinamis (GoPay / ShopeePay / DANA)</p>
+                                        <p class="text-[10px] text-navy-500">Scan langsung dari aplikasi e-wallet apa saja</p>
+                                    </div>
+                                </div>
+                                <span class="neu-badge-ice text-[9px] py-0.5 px-2 font-mono">QRIS</span>
+                            </label>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="btn-process-charge"
+                            onclick="processDirectCharge()"
+                            class="w-full h-10 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer flex items-center justify-center gap-2"
+                        >
+                            <span>Dapatkan Kode Pembayaran</span>
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- STEP 2: RINCIAN NOMOR VA / QR CODE YANG DITERBITKAN -->
+                    <div id="pay-step-2" class="space-y-4 hidden">
+                        <div class="flex items-center justify-between">
+                            <button type="button" onclick="backToStep1()" class="text-xs text-navy-500 hover:text-navy-900 font-semibold cursor-pointer flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                <span>Ganti Metode Pembayaran</span>
+                            </button>
+                            <span id="charge-channel-label" class="neu-badge-pill text-[9px] py-0.2 px-2">BCA VA</span>
+                        </div>
+
+                        <!-- Box Nomor Virtual Account -->
+                        <div id="box-va-display" class="p-4 rounded-xl bg-ice-100/60 border border-ice-200/80 space-y-2">
+                            <p class="text-[11px] text-navy-500 font-semibold uppercase tracking-wider">Nomor Virtual Account:</p>
+                            <div class="p-3 rounded-lg bg-white border border-ice-200/70 flex items-center justify-between gap-3 shadow-xs">
+                                <span id="charge-va-number" class="font-mono font-bold text-navy-900 text-base sm:text-lg select-all">000000000000</span>
+                                <button
+                                    type="button"
+                                    id="btn-copy-va"
+                                    onclick="copyVaNumber(this)"
+                                    class="h-8 px-3 rounded-lg bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors cursor-pointer shrink-0"
+                                >
+                                    Salin VA
+                                </button>
+                            </div>
+                            <div id="biller-code-row" class="text-[11px] text-navy-500 hidden pt-1">
+                                Kode Perusahaan (Biller Code): <strong id="charge-biller-code" class="text-navy-900 font-mono"></strong>
+                            </div>
+                            <p class="text-[10.5px] text-navy-500 leading-relaxed pt-1">
+                                Transfer sesuai nominal yang tertera melalui m-Banking atau ATM. Sistem otomatis memverifikasi lunas seketika tanpa perlu kirim bukti struk.
+                            </p>
+                        </div>
+
+                        <!-- Box QRIS Image Display -->
+                        <div id="box-qris-display" class="p-4 rounded-xl bg-ice-100/60 border border-ice-200/80 space-y-3 text-center hidden">
+                            <p class="text-xs font-bold text-navy-900">Scan Barcode QRIS Dinamis</p>
+                            <div class="flex justify-center">
+                                <img id="charge-qris-image" src="" alt="QR Code QRIS" class="w-48 h-48 rounded-xl border border-ice-200 shadow-sm bg-white p-2 object-contain">
+                            </div>
+                            <p class="text-[11px] text-navy-500">Scan menggunakan aplikasi GoPay, ShopeePay, DANA, OVO, atau m-Banking Anda.</p>
+                        </div>
+
+                        <!-- Action Controls: Cek Status & Simulasi Lunas -->
+                        <div class="flex gap-2 pt-1">
                             <button
                                 type="button"
-                                id="btn-pay-midtrans"
-                                onclick="payWithMidtrans()"
-                                class="flex-1 h-9 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors shadow-xs cursor-pointer flex items-center justify-center gap-2"
+                                onclick="window.location.reload()"
+                                class="flex-1 h-9 px-4 rounded-xl bg-ice-200/80 text-navy-900 font-semibold text-xs hover:bg-ice-300 transition-colors cursor-pointer"
                             >
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                </svg>
-                                <span>Bayar via Midtrans (QRIS/VA)</span>
+                                Cek Status Pembayaran
                             </button>
-
                             <button
                                 type="button"
                                 onclick="simulateSandboxSuccess()"
                                 title="Khusus Demo: Verifikasi lunas instan di sandbox"
-                                class="h-9 px-3 rounded-xl bg-ice-100 text-navy-900 font-semibold text-xs border border-ice-200/80 hover:bg-ice-200/70 transition-colors cursor-pointer shrink-0"
+                                class="h-9 px-4 rounded-xl bg-navy-900 text-white font-semibold text-xs hover:bg-navy-700 transition-colors cursor-pointer shadow-xs shrink-0"
                             >
                                 Simulasi Lunas
                             </button>
@@ -451,12 +562,98 @@
             document.getElementById('pay-bill-title').innerText = title;
             document.getElementById('pay-bill-amount').innerText = 'Rp ' + Number(amount).toLocaleString('id-ID');
             document.getElementById('pay-bill-due').innerText = dueDate;
+            backToStep1();
             document.getElementById('modal-pay-bill').classList.remove('hidden');
         }
 
         function closePaymentModal() {
             document.getElementById('modal-pay-bill').classList.add('hidden');
             currentPayingBillId = null;
+        }
+
+        function backToStep1() {
+            const step1 = document.getElementById('pay-step-1');
+            const step2 = document.getElementById('pay-step-2');
+            if (step1 && step2) {
+                step1.classList.remove('hidden');
+                step2.classList.add('hidden');
+            }
+        }
+
+        async function processDirectCharge() {
+            if (!currentPayingBillId) return;
+            const selectedRadio = document.querySelector('input[name="auto_channel"]:checked');
+            if (!selectedRadio) return alert('Pilih metode pembayaran terlebih dahulu.');
+
+            const paymentType = selectedRadio.value;
+            const btn = document.getElementById('btn-process-charge');
+            const origText = btn.innerHTML;
+            btn.innerHTML = '<span>Menerbitkan Kode...</span>';
+            btn.disabled = true;
+
+            const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            try {
+                const res = await fetch(`/anggota/bills/${currentPayingBillId}/charge`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                    },
+                    body: JSON.stringify({ payment_type: paymentType })
+                });
+
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('pay-step-1').classList.add('hidden');
+                    document.getElementById('pay-step-2').classList.remove('hidden');
+
+                    const channelMap = {
+                        'bca_va': 'BCA Virtual Account',
+                        'bri_va': 'BRI Virtual Account (BRIVA)',
+                        'bni_va': 'BNI Virtual Account',
+                        'mandiri_bill': 'Mandiri Bill Payment',
+                        'qris': 'QRIS Dinamis'
+                    };
+
+                    document.getElementById('charge-channel-label').innerText = channelMap[paymentType] || 'Virtual Account';
+
+                    if (paymentType === 'qris') {
+                        document.getElementById('box-va-display').classList.add('hidden');
+                        document.getElementById('box-qris-display').classList.remove('hidden');
+                        document.getElementById('charge-qris-image').src = data.qr_url;
+                    } else {
+                        document.getElementById('box-va-display').classList.remove('hidden');
+                        document.getElementById('box-qris-display').classList.add('hidden');
+                        document.getElementById('charge-va-number').innerText = data.va_number || '-';
+
+                        if (data.biller_code) {
+                            document.getElementById('biller-code-row').classList.remove('hidden');
+                            document.getElementById('charge-biller-code').innerText = data.biller_code;
+                        } else {
+                            document.getElementById('biller-code-row').classList.add('hidden');
+                        }
+                    }
+                } else {
+                    alert(data.message || 'Gagal menerbitkan nomor pembayaran.');
+                }
+            } catch (e) {
+                alert('Kendala koneksi ke server gateway: ' + e.message);
+            } finally {
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+
+        function copyVaNumber(btn) {
+            const vaText = document.getElementById('charge-va-number').innerText;
+            navigator.clipboard.writeText(vaText).then(() => {
+                const orig = btn.innerText;
+                btn.innerText = 'Tersalin!';
+                setTimeout(() => { btn.innerText = orig; }, 2000);
+            });
         }
 
         function switchPaymentTab(tab) {

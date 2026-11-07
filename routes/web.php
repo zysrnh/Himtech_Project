@@ -97,7 +97,8 @@ Route::middleware(['auth', 'anggota'])->prefix('anggota')->name('anggota.')->gro
     Route::get('/profile', [ProfileController::class, 'showAnggotaProfile'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'updateAnggotaProfile'])->name('profile.update');
 
-    // Pembayaran Tagihan Kas Anggota (Midtrans & Simulasi Sandbox)
+    // Pembayaran Tagihan Kas Anggota (Midtrans Core API, Snap & Simulasi Sandbox)
+    Route::post('/bills/{bill}/charge', [MidtransController::class, 'charge'])->name('bills.charge');
     Route::post('/bills/{bill}/snap-token', [MidtransController::class, 'getSnapToken'])->name('bills.snap-token');
     Route::post('/bills/{bill}/simulate-success', [MidtransController::class, 'simulateSuccess'])->name('bills.simulate-success');
 });

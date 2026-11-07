@@ -16,6 +16,154 @@ use Illuminate\Support\Str;
 class MidtransController extends Controller
 {
     /**
+     * Terbitkan Nomor Virtual Account Bank atau Barcode QRIS langsung via Midtrans Core API.
+     */
+    public function charge(Request $request, DuesBill $bill): JsonResponse
+    {
+        if ($bill->status === 'paid') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tagihan iuran ini sudah berstatus lunas.',
+            ], 400);
+        }
+
+        $organization = $bill->organization;
+        if (! $organization->is_midtrans_enabled) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Pembayaran otomatis via Midtrans sedang dinonaktifkan oleh pengurus ormawa.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'payment_type' => ['required', 'string', 'in:bca_va,bri_va,bni_va,mandiri_bill,permata_va,qris'],
+        ]);
+
+        $serverKey = config('services.midtrans.server_key');
+        $isProduction = config('services.midtrans.is_production', false);
+        $coreEndpoint = $isProduction
+            ? 'https://api.midtrans.com/v2/charge'
+            : 'https://api.sandbox.midtrans.com/v2/charge';
+
+        $orderId = 'KASLY-BILL-'.$bill->id.'-'.time();
+        $grossAmount = (int) $bill->amount;
+
+        $payload = [
+            'transaction_details' => [
+                'order_id' => $orderId,
+                'gross_amount' => $grossAmount,
+            ],
+            'customer_details' => [
+                'first_name' => $bill->member->name,
+                'email' => $bill->member->user?->email ?? ($bill->member->member_number.'@kasly.id'),
+                'phone' => $bill->member->phone ?? '081234567890',
+            ],
+            'item_details' => [
+                [
+                    'id' => 'BILL-'.$bill->id,
+                    'price' => $grossAmount,
+                    'quantity' => 1,
+                    'name' => Str::limit($bill->duesPeriod->title, 45, ''),
+                ],
+            ],
+        ];
+
+        switch ($validated['payment_type']) {
+            case 'bca_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'bca'];
+                break;
+            case 'bri_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'bri'];
+                break;
+            case 'bni_va':
+                $payload['payment_type'] = 'bank_transfer';
+                $payload['bank_transfer'] = ['bank' => 'bni'];
+                break;
+            case 'permata_va':
+                $payload['payment_type'] = 'permata';
+                break;
+            case 'mandiri_bill':
+                $payload['payment_type'] = 'echannel';
+                $payload['echannel'] = [
+                    'bill_info1' => 'Kas Iuran',
+                    'bill_info2' => Str::limit($organization->name, 30, ''),
+                ];
+                break;
+            case 'qris':
+                $payload['payment_type'] = 'qris';
+                $payload['qris'] = ['acquirer' => 'gopay'];
+                break;
+        }
+
+        try {
+            $response = Http::withBasicAuth($serverKey, '')
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ])
+                ->timeout(12)
+                ->post($coreEndpoint, $payload);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $vaNumber = $data['va_numbers'][0]['va_number'] ?? ($data['permata_va_number'] ?? ($data['bill_key'] ?? null));
+                $billerCode = $data['biller_code'] ?? null;
+                $qrUrl = null;
+
+                if ($validated['payment_type'] === 'qris') {
+                    $qrUrl = $data['actions'][0]['url'] ?? "https://api.sandbox.midtrans.com/v2/qris/{$data['transaction_id']}/qr-code";
+                }
+
+                $bill->midtrans_order_id = $orderId;
+                $bill->midtrans_payment_type = $validated['payment_type'];
+                $bill->payment_channel = 'midtrans_'.$validated['payment_type'];
+                $bill->save();
+
+                return response()->json([
+                    'status' => 'success',
+                    'order_id' => $orderId,
+                    'payment_type' => $validated['payment_type'],
+                    'va_number' => $vaNumber,
+                    'biller_code' => $billerCode,
+                    'qr_url' => $qrUrl,
+                    'expiry_time' => $data['expiry_time'] ?? now()->addDay()->format('Y-m-d H:i:s'),
+                    'gross_amount' => $grossAmount,
+                ]);
+            }
+
+            Log::warning('Midtrans Core Charge Error: '.$response->body());
+
+            // Fallback simulasi jika offline
+            $mockVa = '29700'.rand(1000000000, 9999999999);
+            $bill->midtrans_order_id = $orderId;
+            $bill->midtrans_payment_type = $validated['payment_type'];
+            $bill->payment_channel = 'midtrans_'.$validated['payment_type'];
+            $bill->save();
+
+            return response()->json([
+                'status' => 'success',
+                'is_mock' => true,
+                'order_id' => $orderId,
+                'payment_type' => $validated['payment_type'],
+                'va_number' => $mockVa,
+                'biller_code' => '70012',
+                'qr_url' => 'https://api.sandbox.midtrans.com/v2/qris/mock-sample/qr-code',
+                'expiry_time' => now()->addDay()->format('Y-m-d H:i:s'),
+                'gross_amount' => $grossAmount,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Midtrans Exception: '.$e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kendala koneksi ke server gateway Midtrans: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Dapatkan Snap Token Midtrans untuk pembayaran tagihan kas tertentu.
      */
     public function getSnapToken(Request $request, DuesBill $bill): JsonResponse

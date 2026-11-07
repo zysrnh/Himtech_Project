@@ -80,7 +80,7 @@
             <!-- ======================================================== -->
             <!-- KALENDER JADWAL KAS MINGGUAN (INTERACTIVE CALENDAR VIEW)    -->
             <!-- ======================================================== -->
-            <div class="bg-white rounded-xl p-5 sm:p-6 border border-ice-200 shadow-card space-y-4">
+            <div class="bg-white rounded-xl p-4 sm:p-6 border border-ice-200 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ice-200">
                     <div class="flex items-center gap-3">
                         <div class="w-9 h-9 rounded-lg bg-ice-100 border border-ice-200 flex items-center justify-center shrink-0">
@@ -127,13 +127,13 @@
                     </div>
                 </div>
 
-                <!-- Wrapper Responsif Kalender dengan Horizontal Scroll di HP -->
+                <!-- Continuous Calendar Grid (Gaya Modern Clean Calendar - Bebas Bubble/Squircle) -->
                 <div class="overflow-x-auto pb-1 -mx-2 px-2 sm:mx-0 sm:px-0 custom-scrollbar">
-                    <div class="min-w-[620px] sm:min-w-0">
-                        <!-- Header Nama Hari (Senin s/d Minggu) Bersih -->
-                        <div class="grid grid-cols-7 gap-2 text-center mb-2">
+                    <div class="min-w-[640px] sm:min-w-0 border border-ice-200 rounded-xl overflow-hidden bg-white shadow-xs">
+                        <!-- Header Nama Hari (Senin s/d Minggu) -->
+                        <div class="grid grid-cols-7 bg-ice-100/60 border-b border-ice-200 text-center">
                             @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
-                                <div class="py-1.5 text-[11px] font-semibold text-navy-500 uppercase tracking-wider">
+                                <div class="py-2.5 text-[11px] font-semibold text-navy-500 uppercase tracking-wider border-r border-ice-200 last:border-r-0">
                                     {{ $dayName }}
                                 </div>
                             @endforeach
@@ -144,11 +144,11 @@
                             $daysInMonth = $calendarDate->daysInMonth;
                         @endphp
 
-                        <!-- Grid Kalender Tanggal Rapi -->
-                        <div class="grid grid-cols-7 gap-2">
+                        <!-- Grid Tanggal Bergaris Rapi (Continuous Border) -->
+                        <div class="grid grid-cols-7">
                             <!-- Padding hari kosong sebelum tanggal 1 -->
                             @for ($i = 1; $i < $startDayOfWeek; $i++)
-                                <div class="min-h-[105px] rounded-xl bg-ice-100/30 border border-dashed border-ice-200/50"></div>
+                                <div class="min-h-[105px] bg-ice-100/20 border-r border-b border-ice-200/60 p-2.5"></div>
                             @endfor
 
                             <!-- Tanggal 1 s/d Akhir Bulan -->
@@ -159,31 +159,33 @@
                                     $hasKas = isset($calendarPeriodsByDate[$dateStr]);
                                     $kasList = $hasKas ? $calendarPeriodsByDate[$dateStr] : [];
                                     $isToday = $dateObj->isToday();
+                                    $currentCellIndex = ($startDayOfWeek - 1 + $day);
+                                    $isLastCol = ($currentCellIndex % 7 === 0);
                                 @endphp
 
-                                <div class="min-h-[105px] p-2 sm:p-2.5 rounded-xl border text-left transition-colors flex flex-col justify-between {{ $hasKas ? 'bg-butter-100/60 border-amber-300' : 'bg-white border-ice-200 hover:border-ice-400' }} {{ $isToday ? 'ring-2 ring-navy-900 bg-white' : '' }}">
+                                <div class="min-h-[105px] p-2.5 border-b border-ice-200 transition-colors flex flex-col justify-between {{ $isLastCol ? '' : 'border-r' }} {{ $hasKas ? 'bg-butter-100/40' : 'bg-white hover:bg-ice-100/20' }} {{ $isToday ? 'relative bg-navy-900/5 ring-1 ring-inset ring-navy-900/20' : '' }}">
                                     <!-- Baris Atas Cell: Angka Tanggal -->
                                     <div class="flex items-center justify-between">
-                                        <span class="w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs {{ $isToday ? 'bg-navy-900 text-white font-mono' : ($hasKas ? 'text-navy-900 font-display font-bold' : 'text-navy-500') }}">
+                                        <span class="text-xs font-semibold {{ $isToday ? 'w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center font-mono text-[11px] font-bold' : ($hasKas ? 'text-navy-900 font-bold' : 'text-navy-500') }}">
                                             {{ $day }}
                                         </span>
                                         @if ($isToday)
-                                            <span class="w-2 h-2 rounded-full bg-navy-900" title="Hari Ini"></span>
+                                            <span class="text-[9px] font-bold text-navy-900 tracking-tight">HARI INI</span>
                                         @elseif ($hasKas)
-                                            <span class="w-2 h-2 rounded-full bg-amber-500" title="Ada jadwal kas"></span>
+                                            <span class="w-2 h-2 rounded-full bg-amber-500" title="Jadwal Kas"></span>
                                         @endif
                                     </div>
 
                                     <!-- Daftar Kas / Tagihan pada Tanggal Ini -->
                                     @if ($hasKas)
-                                        <div class="mt-2 space-y-1.5">
+                                        <div class="mt-2 space-y-1">
                                             @foreach ($kasList as $item)
                                                 @php
                                                     $isSelected = $selectedPeriod && $selectedPeriod->id === $item['id'];
                                                 @endphp
                                                 <a
                                                     href="{{ route('pengurus.tagihan.index', ['period_id' => $item['id'], 'month' => $calendarDate->format('Y-m')]) }}"
-                                                    class="block p-1.5 rounded-lg border text-left transition-all cursor-pointer {{ $isSelected ? 'bg-navy-900 text-white shadow-xs' : 'bg-white text-navy-900 border-ice-200 hover:border-navy-500' }}"
+                                                    class="block p-1.5 rounded-md border text-left transition-all cursor-pointer {{ $isSelected ? 'bg-navy-900 text-white shadow-xs' : 'bg-white text-navy-900 border-ice-200 hover:border-navy-500' }}"
                                                     title="Klik untuk buka daftar tagihan periode ini"
                                                 >
                                                     <div class="flex items-center justify-between gap-1">
@@ -207,6 +209,19 @@
                                         <div class="h-4"></div>
                                     @endif
                                 </div>
+                            @endfor
+
+                            <!-- Padding sisa cell sampai kelipatan 7 -->
+                            @php
+                                $totalRendered = ($startDayOfWeek - 1 + $daysInMonth);
+                                $remainder = $totalRendered % 7;
+                                $paddingEnd = $remainder > 0 ? (7 - $remainder) : 0;
+                            @endphp
+                            @for ($j = 1; $j <= $paddingEnd; $j++)
+                                @php
+                                    $isLastEnd = ($j === $paddingEnd);
+                                @endphp
+                                <div class="min-h-[105px] bg-ice-100/20 border-b border-ice-200/60 p-2.5 {{ $isLastEnd ? '' : 'border-r' }}"></div>
                             @endfor
                         </div>
                     </div>
@@ -233,7 +248,7 @@
             </div>
 
             <!-- Pilih Periode Iuran Aktif -->
-            <div class="bg-white rounded-xl p-4 border border-ice-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="bg-white rounded-xl p-4 border border-ice-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                     <span class="text-xs font-semibold text-navy-500 uppercase tracking-wider">Periode Kas:</span>
                     @if ($periods->isEmpty())
@@ -272,7 +287,7 @@
                 <!-- 4 Kartu Metrik Ringkas & Bersih -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Total Tagihan -->
-                    <div class="bg-white rounded-xl p-5 border border-ice-200 shadow-card">
+                    <div class="bg-white rounded-xl p-4 sm:p-5 border border-ice-200 shadow-sm">
                         <p class="text-xs text-navy-500">Total Anggota</p>
                         <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">
                             {{ $metrics['total_bills'] }}
@@ -281,7 +296,7 @@
                     </div>
 
                     <!-- Terkumpul -->
-                    <div class="bg-white rounded-xl p-5 border border-ice-200 shadow-card">
+                    <div class="bg-white rounded-xl p-4 sm:p-5 border border-ice-200 shadow-sm">
                         <p class="text-xs text-navy-500">Kas Terkumpul</p>
                         <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">
                             Rp {{ number_format($metrics['collected_amount'], 0, ',', '.') }}
@@ -290,7 +305,7 @@
                     </div>
 
                     <!-- Belum Bayar -->
-                    <div class="bg-white rounded-xl p-5 border border-ice-200 shadow-card">
+                    <div class="bg-white rounded-xl p-4 sm:p-5 border border-ice-200 shadow-sm">
                         <p class="text-xs text-navy-500">Sisa Tunggakan</p>
                         <p class="font-display font-semibold text-2xl text-danger mt-1 tabular-nums">
                             {{ $metrics['unpaid_count'] }}
@@ -299,7 +314,7 @@
                     </div>
 
                     <!-- Kedisiplinan -->
-                    <div class="bg-white rounded-xl p-5 border border-ice-200 shadow-card">
+                    <div class="bg-white rounded-xl p-4 sm:p-5 border border-ice-200 shadow-sm">
                         <p class="text-xs text-navy-500">Skor Disiplin</p>
                         <p class="font-display font-semibold text-2xl text-navy-900 mt-1 tabular-nums">
                             {{ $metrics['ontime_rate'] }}%
@@ -309,7 +324,7 @@
                 </div>
 
                 <!-- Tabel Tagihan Anggota & Filter -->
-                <div class="bg-white rounded-xl p-6 border border-ice-200 shadow-card space-y-4">
+                <div class="bg-white rounded-xl p-4 sm:p-6 border border-ice-200 shadow-sm space-y-4">
                     <!-- Filter Status -->
                     <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-ice-200">
                         <div class="flex flex-wrap items-center gap-1.5 text-xs">
@@ -355,7 +370,7 @@
                         </div>
                     @else
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
+                            <table class="w-full text-left text-xs min-w-[620px]">
                                 <thead>
                                     <tr class="border-b border-ice-200 text-navy-500 font-medium text-xs">
                                         <th class="py-3 px-3">NIM / ID</th>

@@ -678,9 +678,12 @@ body {
 }
 
 .neu-sidebar.is-collapsed .sidebar-header-box {
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    width: 100% !important;
 }
 
 .neu-sidebar.is-collapsed .sidebar-toggle-btn {
@@ -689,10 +692,39 @@ body {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    margin: 0 auto !important;
     border-radius: 12px !important;
     background-color: #FFFFFF !important;
     border: 1px solid rgba(181, 204, 235, 0.8) !important;
     box-shadow: 2px 2px 6px rgba(122, 163, 214, 0.2), -2px -2px 6px rgba(255, 255, 255, 0.9) !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-org-box {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px 0 !important;
+    width: 100% !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-org-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    gap: 0 !important;
+}
+
+.neu-sidebar.is-collapsed .sidebar-org-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 1px 1px 4px rgba(122, 163, 214, 0.2) !important;
 }
 
 .neu-sidebar.is-collapsed .neu-nav-item,

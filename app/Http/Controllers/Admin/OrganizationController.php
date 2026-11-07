@@ -59,11 +59,19 @@ class OrganizationController extends Controller
             'staff_name' => ['required', 'string', 'max:255'],
             'staff_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'staff_phone' => ['required', 'string', 'max:25'],
-            'staff_password' => ['nullable', 'string', 'min:6'],
+            'staff_password' => ['nullable', 'string', 'min:8'],
+        ], [
+            'staff_password.min' => 'Kata sandi staff awal minimal 8 karakter kombinasi.',
         ]);
 
         $code = Str::upper($validated['code']);
-        $password = $validated['staff_password'] ?: 'password';
+
+        // Gunakan password yang diisi, atau generate password kuat acak jika dikosongkan
+        if (!empty($validated['staff_password'])) {
+            $password = $validated['staff_password'];
+        } else {
+            $password = Str::password(10, letters: true, numbers: true, symbols: true, spaces: false);
+        }
 
         $organization = null;
         $staff = null;
@@ -139,7 +147,7 @@ class OrganizationController extends Controller
             );
         }
 
-        // 7. Blast Kredensial via Email
+        // 7. Blast Kredensial via Email (SMTP)
         if ($staff && !empty($staff->email)) {
             try {
                 Mail::to($staff->email)->send(new StaffAccountCreatedMail(

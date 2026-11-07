@@ -11,38 +11,54 @@
     $isKasActive = in_array($active, ['dashboard', 'tagihan', 'buku-kas']);
 @endphp
 
-<aside class="w-[260px] neu-sidebar flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-30 select-none">
+<!-- Sidebar Anggota Identik dengan Desain Pengurus & Responsif Buka-Tutup -->
+<aside
+    id="sidebar-anggota"
+    data-app-sidebar
+    class="w-[260px] neu-sidebar flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-40 select-none transition-all duration-300 ease-in-out"
+>
     <div class="flex flex-col min-h-0 flex-1">
-        <!-- Brand & Organization Code Header -->
-        <div class="h-16 px-5 flex items-center justify-between border-b border-ice-200/70 shrink-0">
-            <a href="{{ route('anggota.dashboard') }}" class="inline-flex items-center gap-2" title="{{ config('app.name', 'Kasly') }}">
-                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-8 w-auto">
+        <!-- Brand Header (Logo Kasly Besar di Tengah & Tombol Tutup) -->
+        <div class="h-20 px-4 flex items-center justify-between border-b border-ice-200/70 shrink-0">
+            <a href="{{ route('anggota.dashboard') }}" class="inline-flex items-center justify-center flex-1 pl-4" title="{{ config('app.name', 'Kasly') }}">
+                <img src="{{ asset('logo/logo-light.svg') }}" alt="{{ config('app.name', 'Kasly') }}" class="h-11 w-auto max-w-[190px] object-contain">
             </a>
-            @if ($org)
-                <span class="neu-badge-ice" title="Kode Organisasi">
-                    {{ $org->code }}
-                </span>
-            @endif
+            <!-- Tombol Tutup / Collapse Sidebar Cepat -->
+            <button
+                type="button"
+                onclick="toggleAppSidebar()"
+                class="p-1.5 rounded-lg text-navy-500 hover:text-navy-900 hover:bg-ice-200/70 cursor-pointer transition-colors shrink-0"
+                title="Tutup / Sembunyikan Sidebar"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+            </button>
         </div>
 
-        <!-- Identitas Portal Anggota (Neumorphic Inset Card) -->
-        <div class="px-4 pt-3 pb-2 shrink-0">
-            <div class="neu-sidebar-card p-3">
-                <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="text-[10px] font-bold text-navy-500 uppercase tracking-wider">Portal Anggota</span>
-                    <span class="neu-badge-pill text-[9.5px] py-0.5 px-2 whitespace-nowrap shrink-0">
-                        Anggota
-                    </span>
+        <!-- Identitas Organisasi (Flat Rata Kiri dengan Ikon Kemahasiswaan) -->
+        <div class="px-5 pt-3.5 pb-3 border-b border-ice-200/60 shrink-0">
+            <div class="flex items-center gap-2 min-w-0">
+                <div class="w-6 h-6 rounded-md bg-ice-200/70 text-navy-700 flex items-center justify-center shrink-0">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
                 </div>
                 <p class="text-xs font-bold text-navy-900 truncate" title="{{ $org->name ?? 'Kasly Ormawa' }}">
                     {{ $org->name ?? 'Kasly Ormawa' }}
                 </p>
             </div>
+            <div class="mt-0.5 flex items-center pl-8">
+                <span class="text-[11px] font-medium text-navy-500">
+                    Anggota
+                </span>
+            </div>
         </div>
 
         <!-- Navigasi Menu (Scrollable) -->
         <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 custom-scrollbar">
-            <!-- Group: Iuran & Transparansi (Dropdown Interaktif) -->
+            <!-- Group: Kas & Keuangan Anggota (Dropdown Interaktif) -->
             <div class="neu-dropdown-group" data-sidebar-dropdown>
                 <button
                     type="button"
@@ -51,9 +67,9 @@
                 >
                     <span class="flex items-center gap-2.5">
                         <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>Iuran & Transparansi</span>
+                        <span>Kas & Keuangan</span>
                     </span>
                     <svg class="w-3.5 h-3.5 text-navy-500 transition-transform duration-200 shrink-0" data-sidebar-icon fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -73,6 +89,13 @@
                     >
                         <span class="w-1.5 h-1.5 rounded-full {{ $active === 'tagihan' ? 'bg-navy-900' : 'bg-ice-400' }} shrink-0"></span>
                         <span>Tagihan Iuran Saya</span>
+                    </a>
+                    <a
+                        href="{{ route('anggota.dashboard') }}#kalender"
+                        class="neu-nav-subitem"
+                    >
+                        <span class="w-1.5 h-1.5 rounded-full bg-ice-400 shrink-0"></span>
+                        <span>Jadwal Kas Mingguan</span>
                     </a>
                     <a
                         href="{{ route('anggota.dashboard') }}#buku-kas"
@@ -149,3 +172,11 @@
     </div>
 </aside>
 
+<script>
+    window.toggleAppSidebar = function() {
+        const sb = document.querySelector('[data-app-sidebar]') || document.getElementById('sidebar-anggota') || document.getElementById('sidebar-pengurus');
+        if (!sb) return;
+        sb.classList.toggle('-ml-[260px]');
+    };
+    window.toggleSidebarAnggota = window.toggleAppSidebar;
+</script>

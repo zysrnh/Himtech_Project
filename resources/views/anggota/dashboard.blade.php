@@ -56,13 +56,26 @@
 
             <!-- Welcome Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-display font-semibold text-[28px] text-navy-900">
-                        Halo, {{ $member->name }}
-                    </h1>
-                    <p class="text-sm text-navy-500 mt-1">
-                        Pantau status iuran kas pribadi dan keterbukaan saldo keuangan {{ $organization->name }}.
-                    </p>
+                <div class="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onclick="toggleAppSidebar()"
+                        class="h-10 px-3.5 rounded-xl bg-white border border-ice-200 text-navy-900 font-semibold text-xs hover:bg-ice-100 transition-colors shadow-xs flex items-center gap-2 cursor-pointer shrink-0"
+                        title="Buka / Tutup Sidebar"
+                    >
+                        <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                        <span>Menu</span>
+                    </button>
+                    <div>
+                        <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
+                            Halo, {{ $member->name }}
+                        </h1>
+                        <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                            Pantau status iuran kas pribadi dan keterbukaan saldo keuangan {{ $organization->name }}.
+                        </p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-2">
                     <a
@@ -131,6 +144,107 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- KALENDER JADWAL KAS MINGGUAN SAYA                       -->
+            <!-- ======================================================== -->
+            <div id="kalender" class="bg-white rounded-2xl p-6 sm:p-7 shadow-card border border-ice-200 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ice-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-ice-100 text-navy-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-5 h-5 text-navy-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="font-display font-bold text-base text-navy-900">Jadwal Kas Mingguan Saya</h2>
+                            <p class="text-xs text-navy-500">Penanda jadwal kas mingguan ormawa & status pembayaran Anda</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-lg bg-ice-100 font-bold text-xs text-navy-900 font-display">
+                        {{ $calendarDate->isoFormat('MMMM Y') }}
+                    </span>
+                </div>
+
+                <!-- Grid Kalender 7 Kolom (Senin s/d Minggu) -->
+                <div class="grid grid-cols-7 gap-1.5 text-center">
+                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $dayName)
+                        <div class="py-1.5 text-[11px] font-bold text-navy-500 uppercase tracking-wider bg-ice-100/50 rounded-lg">
+                            {{ $dayName }}
+                        </div>
+                    @endforeach
+
+                    @php
+                        $startDayOfWeek = $calendarDate->copy()->startOfMonth()->dayOfWeekIso; // 1 = Senin, 7 = Minggu
+                        $daysInMonth = $calendarDate->daysInMonth;
+                    @endphp
+
+                    <!-- Padding hari kosong sebelum tanggal 1 -->
+                    @for ($i = 1; $i < $startDayOfWeek; $i++)
+                        <div class="min-h-16 rounded-xl bg-ice-100/20 border border-transparent"></div>
+                    @endfor
+
+                    <!-- Tanggal 1 s/d Akhir Bulan -->
+                    @for ($day = 1; $day <= $daysInMonth; $day++)
+                        @php
+                            $dateObj = $calendarDate->copy()->day($day);
+                            $dateStr = $dateObj->format('Y-m-d');
+                            $bill = $billsByDate[$dateStr] ?? null;
+                            $isToday = $dateObj->isToday();
+                        @endphp
+
+                        <div class="min-h-20 p-2 rounded-xl border text-left transition-all flex flex-col justify-between {{ $bill ? ($bill['is_paid'] ? 'bg-emerald-50/70 border-emerald-300 shadow-2xs' : 'bg-butter-100/50 border-amber-300 shadow-2xs') : 'bg-white/60 border-ice-200/60 hover:bg-white' }} {{ $isToday ? 'ring-2 ring-navy-900/40' : '' }}">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold {{ $bill ? 'text-navy-900 font-display' : 'text-navy-500' }}">
+                                    {{ $day }}
+                                </span>
+                                @if ($isToday)
+                                    <span class="text-[8px] font-bold bg-navy-900 text-white px-1 py-0.2 rounded font-mono">HARI INI</span>
+                                @endif
+                            </div>
+
+                            @if ($bill)
+                                <div class="mt-1 space-y-1">
+                                    <p class="text-[9.5px] font-bold text-navy-900 leading-tight truncate" title="{{ $bill['period_title'] }}">
+                                        {{ $bill['period_title'] }}
+                                    </p>
+                                    <p class="text-[9px] text-navy-600 font-medium">
+                                        Rp {{ number_format($bill['amount'], 0, ',', '.') }}
+                                    </p>
+                                    @if ($bill['is_paid'])
+                                        <span class="inline-flex items-center gap-1 text-[8.5px] font-bold text-emerald-700 bg-emerald-100/80 px-1.5 py-0.5 rounded">
+                                            <svg class="w-2.5 h-2.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                            Lunas
+                                        </span>
+                                    @else
+                                        <button
+                                            type="button"
+                                            onclick="openPaymentModal('{{ $bill['id'] }}', '{{ addslashes($bill['period_title']) }}', '{{ $bill['amount'] }}', '{{ $bill['due_date'] }}')"
+                                            class="inline-block text-[8.5px] font-bold text-navy-900 bg-butter-100 border border-navy-900/20 px-1.5 py-0.5 rounded hover:bg-navy-900 hover:text-white transition-colors cursor-pointer"
+                                        >
+                                            Bayar Kas &rarr;
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @endfor
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-[11px] text-navy-500 border-t border-ice-200">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-emerald-100 border border-emerald-300 inline-block"></span>
+                            <span>Kas Terbayar (Lunas)</span>
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-butter-100 border border-amber-300 inline-block"></span>
+                            <span>Jadwal Kas Belum Dibayar</span>
+                        </span>
+                    </div>
+                    <span class="italic">Klik "Bayar Kas" pada tanggal jadwal kas untuk langsung memilih metode pembayaran</span>
+                </div>
             </div>
 
             <!-- Bagian 1: Tabel Riwayat & Tagihan Iuran Saya -->

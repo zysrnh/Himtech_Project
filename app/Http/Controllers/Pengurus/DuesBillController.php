@@ -9,6 +9,7 @@ use App\Models\DuesPeriod;
 use App\Models\Organization;
 use App\Models\Transaction;
 use App\Services\FonnteService;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ use Illuminate\View\View;
 class DuesBillController extends Controller
 {
     /**
-     * Tampilkan halaman pengelolaan tagihan iuran kas & metode pembayaran ormawa.
+     * Tampilkan halaman pengelolaan tagihan iuran kas, kalender mingguan, & verifikasi pelunasan.
      */
     public function index(Request $request): View
     {
@@ -35,6 +36,42 @@ class DuesBillController extends Controller
         // Periode terpilih (default periode terbaru)
         $selectedPeriodId = $request->query('period_id', $periods->first()?->id);
         $selectedPeriod = $periods->firstWhere('id', (int) $selectedPeriodId);
+
+        // Data Kalender Bulanan
+        $monthQuery = $request->query('month', $selectedPeriod ? $selectedPeriod->due_date->format('Y-m') : now()->format('Y-m'));
+        try {
+            $calendarDate = Carbon::createFromFormat('Y-m', $monthQuery)->startOfMonth();
+        } catch (\Throwable $e) {
+            $calendarDate = now()->startOfMonth();
+        }
+
+        $startOfMonth = $calendarDate->copy()->startOfMonth();
+        $endOfMonth = $calendarDate->copy()->endOfMonth();
+
+        // Ambil semua periode kas di bulan ini beserta metrik kelunasannya
+        $monthPeriods = $organization->duesPeriods()
+            ->whereBetween('due_date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()])
+            ->with(['duesBills'])
+            ->get();
+
+        // Group periods by due_date (Format: Y-m-d)
+        $calendarPeriodsByDate = [];
+        foreach ($monthPeriods as $mp) {
+            $dateStr = $mp->due_date->format('Y-m-d');
+            $paidCount = $mp->duesBills->where('status', 'paid')->count();
+            $unpaidCount = $mp->duesBills->where('status', 'unpaid')->count();
+            $totalCount = $mp->duesBills->count();
+
+            $calendarPeriodsByDate[$dateStr][] = [
+                'id' => $mp->id,
+                'title' => $mp->title,
+                'amount' => (float) $mp->amount,
+                'paid_count' => $paidCount,
+                'unpaid_count' => $unpaidCount,
+                'total_count' => $totalCount,
+                'is_all_paid' => $totalCount > 0 && $unpaidCount === 0,
+            ];
+        }
 
         // Query tagihan anggota pada periode terpilih
         $billsQuery = DuesBill::query()
@@ -105,23 +142,129 @@ class DuesBillController extends Controller
             'bills',
             'metrics',
             'paymentMethods',
-            'statusFilter'
+            'statusFilter',
+            'calendarDate',
+            'calendarPeriodsByDate',
+            'monthPeriods'
         ));
     }
 
     /**
-     * Buat jadwal periode tagihan kas baru dan terbitkan tagihan massal ke seluruh anggota aktif.
+     * Buat jadwal periode tagihan kas baru (Mendukung mode Tunggal atau Mingguan Otomatis Batch).
      */
     public function storePeriod(Request $request): RedirectResponse
     {
         /** @var Organization $organization */
         $organization = $request->attributes->get('current_organization') ?? Organization::find(session('active_organization_id'));
 
+        $scheduleType = $request->input('schedule_type', 'single');
+
+        // MODE 1: MINGGUAN OTOMATIS (SET PER MINGGU / RECURRING DALAM BULAN)
+        if ($scheduleType === 'weekly') {
+            $validated = $request->validate([
+                'title' => ['required', 'string', 'max:255'],
+                'amount' => ['required', 'numeric', 'min:1000'],
+                'month' => ['required', 'date_format:Y-m'],
+                'day_of_week' => ['required', 'integer', 'between:1,7'], // 1=Senin, ..., 6=Sabtu, 7=Minggu
+            ], [
+                'title.required' => 'Nama kegiatan/kas mingguan wajib diisi.',
+                'amount.required' => 'Nominal tagihan kas mingguan wajib diisi.',
+                'month.required' => 'Bulan jadwal kas mingguan wajib dipilih.',
+                'day_of_week.required' => 'Hari rutin kas mingguan wajib ditentukan.',
+            ]);
+
+            $startMonth = Carbon::createFromFormat('Y-m', $validated['month'])->startOfMonth();
+            $endMonth = $startMonth->copy()->endOfMonth();
+            $dayOfWeek = (int) $validated['day_of_week'];
+
+            // Cari semua tanggal yang jatuh pada hari tersebut di bulan ini
+            $targetDates = [];
+            $cur = $startMonth->copy();
+            while ($cur->lte($endMonth)) {
+                if ($cur->dayOfWeekIso === $dayOfWeek) {
+                    $targetDates[] = $cur->copy();
+                }
+                $cur->addDay();
+            }
+
+            if (empty($targetDates)) {
+                return back()->withInput()->withErrors(['day_of_week' => 'Tidak ditemukan hari yang dipilih dalam bulan ini.']);
+            }
+
+            DB::beginTransaction();
+            try {
+                $members = $organization->members()->where('is_active', true)->get();
+                $createdCount = 0;
+                $lastPeriodId = null;
+                $now = now();
+
+                foreach ($targetDates as $index => $targetDate) {
+                    $weekNum = $index + 1;
+                    $periodTitle = "{$validated['title']} - M{$weekNum} (".$targetDate->format('d M Y').')';
+
+                    $period = DuesPeriod::create([
+                        'organization_id' => $organization->id,
+                        'title' => $periodTitle,
+                        'amount' => $validated['amount'],
+                        'due_date' => $targetDate->toDateString(),
+                        'created_by' => Auth::id(),
+                    ]);
+
+                    $lastPeriodId = $period->id;
+                    $createdCount++;
+
+                    $billsData = [];
+                    foreach ($members as $member) {
+                        $billsData[] = [
+                            'organization_id' => $organization->id,
+                            'dues_period_id' => $period->id,
+                            'member_id' => $member->id,
+                            'amount' => $period->amount,
+                            'status' => 'unpaid',
+                            'is_on_time' => null,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+
+                    if (! empty($billsData)) {
+                        DuesBill::insert($billsData);
+                    }
+                }
+
+                ActivityLog::create([
+                    'organization_id' => $organization->id,
+                    'user_id' => Auth::id(),
+                    'action' => 'create_weekly_dues_batch',
+                    'subject_type' => DuesPeriod::class,
+                    'subject_id' => $lastPeriodId,
+                    'payload' => [
+                        'title' => $validated['title'],
+                        'amount' => $validated['amount'],
+                        'month' => $validated['month'],
+                        'day_of_week' => $dayOfWeek,
+                        'total_weeks_generated' => $createdCount,
+                    ],
+                ]);
+
+                DB::commit();
+
+                return redirect()->route('pengurus.tagihan.index', [
+                    'period_id' => $lastPeriodId,
+                    'month' => $validated['month'],
+                ])->with('success', "Berhasil menerbitkan {$createdCount} jadwal kas mingguan untuk bulan {$startMonth->isoFormat('MMMM Y')}.");
+            } catch (\Throwable $e) {
+                DB::rollBack();
+
+                return back()->withInput()->withErrors(['title' => 'Gagal membuat jadwal kas mingguan: '.$e->getMessage()]);
+            }
+        }
+
+        // MODE 2: TUNGGAL (SEKALI BUAT)
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:1000'],
             'due_date' => ['required', 'date'],
-            'auto_generate' => ['nullable', 'boolean'],
         ], [
             'title.required' => 'Nama periode tagihan kas wajib diisi.',
             'amount.required' => 'Nominal tagihan kas wajib diisi.',
@@ -177,8 +320,10 @@ class DuesBillController extends Controller
 
             DB::commit();
 
-            return redirect()->route('pengurus.tagihan.index', ['period_id' => $period->id])
-                ->with('success', "Periode tagihan \"{$period->title}\" berhasil dibuat dan {$members->count()} tagihan telah diterbitkan ke anggota.");
+            return redirect()->route('pengurus.tagihan.index', [
+                'period_id' => $period->id,
+                'month' => $period->due_date->format('Y-m'),
+            ])->with('success', "Periode tagihan \"{$period->title}\" berhasil dibuat dan {$members->count()} tagihan telah diterbitkan ke anggota.");
         } catch (\Throwable $e) {
             DB::rollBack();
 

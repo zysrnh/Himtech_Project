@@ -25,13 +25,26 @@
 
             <!-- Top Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-display font-semibold text-[28px] text-navy-900">
-                        Overview Kas {{ $organization->name }}
-                    </h1>
-                    <p class="text-sm text-navy-500 mt-1">
-                        Pantau saldo kas, tingkat kepatuhan bayar tepat waktu, dan mutasi keuangan terpusat.
-                    </p>
+                <div class="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onclick="toggleAppSidebar()"
+                        class="h-10 px-3.5 rounded-xl bg-white border border-ice-200/80 text-navy-900 font-semibold text-xs shadow-xs hover:bg-ice-100 cursor-pointer transition-all flex items-center gap-2 shrink-0"
+                        title="Buka / Tutup Sidebar"
+                    >
+                        <svg class="w-4 h-4 text-navy-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                        <span>Menu</span>
+                    </button>
+                    <div>
+                        <h1 class="font-display font-semibold text-[26px] sm:text-[28px] text-navy-900 leading-tight">
+                            Overview Kas {{ $organization->name }}
+                        </h1>
+                        <p class="text-xs sm:text-sm text-navy-500 mt-0.5">
+                            Pantau saldo kas, tingkat kepatuhan bayar tepat waktu, dan mutasi keuangan terpusat.
+                        </p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3">
                     @if (session('active_role') === 'admin_organisasi' || Auth::user()->isSuperAdmin())

@@ -45,29 +45,15 @@
             @endif
 
             <!-- Top Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-display font-bold text-2xl lg:text-3xl text-navy-900 tracking-tight">
-                        {{ Auth::user()->isAdminPenerima() ? 'Pengajuan Organisasi Masuk' : 'Manajemen Organisasi' }}
-                    </h1>
-                    <p class="text-xs sm:text-sm text-navy-500 mt-1">
-                        {{ Auth::user()->isAdminPenerima()
-                            ? 'Tinjau identitas pendaftar ormawa dan lakukan persetujuan (ACC) pengajuan yang masuk dari landing page.'
-                            : 'Daftar seluruh entitas ormawa yang terdaftar dan persetujuan pengajuan baru.' }}
-                    </p>
-                </div>
-                <div class="shrink-0">
-                    <button
-                        type="button"
-                        onclick="openModalAddOrg()"
-                        class="h-11 px-5 rounded-xl bg-navy-900 text-white font-semibold text-xs shadow-[3px_4px_12px_rgba(47,72,98,0.25)] hover:bg-navy-700 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
-                    >
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>Tambah Organisasi Manual</span>
-                    </button>
-                </div>
+            <div>
+                <h1 class="font-display font-bold text-2xl lg:text-3xl text-navy-900 tracking-tight">
+                    {{ Auth::user()->isAdminPenerima() ? 'Pengajuan Organisasi Masuk' : 'Manajemen Organisasi' }}
+                </h1>
+                <p class="text-xs sm:text-sm text-navy-500 mt-1">
+                    {{ Auth::user()->isAdminPenerima()
+                        ? 'Tinjau identitas pendaftar ormawa dan lakukan persetujuan (ACC) pengajuan yang masuk dari landing page.'
+                        : 'Daftar seluruh entitas ormawa yang terdaftar dan persetujuan pengajuan baru.' }}
+                </p>
             </div>
 
             <!-- Ringkasan Statistik Neumorphic -->

@@ -17,10 +17,11 @@ class SuperAdminSeeder extends Seeder
             ['email' => 'admin@kasly.id'],
             [
                 'name' => 'Super Admin Kasly',
+                'username' => 'admin_kasly',
+                'phone' => '081234567890',
                 'password' => Hash::make('password'),
                 'is_super_admin' => true,
             ]
         );
     }
 }
-

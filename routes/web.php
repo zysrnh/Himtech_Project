@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationController;
@@ -59,6 +60,11 @@ Route::delete('/admin/organizations/{organization}', [AdminOrganizationControlle
 // Persetujuan (Approval) Pengajuan Organisasi oleh Super Admin
 Route::post('/admin/organizations/requests/{organizationRequest}/approve', [AdminOrganizationController::class, 'approveRequest'])->name('admin.organizations.requests.approve');
 Route::post('/admin/organizations/requests/{organizationRequest}/reject', [AdminOrganizationController::class, 'rejectRequest'])->name('admin.organizations.requests.reject');
+
+// Kelola Administrator Kasly (Multi-Admin Super Admin)
+Route::get('/admin/admins', [AdminManagementController::class, 'index'])->name('admin.admins.index');
+Route::post('/admin/admins', [AdminManagementController::class, 'store'])->name('admin.admins.store');
+Route::delete('/admin/admins/{user}', [AdminManagementController::class, 'destroy'])->name('admin.admins.destroy');
 
 // Profil Super Admin & Pengaturan Kontak Notifikasi
 Route::get('/admin/profile', [ProfileController::class, 'showAdminProfile'])->name('admin.profile');

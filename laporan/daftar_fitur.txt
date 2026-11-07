@@ -160,3 +160,20 @@ Tema Lomba: Bayar Kas Tepat Waktu: Meningkatkan Kedisiplinan dan Transparansi Pe
   * Pengubahan Nama Lengkap, Username, dan Email.
   * Pengaturan Nomor WhatsApp Aktif: Menjadi nomor tujuan resmi sistem Fonnte untuk menerima alert pengajuan baru dan notifikasi sistem penting.
   * Pembaruan Kata Sandi Mandiri dengan konfirmasi kata sandi.
+
+================================================================================
+12. MANAJEMEN ADMINISTRATOR KASLY & SEEDER LENGKAP DEMO DATA
+================================================================================
+- Endpoint: /admin/admins
+- Fitur Multi-Admin Platform:
+  * Super Admin dapat membuat akun Administrator Kasly baru (Nama, Username, Email, No. WA, Password).
+  * Menampilkan seluruh daftar pengelola pusat yang memiliki akses operasional sistem.
+  * Fitur hapus akun Administrator Kasly dengan proteksi keamanan (tidak bisa menghapus akun yang sedang login dan mencegah penghapusan jika admin tersisa 1).
+- Seeder Data Demo Lengkap (OrganizationSeeder & SuperAdminSeeder):
+  * Akun Super Admin Kasly: admin@kasly.id (username: admin_kasly, WA: 081234567890, pass: password).
+  * Organisasi Demo HIMTECH (Himpunan Mahasiswa Teknologi).
+  * Akun Pengelola Ormawa: Muhammad Zaki (username: bendahara_himtech, email: zaki@himtech.id, pass: password, WA: 081234567890).
+  * 7 Kategori Kas Bawaan (Iuran Wajib, Donasi, Kas Awal, Konsumsi, ATK, Operasional, Lain-lain).
+  * 10 Data Anggota Mahasiswa Sampel (NIM 2026001 - 2026010).
+  * 1 Periode Iuran Kas (November 2026, Rp 20.000) dengan simulasi 6 anggota lunas tepat waktu, 2 lunas terlambat, dan 2 belum bayar.
+  * Contoh mutasi kas masuk dan kas keluar lengkap dengan tanggal dan kategori.

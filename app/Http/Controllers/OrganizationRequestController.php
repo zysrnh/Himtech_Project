@@ -78,23 +78,25 @@ class OrganizationRequestController extends Controller
         // 1. Notifikasi WhatsApp ke Pemohon
         $applicantMsg = "Halo {$validated['pic_name']},\n\n"
             ."Terima kasih! Pengajuan pendaftaran organisasi *{$validated['name']} ({$code})* telah kami terima di platform Kasly.\n\n"
-            ."Status saat ini: *Menunggu Peninjauan Super Admin*\n"
+            ."Status saat ini: *Menunggu Peninjauan Admin Kasly*\n"
             ."Begitu disetujui (ACC), kata sandi akun Pengelola akan otomatis dikirimkan ke WhatsApp dan Email Anda.\n\n"
             ."Salam,\nTim Kasly";
         FonnteService::send($validated['pic_phone'], $applicantMsg);
 
-        // 2. Notifikasi WhatsApp ke Super Admin
-        $superAdmin = User::where('is_super_admin', true)->whereNotNull('phone')->first();
-        if ($superAdmin && ! empty($superAdmin->phone)) {
-            $adminMsg = "Halo Super Admin Kasly,\n\n"
-                ."Ada pengajuan pendaftaran ormawa baru yang masuk:\n"
-                ."• Organisasi: *{$validated['name']}* ({$code})\n"
-                ."• Pemohon/Ketua: *{$validated['pic_name']}*\n"
-                ."• WhatsApp: {$validated['pic_phone']}\n"
-                ."• Email: {$validated['pic_email']}\n\n"
-                ."Silakan tinjau dan setujui (ACC) melalui Panel Super Admin:\n"
-                .url('/admin/organizations');
-            FonnteService::send($superAdmin->phone, $adminMsg);
+        // 2. Notifikasi WhatsApp ke Seluruh Admin Kasly
+        $adminUsers = User::where('is_super_admin', true)->get();
+        foreach ($adminUsers as $admin) {
+            if (! empty($admin->phone)) {
+                $adminMsg = "Halo Admin Kasly ({$admin->name}),\n\n"
+                    ."Ada pengajuan pendaftaran ormawa baru yang masuk:\n"
+                    ."• Organisasi: *{$validated['name']}* ({$code})\n"
+                    ."• Pemohon/Ketua: *{$validated['pic_name']}*\n"
+                    ."• WhatsApp: {$validated['pic_phone']}\n"
+                    ."• Email: {$validated['pic_email']}\n\n"
+                    ."Silakan tinjau dan setujui (ACC) melalui Panel Admin:\n"
+                    .url('/admin/organizations?tab=requests');
+                FonnteService::send($admin->phone, $adminMsg);
+            }
         }
 
         return redirect()->route('ajukan-organisasi.success')->with([
@@ -113,4 +115,3 @@ class OrganizationRequestController extends Controller
         return view('auth.register_organization_success');
     }
 }
-

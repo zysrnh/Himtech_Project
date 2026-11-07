@@ -30,14 +30,14 @@
                 Pengajuan Berhasil Dikirim!
             </h1>
             <p class="text-sm text-navy-500 leading-relaxed">
-                Pengajuan organisasi <strong class="text-navy-900">{{ session('org_name', 'Organisasi Anda') }}</strong> (Kode: <span class="font-mono text-navy-900">{{ session('org_code', 'ORMAWA') }}</span>) telah kami terima dan diteruskan ke Super Admin Kasly.
+                Pengajuan organisasi <strong class="text-navy-900">{{ session('org_name', 'Organisasi Anda') }}</strong> (Kode: <span class="font-mono text-navy-900">{{ session('org_code', 'ORMAWA') }}</span>) telah kami terima dan diteruskan ke Admin Kasly.
             </p>
         </div>
 
         <div class="p-5 rounded-md bg-ice-100/60 border border-ice-200 text-left text-xs text-navy-500 space-y-2">
             <p class="font-medium text-navy-900">Langkah Selanjutnya:</p>
             <ul class="space-y-1.5 list-disc list-inside">
-                <li>Super Admin Kasly akan memvalidasi data pengajuan organisasi Anda.</li>
+                <li>Admin Kasly akan memvalidasi data pengajuan organisasi Anda.</li>
                 <li>Setelah disetujui (di-ACC), kata sandi akun Pengelola Anda (<strong class="text-navy-900">{{ session('pic_name', 'Pemohon') }}</strong>) akan otomatis dikirimkan ke WhatsApp <span class="font-mono text-navy-900">{{ session('pic_phone', '-') }}</span>.</li>
                 <li>Setelah login, Anda dapat langsung mengelola keuangan ormawa dan membuat akun staf pengurus Anda sendiri.</li>
             </ul>

@@ -404,6 +404,28 @@ class DuesBillController extends Controller
 
             DB::commit();
 
+            // Otomatis kirim notifikasi tanda terima resmi via WhatsApp Fonnte ke anggota
+            $memberPhone = $bill->member->phone ?? $bill->member->user?->phone;
+            if (! empty($memberPhone)) {
+                $methodLabel = match ($validated['payment_method']) {
+                    'cash' => 'Tunai / Cash',
+                    'transfer' => 'Transfer Bank',
+                    'qris' => 'QRIS',
+                    default => 'Manual',
+                };
+
+                FonnteService::sendPaymentSuccess(
+                    $memberPhone,
+                    $bill->member->name,
+                    $organization->name,
+                    $bill->duesPeriod->title,
+                    (float) $bill->amount,
+                    now()->format('d M Y H:i'),
+                    $methodLabel,
+                    $isOnTime
+                );
+            }
+
             $statusText = $isOnTime ? 'Tepat Waktu' : 'Terlambat';
 
             return back()->with('success', "Pembayaran iuran {$bill->member->name} berhasil diverifikasi lunas ({$statusText}) dan mutasi kas masuk telah dicatat.");
@@ -415,7 +437,7 @@ class DuesBillController extends Controller
     }
 
     /**
-     * Kirim pengingat tagihan kas via WhatsApp Fonnte ke anggota yang belum bayar.
+     * Kirim pengingat tagihan kas personal via WhatsApp Fonnte ke anggota yang belum bayar.
      */
     public function sendReminder(Request $request, DuesBill $bill): RedirectResponse
     {
@@ -432,26 +454,94 @@ class DuesBillController extends Controller
             return back()->withErrors(['error' => "Nomor WhatsApp untuk anggota {$bill->member->name} belum diisi."]);
         }
 
-        $formattedAmount = 'Rp '.number_format($bill->amount, 0, ',', '.');
-        $dueDateFormatted = $bill->duesPeriod->due_date->format('d M Y');
+        $dueDate = $bill->duesPeriod->due_date;
+        $now = now()->startOfDay();
+        $daysLeft = (int) $now->diffInDays($dueDate, false);
 
-        $message = "Halo, {$bill->member->name}.\n\n"
-            ."Ini adalah pengingat resmi pembayaran iuran kas dari {$organization->name}.\n\n"
-            ."*Rincian Tagihan:*\n"
-            ."- Periode: {$bill->duesPeriod->title}\n"
-            ."- Jumlah: {$formattedAmount}\n"
-            ."- Batas Jatuh Tempo: {$dueDateFormatted}\n\n"
-            ."Status saat ini: *Belum Lunas*.\n"
-            ."Mohon segera melakukan pembayaran agar catatan pembayaran Anda tetap dinilai *Tepat Waktu*.\n\n"
-            .'Pembayaran dapat ditransfer ke rekening bendahara atau bayar instan di portal: '.url('/login')."\n\n"
-            ."Terima kasih.\n_Bendahara {$organization->name}_";
-
-        $sent = FonnteService::send($phone, $message);
+        $sent = FonnteService::sendDuesReminder(
+            $phone,
+            $bill->member->name,
+            $organization->name,
+            $bill->duesPeriod->title,
+            (float) $bill->amount,
+            $dueDate->format('d M Y'),
+            $daysLeft
+        );
 
         if ($sent) {
             return back()->with('success', "Pengingat WhatsApp berhasil dikirim ke nomor {$bill->member->name} ({$phone}).");
         }
 
         return back()->with('info', "Pesan pengingat telah disiapkan dan dicatat ke log sistem (nomor: {$phone}).");
+    }
+
+    /**
+     * Broadcast pengingat tagihan WhatsApp secara massal ke seluruh anggota yang belum lunas pada periode ini.
+     */
+    public function broadcastPeriodReminders(Request $request, DuesPeriod $period): RedirectResponse
+    {
+        /** @var Organization $organization */
+        $organization = $request->attributes->get('current_organization') ?? Organization::find(session('active_organization_id'));
+
+        if ($period->organization_id !== $organization->id) {
+            abort(403);
+        }
+
+        $unpaidBills = $period->duesBills()
+            ->whereIn('status', ['unpaid', 'pending'])
+            ->with(['member.user'])
+            ->get();
+
+        if ($unpaidBills->isEmpty()) {
+            return back()->with('info', 'Semua anggota pada periode ini sudah lunas! Tidak ada tagihan tertunda.');
+        }
+
+        $dueDate = $period->due_date;
+        $now = now()->startOfDay();
+        $daysLeft = (int) $now->diffInDays($dueDate, false);
+
+        $sentCount = 0;
+        $skippedCount = 0;
+
+        foreach ($unpaidBills as $bill) {
+            $phone = $bill->member->phone ?? $bill->member->user?->phone;
+            if (! empty($phone)) {
+                $sent = FonnteService::sendDuesReminder(
+                    $phone,
+                    $bill->member->name,
+                    $organization->name,
+                    $period->title,
+                    (float) $bill->amount,
+                    $dueDate->format('d M Y'),
+                    $daysLeft
+                );
+                if ($sent) {
+                    $sentCount++;
+                }
+            } else {
+                $skippedCount++;
+            }
+        }
+
+        ActivityLog::create([
+            'organization_id' => $organization->id,
+            'user_id' => Auth::id(),
+            'action' => 'broadcast_dues_reminder',
+            'subject_type' => DuesPeriod::class,
+            'subject_id' => $period->id,
+            'payload' => [
+                'period_title' => $period->title,
+                'total_unpaid' => $unpaidBills->count(),
+                'sent_count' => $sentCount,
+                'skipped_no_phone' => $skippedCount,
+            ],
+        ]);
+
+        $msg = "Broadcast pengingat tagihan berhasil diproses ke {$unpaidBills->count()} anggota penunggak ({$sentCount} pesan WhatsApp Fonnte terkirim).";
+        if ($skippedCount > 0) {
+            $msg .= " ({$skippedCount} anggota dilewati karena nomor HP belum diisi).";
+        }
+
+        return back()->with('success', $msg);
     }
 }

@@ -170,6 +170,33 @@ Keunggulan Pola Perancangan Ini:
       * approved_at: DATETIME (Nullable)
       * created_at, updated_at: TIMESTAMP
 
+11. TABEL: organization_payment_methods (Kanal Pembayaran Mandiri Ormawa)
+    - Deskripsi: Pengaturan kanal pembayaran kas ormawa (Rekening Bank, E-Wallet, QRIS Statis, Instruksi Tunai).
+    - Kolom:
+      * id: BIGINT (Primary Key, Auto Increment)
+      * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+      * type: VARCHAR(20) (Default: 'bank') - Tipe saluran ('cash', 'bank', 'ewallet', 'qris')
+      * channel_name: VARCHAR(100) - Nama saluran (misal: 'Bank BCA', 'DANA', 'QRIS Ormawa')
+      * account_number: VARCHAR(100) (Nullable) - Nomor rekening / nomor e-wallet
+      * account_holder: VARCHAR(150) (Nullable) - Atas nama pemilik rekening
+      * qris_image_path: VARCHAR(255) (Nullable) - Lokasi berkas gambar QRIS statis
+      * instructions: TEXT (Nullable) - Catatan petunjuk transfer serah terima
+      * is_active: BOOLEAN (Default: true)
+      * created_at, updated_at: TIMESTAMP
+
+12. TABEL: member_registration_tokens (Token QR Code Pendaftaran Mandiri Anggota)
+    - Deskripsi: Token tautan dan QR Code dinamis untuk pendaftaran anggota mandiri berbatas kuota dan waktu kedaluwarsa.
+    - Kolom:
+      * id: BIGINT (Primary Key, Auto Increment)
+      * organization_id: BIGINT (Foreign Key -> organizations.id, Cascade Delete)
+      * token: VARCHAR(64) (Unique) - Hash acak pengenal QR Code
+      * max_uses: INT (Default: 100) - Batas kuota maksimal pendaftaran
+      * used_count: INT (Default: 0) - Jumlah anggota yang sudah mendaftar
+      * expires_at: TIMESTAMP - Batas waktu kedaluwarsa QR Code
+      * created_by: BIGINT (Nullable, Foreign Key -> users.id, Null on Delete)
+      * is_active: BOOLEAN (Default: true)
+      * created_at, updated_at: TIMESTAMP
+
 ================================================================================
 3. HIRARKI PERAN SISTEM (6 PERAN OPERASIONAL)
 ================================================================================

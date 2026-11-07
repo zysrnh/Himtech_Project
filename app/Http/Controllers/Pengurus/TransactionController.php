@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\Organization;
 use App\Models\Transaction;
+use App\Services\CashExportService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionController extends Controller
 {
@@ -88,6 +90,56 @@ class TransactionController extends Controller
             'defaultInCategories',
             'defaultOutCategories'
         ));
+    }
+
+    /**
+     * Export seluruh pembukuan kas ke format Excel (.xlsx) dengan tata letak dan palet Kasly.
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        /** @var Organization $organization */
+        $organization = $request->attributes->get('current_organization') ?? Organization::find(session('active_organization_id'));
+
+        $monthFilter = $request->query('month');
+        $typeFilter = $request->query('type', 'all');
+
+        $query = $organization->transactions()
+            ->with(['category', 'creator']);
+
+        $monthLabel = null;
+        if ($monthFilter) {
+            try {
+                $cDate = Carbon::createFromFormat('Y-m', $monthFilter);
+                $query->whereBetween('transaction_date', [
+                    $cDate->copy()->startOfMonth()->toDateString(),
+                    $cDate->copy()->endOfMonth()->toDateString(),
+                ]);
+                $monthLabel = $cDate->translatedFormat('F Y');
+            } catch (\Throwable $e) {
+                // Abaikan jika format bulan salah
+            }
+        }
+
+        if ($typeFilter === 'in' || $typeFilter === 'out') {
+            $query->where('type', $typeFilter);
+        }
+
+        $transactions = $query->orderBy('transaction_date', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $totalIncome = (float) $transactions->where('type', 'in')->sum('amount');
+        $totalExpense = (float) $transactions->where('type', 'out')->sum('amount');
+        $currentBalance = $totalIncome - $totalExpense;
+
+        return CashExportService::export(
+            $organization,
+            $transactions,
+            $totalIncome,
+            $totalExpense,
+            $currentBalance,
+            $monthLabel
+        );
     }
 
     /**

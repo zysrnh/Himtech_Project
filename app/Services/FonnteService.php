@@ -78,4 +78,84 @@ class FonnteService
 
         return self::send($phone, $message);
     }
+
+    /**
+     * Kirim notifikasi tanda terima resmi pelunasan kas ke WhatsApp anggota (Saat Lunas).
+     */
+    public static function sendPaymentSuccess(
+        string $phone,
+        string $memberName,
+        string $orgName,
+        string $periodTitle,
+        float $amount,
+        string $paidDate,
+        string $method = 'Tunai / Cash',
+        bool $isOnTime = true
+    ): bool {
+        $nominalFormatted = 'Rp '.number_format($amount, 0, ',', '.');
+        $statusDisiplin = $isOnTime ? 'Tepat Waktu' : 'Terlambat';
+        $loginUrl = url('/login');
+
+        $message = "*TANDA TERIMA RESMI PEMBAYARAN KAS*\n"
+            ."*{$orgName}*\n\n"
+            ."Halo {$memberName},\n"
+            ."Pembayaran iuran kas Anda telah berhasil diverifikasi *LUNAS*.\n\n"
+            ."*Rincian Transaksi:*\n"
+            ."• Periode: {$periodTitle}\n"
+            ."• Nominal: *{$nominalFormatted}*\n"
+            ."• Tanggal Bayar: {$paidDate}\n"
+            ."• Saluran Pembayaran: {$method}\n"
+            ."• Status Ketepatan Waktu: *{$statusDisiplin}*\n\n"
+            ."Catatan mutasi ini sudah otomatis dibukukan secara transparan ke Buku Kas Organisasi.\n"
+            ."Cek riwayat kas pribadi Anda di: {$loginUrl}\n\n"
+            ."Terima kasih atas partisipasi aktif dan kedisiplinan Anda!\n"
+            ."_Bendahara {$orgName}_";
+
+        return self::send($phone, $message);
+    }
+
+    /**
+     * Kirim pengingat tagihan kas resmi menjelang jatuh tempo (H-3, H-1, atau hari H).
+     */
+    public static function sendDuesReminder(
+        string $phone,
+        string $memberName,
+        string $orgName,
+        string $periodTitle,
+        float $amount,
+        string $dueDate,
+        ?int $daysLeft = null
+    ): bool {
+        $nominalFormatted = 'Rp '.number_format($amount, 0, ',', '.');
+        $loginUrl = url('/login');
+
+        $headerInfo = 'Mendekati Batas Jatuh Tempo';
+        if ($daysLeft !== null) {
+            if ($daysLeft > 0) {
+                $headerInfo = "H-{$daysLeft} Menjelang Jatuh Tempo";
+            } elseif ($daysLeft === 0) {
+                $headerInfo = 'HARI INI Terakhir Jatuh Tempo';
+            } else {
+                $daysOver = abs($daysLeft);
+                $headerInfo = "Telat {$daysOver} Hari dari Jatuh Tempo";
+            }
+        }
+
+        $message = "*PENGINGAT RESMI IURAN KAS ({$headerInfo})*\n"
+            ."*{$orgName}*\n\n"
+            ."Halo {$memberName},\n"
+            ."Kami mengingatkan kembali kewajiban iuran kas ormawa Anda yang belum dilunasi.\n\n"
+            ."*Detail Tagihan:*\n"
+            ."• Periode: {$periodTitle}\n"
+            ."• Total Kewajiban: *{$nominalFormatted}*\n"
+            ."• Batas Jatuh Tempo: *{$dueDate}*\n"
+            ."• Status: *Belum Lunas*\n\n"
+            ."Yuk segera lunasi sebelum tanggal jatuh tempo agar penilaian kedisiplinan iuran Anda tercatat *Tepat Waktu*.\n\n"
+            ."Pembayaran dapat dilakukan tunai ke Bendahara atau instan via QRIS / Virtual Account di:\n"
+            ."{$loginUrl}\n\n"
+            ."_Salam hangat,_\n"
+            ."_Pengurus & Bendahara {$orgName}_";
+
+        return self::send($phone, $message);
+    }
 }

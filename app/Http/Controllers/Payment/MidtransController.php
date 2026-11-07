@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\DuesBill;
 use App\Models\Transaction;
+use App\Services\FonnteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -405,6 +406,21 @@ class MidtransController extends Controller
                         ]);
 
                         DB::commit();
+
+                        $phone = $bill->member->phone ?? $bill->member->user?->phone;
+                        if (! empty($phone)) {
+                            FonnteService::sendPaymentSuccess(
+                                $phone,
+                                $bill->member->name,
+                                $organization->name,
+                                $bill->duesPeriod->title,
+                                (float) $bill->amount,
+                                now()->format('d M Y H:i'),
+                                "Midtrans ({$paymentType})",
+                                $isOnTime
+                            );
+                        }
+
                         Log::info("Midtrans Status Synced: Tagihan #{$bill->id} berhasil diupdate ke lunas ({$transactionStatus})");
 
                         return true;
@@ -539,6 +555,21 @@ class MidtransController extends Controller
                     ]);
 
                     DB::commit();
+
+                    $phone = $bill->member->phone ?? $bill->member->user?->phone;
+                    if (! empty($phone)) {
+                        FonnteService::sendPaymentSuccess(
+                            $phone,
+                            $bill->member->name,
+                            $organization->name,
+                            $bill->duesPeriod->title,
+                            (float) $bill->amount,
+                            now()->format('d M Y H:i'),
+                            "Midtrans ({$paymentType})",
+                            $isOnTime
+                        );
+                    }
+
                     Log::info("Tagihan #{$bill->id} berhasil dilunasi via Midtrans ({$paymentType})");
                 } catch (\Throwable $e) {
                     DB::rollBack();
@@ -599,6 +630,20 @@ class MidtransController extends Controller
             }
 
             DB::commit();
+
+            $phone = $bill->member->phone ?? $bill->member->user?->phone;
+            if (! empty($phone)) {
+                FonnteService::sendPaymentSuccess(
+                    $phone,
+                    $bill->member->name,
+                    $organization->name,
+                    $bill->duesPeriod->title,
+                    (float) $bill->amount,
+                    now()->format('d M Y H:i'),
+                    'Midtrans (QRIS Sandbox)',
+                    $isOnTime
+                );
+            }
 
             return response()->json([
                 'status' => 'success',

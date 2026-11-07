@@ -80,6 +80,7 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
     // Jadwal Tagihan Iuran Kas Ormawa
     Route::get('/tagihan', [DuesBillController::class, 'index'])->name('tagihan.index');
     Route::post('/tagihan/period', [DuesBillController::class, 'storePeriod'])->name('tagihan.period.store');
+    Route::post('/tagihan/periods/{period}/broadcast-remind', [DuesBillController::class, 'broadcastPeriodReminders'])->name('tagihan.periods.broadcast-remind');
     Route::post('/tagihan/bills/{bill}/verify', [DuesBillController::class, 'verifyPayment'])->name('tagihan.bills.verify');
     Route::post('/tagihan/bills/{bill}/remind', [DuesBillController::class, 'sendReminder'])->name('tagihan.bills.remind');
 
@@ -93,6 +94,7 @@ Route::middleware(['auth', 'pengurus'])->prefix('pengurus')->name('pengurus.')->
 
     // Buku Kas Mutasi (Pemasukan & Pengeluaran Ormawa)
     Route::get('/buku-kas', [TransactionController::class, 'index'])->name('buku-kas.index');
+    Route::get('/buku-kas/export', [TransactionController::class, 'export'])->name('buku-kas.export');
     Route::post('/buku-kas', [TransactionController::class, 'store'])->name('buku-kas.store');
     Route::delete('/buku-kas/{transaction}', [TransactionController::class, 'destroy'])->name('buku-kas.destroy');
 });

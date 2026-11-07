@@ -64,40 +64,14 @@
         <!-- Hero Section -->
         <section class="landing-neu__container landing-neu__hero-section">
             <div class="landing-neu__hero-grid">
-                <!-- Kolom Kiri: Teks, Tombol, & Badge Keunggulan -->
+                <!-- Kolom Kiri: Teks Judul & Deskripsi -->
                 <div class="contents lg:block">
                     <h1 class="landing-neu__hero-title font-display font-semibold text-navy-900 tracking-tight order-1">
                         Kas organisasi, rapi tanpa buku tulis.
                     </h1>
-                    <p class="landing-neu__hero-desc mt-2 lg:mt-5 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal order-3">
-                        Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota ormawa secara terpusat.
+                    <p class="landing-neu__hero-desc mt-2 lg:mt-6 text-base sm:text-lg md:text-xl text-navy-500 leading-relaxed font-normal order-3">
+                        Catat iuran, pantau tunggakan, dan tampilkan laporan transparan untuk seluruh anggota.
                     </p>
-                    <div class="mt-4 lg:mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 order-4">
-                        <a href="#pilih-akses" class="neu-btn neu-btn--primary">
-                            <span>Masuk ke Sistem Kasly</span>
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                        </a>
-                        <a href="{{ route('ajukan-organisasi') }}" class="neu-btn neu-btn--secondary">
-                            <span>Ajukan Organisasi Baru</span>
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/></svg>
-                        </a>
-                    </div>
-
-                    <!-- 3 Feature Highlights (Mengisi gap vertikal agar seimbang dengan kartu saldo di kanan) -->
-                    <div class="mt-6 lg:mt-8 pt-5 border-t border-ice-200/60 flex flex-wrap items-center gap-2.5 order-5">
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] text-xs font-semibold text-navy-900">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            <span>100% Kas Transparan</span>
-                        </div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] text-xs font-semibold text-navy-900">
-                            <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                            <span>Locked Ledger Anti-Manipulasi</span>
-                        </div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-ice-200/80 shadow-[1px_1px_3px_rgba(122,163,214,0.15)] text-xs font-semibold text-navy-900">
-                            <svg class="w-3.5 h-3.5 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            <span>QRIS & Notifikasi WhatsApp</span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Kolom Kanan: Pratinjau Kas Digital Model Stacked Card Interaktif -->
@@ -178,39 +152,6 @@
                                     <span class="card-text-title font-display font-semibold text-sm mt-0.5 block tabular-nums">2026/2027</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Cards underneath (Pemasukan & Pengeluaran) -->
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('iuran')">
-                            <div class="w-9 h-9 rounded-full bg-butter-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                                ↑
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pemasukan</span>
-                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">+Rp 18.200.000</span>
-                            </div>
-                        </div>
-                        <div class="neu-card !p-3.5 sm:!p-4 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="switchKasCard('cadangan')">
-                            <div class="w-9 h-9 rounded-full bg-ice-100 text-navy-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-inner">
-                                ↓
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[11px] sm:text-xs text-navy-500 block truncate">Total Pengeluaran</span>
-                                <span class="font-display font-semibold text-xs sm:text-sm text-navy-900 block tabular-nums truncate">-Rp 3.350.000</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status Kepatuhan Iuran Bulanan -->
-                    <div class="neu-card !p-4 mt-3">
-                        <div class="flex items-center justify-between text-xs font-medium text-navy-500 mb-2">
-                            <span>Kepatuhan Iuran Bulanan</span>
-                            <span class="text-navy-900 font-semibold tabular-nums">94% Lunas (142/150)</span>
-                        </div>
-                        <div class="w-full h-2.5 rounded-full bg-ice-100 shadow-[inset_2px_2px_4px_rgba(122,163,214,0.55),inset_-2px_-2px_4px_rgba(255,255,255,0.95)] overflow-hidden p-0.5">
-                            <div class="h-full rounded-full bg-gradient-to-r from-ice-400 to-navy-500 transition-all duration-500 progress-animated-glow" style="width: 94%;"></div>
                         </div>
                     </div>
                 </div>
@@ -647,9 +588,9 @@
             },
             iuran: {
                 themeClass: 'theme--iuran',
-                tag: 'Pemasukan',
-                label: 'Total Pemasukan Iuran',
-                amount: '+Rp 18.200.000',
+                tag: 'Iuran',
+                label: 'Total Iuran Terkumpul',
+                amount: 'Rp 18.200.000',
                 detail: '142 Anggota Lunas (94%) • 8 Tagihan Berjalan',
                 filletColor: '#FFF9D9',
                 kasTabBg: '#FFF9D9',
@@ -658,10 +599,10 @@
             },
             cadangan: {
                 themeClass: 'theme--cadangan',
-                tag: 'Pengeluaran',
-                label: 'Total Pengeluaran Kas',
-                amount: '-Rp 3.350.000',
-                detail: '24 Transaksi Operasional • Dilengkapi Bukti Nota',
+                tag: 'Cadangan',
+                label: 'Total Kas Cadangan',
+                amount: 'Rp 3.350.000',
+                detail: 'Dana Darurat & Alokasi Khusus Ormawa',
                 filletColor: '#182635',
                 kasTabBg: '#182635',
                 kasTabColor: '#FFFFFF',

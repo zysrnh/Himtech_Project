@@ -64,9 +64,9 @@
                 Pilih akses kamu
             </h2>
 
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="access-neu mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Card Anggota -->
-                <div id="login-anggota" class="bg-white rounded-lg p-6 shadow-card flex flex-col justify-between">
+                <div id="login-anggota" class="neu-card flex flex-col justify-between">
                     <div>
                         <h3 class="font-display font-medium text-lg text-navy-900">
                             Anggota
@@ -76,14 +76,14 @@
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ route('login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-navy-900 text-white font-medium text-sm hover:bg-navy-700 transition-colors">
+                        <a href="{{ route('login') }}" class="neu-btn neu-btn--primary w-full">
                             Masuk sebagai Anggota
                         </a>
                     </div>
                 </div>
 
                 <!-- Card Staff dan Bendahara -->
-                <div id="login-pengurus" class="bg-white rounded-lg p-6 shadow-card flex flex-col justify-between">
+                <div id="login-pengurus" class="neu-card flex flex-col justify-between">
                     <div>
                         <h3 class="font-display font-medium text-lg text-navy-900">
                             Staff dan Bendahara
@@ -93,14 +93,14 @@
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="{{ route('login') }}" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+                        <a href="{{ route('login') }}" class="neu-btn w-full">
                             Masuk sebagai Pengurus
                         </a>
                     </div>
                 </div>
 
                 <!-- Card Hubungi Kami -->
-                <div class="bg-white rounded-lg p-6 shadow-card flex flex-col justify-between">
+                <div class="neu-card flex flex-col justify-between">
                     <div>
                         <h3 class="font-display font-medium text-lg text-navy-900">
                             Belum punya organisasi?
@@ -110,7 +110,7 @@
                         </p>
                     </div>
                     <div class="mt-8">
-                        <a href="https://wa.me/?text=Halo%20Admin%20Kasly,%20saya%20ingin%20mendaftarkan%20organisasi%20baru" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center h-12 px-5 rounded-md bg-ice-100 text-navy-900 font-medium text-sm hover:bg-ice-200 transition-colors">
+                        <a href="https://wa.me/?text=Halo%20Admin%20Kasly,%20saya%20ingin%20mendaftarkan%20organisasi%20baru" target="_blank" rel="noopener noreferrer" class="neu-btn w-full">
                             Hubungi Kami
                         </a>
                     </div>

@@ -1,0 +1,76 @@
+================================================================================
+KASLY - DAFTAR AKUN & KREDENSIAL DEMO PRESENTASI
+================================================================================
+Organisasi  : Himpunan Mahasiswa Teknologi (HIMTECH)
+Kode Ormawa : HIMTECH
+URL Aplikasi: http://localhost:8000
+Tanggal     : Siap Digunakan untuk Presentasi
+
+--------------------------------------------------------------------------------
+1. PORTAL PENGURUS & ANGGOTA (LOGIN UNIVERSAL)
+--------------------------------------------------------------------------------
+URL Akses       : http://localhost:8000/login
+Kode Organisasi : HIMTECH
+
+[AKUN ADMIN BENDAHARA]
+Nama        : Siti Nurhaliza
+Username    : bendahara_himtech
+Password    : password
+Role        : Admin Bendahara (admin_organisasi)
+Wewenang    : Akses penuh kelola iuran kas, terbitkan tagihan, verifikasi bukti bayar,
+              buku kas mutasi, kelola staf, pengaturan pembayaran, dan QR code pendaftaran.
+
+[AKUN PENGURUS / STAF]
+Nama        : Dimas Pratama
+Username    : pengurus_himtech
+Password    : password
+Role        : Staf Pengurus (staff)
+Wewenang    : Akses operasional buku kas, pantau data anggota, dan jadwal tagihan.
+
+--------------------------------------------------------------------------------
+2. DAFTAR 5 ANGGOTA MAHASISWA
+--------------------------------------------------------------------------------
+Form Login      : http://localhost:8000/login
+Kode Organisasi : HIMTECH
+(Password dapat menggunakan "password" atau NIM masing-masing)
+
+No. | NIM / Username | Password   | Nama Mahasiswa     | Status Tagihan Kas
+----+----------------+------------+--------------------+------------------------
+ 1  | 2026001        | password   | Aditya Pratama     | LUNAS TEPAT WAKTU (Transfer BCA)
+ 2  | 2026002        | password   | Budi Santoso       | LUNAS TEPAT WAKTU (Midtrans)
+ 3  | 2026003        | password   | Citra Lestari      | LUNAS TEPAT WAKTU (Tunai Cash)
+ 4  | 2026004        | password   | Daffa Al Ghifari   | LUNAS TERLAMBAT (Tunai Cash)
+ 5  | 2026005        | password   | Eka Rahmawati      | BELUM BAYAR (Menunggak)
+
+* Catatan Demo Anggota:
+- Akun 2026005 (Eka Rahmawati) sangat ideal digunakan untuk simulasi bayar kas langsung
+  dari dashboard anggota (bisa simulasi bayar tunai atau bayar via Midtrans Sandbox).
+- Akun 2026004 (Daffa Al Ghifari) mendemonstrasikan status badge merah/oranye "Terlambat".
+- Akun 2026001 - 2026003 mendemonstrasikan status badge hijau "Tepat Waktu".
+
+--------------------------------------------------------------------------------
+3. PORTAL SUPER ADMINISTRATOR KASLY
+--------------------------------------------------------------------------------
+URL Akses : http://localhost:8000/admin/login
+
+[SUPER ADMIN KASLY]
+Email / User : admin@kasly.id (atau: admin_kasly)
+Password     : password
+Wewenang     : Kendali master multi-tenant, approval ormawa, kelola admin platform.
+
+[ADMIN PENERIMA ORGANISASI]
+Email / User : admin.organisasi@kasly.id (atau: admin_organisasi)
+Password     : password
+Wewenang     : Verifikasi & persetujuan (ACC/Tolak) pendaftaran ormawa baru.
+
+--------------------------------------------------------------------------------
+4. FITUR TAMBAHAN SIAP DEMO
+--------------------------------------------------------------------------------
+- QR Registrasi Mandiri:
+  URL: http://localhost:8000/daftar-anggota?token=kasly_himtech_demo2026
+  (Bisa dicoba scan langsung dari menu Data Anggota di dashboard bendahara).
+
+- Cara Reset Ulang Data Demo Jika Ingin Mengulang:
+  Jalankan di terminal:
+  php artisan db:seed --class=PresentasiDemoSeeder
+================================================================================

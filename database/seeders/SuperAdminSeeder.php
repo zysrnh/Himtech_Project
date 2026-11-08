@@ -32,7 +32,7 @@ class SuperAdminSeeder extends Seeder
             [
                 'name' => 'Admin Penerima Organisasi',
                 'username' => 'admin_organisasi',
-                'phone' => '081299887766',
+                'phone' => '082113127574',
                 'password' => Hash::make('password'),
                 'is_super_admin' => true,
                 'admin_role' => 'admin_penerima',

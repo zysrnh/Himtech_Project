@@ -112,11 +112,15 @@ class MemberRegistrationController extends Controller
         }
 
         // Generate ID anggota unik default berdasarkan kode ormawa (contoh: HIMTECH-0011)
+        // Pastikan unik baik di tabel members maupun tabel users (username)
         $orgCode = Str::upper($organization->code);
-        $counter = $organization->members()->count() + 1;
+        $counter = max($organization->members()->count() + 1, 1);
         do {
             $defaultNim = $orgCode.'-'.str_pad($counter, 4, '0', STR_PAD_LEFT);
-            $exists = Member::where('organization_id', $organization->id)->where('member_number', $defaultNim)->exists();
+            $testUsername = Str::lower($defaultNim);
+            $existsInMembers = Member::where('organization_id', $organization->id)->where('member_number', $defaultNim)->exists();
+            $existsInUsers = User::where('username', $testUsername)->exists();
+            $exists = $existsInMembers || $existsInUsers;
             $counter++;
         } while ($exists);
 
